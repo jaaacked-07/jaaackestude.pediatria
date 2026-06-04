@@ -610,6 +610,67 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 @media(max-width:520px){.hero{flex-direction:column;text-align:center}.child-card{flex-direction:column;text-align:center}.ccb{grid-template-columns:1fr;gap:3px}.ccb b{text-align:left}}
 </style>
 
+<style>
+/* ===== Captura rápida de flashcards (fixa na matéria) ===== */
+.fc-quick{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:var(--r);margin-bottom:14px;position:sticky;top:8px;z-index:30;border:1px solid var(--glass-bd);flex-wrap:wrap}
+.fcq-ic{font-size:1.3rem;flex:none}
+.fcq-type{padding:8px 10px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--card-solid);color:var(--ink);font-weight:800;font-family:inherit;flex:none}
+.fcq-in{flex:1;min-width:150px;padding:9px 12px;border-radius:var(--r-sm);border:1px solid var(--line);background:var(--card-solid);color:var(--ink);font-family:inherit;font-weight:600}
+.fcq-in:focus{border-color:var(--rosa);outline:none}
+.fcq-add{white-space:nowrap;flex:none}
+#fcqMore{flex:none;width:40px;padding:9px 0}
+@media(max-width:680px){.fc-quick{position:static}.fcq-in{flex:1 1 100%}}
+
+/* ===== Fluxograma interativo (HTML/CSS) ===== */
+.fx-flow{padding:6px 0 2px}
+.fx-step{display:flex;flex-direction:column;align-items:center;width:100%}
+.fx-arrow{color:var(--lilas);font-size:1.25rem;line-height:1;margin:3px 0}
+.fx-node{max-width:560px;width:100%;text-align:center;padding:13px 18px;border-radius:var(--r);font-weight:700;color:var(--ink);border:2px solid var(--line);background:var(--card);box-shadow:var(--shadow);line-height:1.45}
+.fx-node.start{background:linear-gradient(135deg,rgba(76,195,138,.22),rgba(124,198,243,.16));border-color:var(--verde);font-weight:800}
+.fx-node.step{border-color:var(--azul)}
+.fx-node.decision{border-color:var(--dourado);background:linear-gradient(135deg,rgba(242,184,75,.18),rgba(255,212,112,.12));font-weight:800}
+.fx-node.end{border-color:var(--rosa);background:linear-gradient(135deg,rgba(255,111,165,.18),rgba(181,139,214,.14));font-weight:800}
+.fx-node.has-info{cursor:pointer;transition:var(--t)}
+.fx-node.has-info:hover{border-color:var(--rosa);transform:translateY(-1px)}
+.fx-plus{display:inline-grid;place-items:center;width:21px;height:21px;border-radius:50%;background:var(--rosa);color:#fff;font-weight:800;font-size:.78rem;margin-left:8px;vertical-align:middle}
+.fx-node.act .fx-plus{background:var(--lilas);transform:rotate(45deg)}
+.fx-info{display:none;max-width:560px;width:100%;margin-top:7px;padding:11px 14px;border-radius:var(--r-sm);background:var(--azul-soft);color:var(--ink);font-weight:600;line-height:1.55;border-left:4px solid var(--azul);text-align:left}
+[data-theme="dark"] .fx-info{background:rgba(74,166,232,.14)}
+.fx-info.open{display:block;animation:fade .25s}
+.fx-branches{display:flex;gap:14px;margin-top:12px;width:100%;justify-content:center;flex-wrap:wrap}
+.fx-branch{flex:1;min-width:230px;max-width:360px;border-top:4px solid var(--azul);border-radius:var(--r);padding:12px 10px;background:var(--chip)}
+.fx-branch.rosa{border-color:var(--rosa)}.fx-branch.azul{border-color:var(--azul)}.fx-branch.verde{border-color:var(--verde)}
+.fx-branch.dourado{border-color:var(--dourado)}.fx-branch.lilas{border-color:var(--lilas)}.fx-branch.vermelho{border-color:var(--vermelho)}
+.fx-blabel{display:block;text-align:center;font-weight:800;font-size:.8rem;margin-bottom:10px;background:var(--card);border-radius:999px;padding:5px 10px;color:var(--ink)}
+.fx-branch.rosa .fx-blabel{color:var(--rosa)}.fx-branch.azul .fx-blabel{color:var(--azul)}.fx-branch.verde .fx-blabel{color:var(--verde)}
+.fx-branch.dourado .fx-blabel{color:#b5851f}.fx-branch.lilas .fx-blabel{color:var(--lilas)}.fx-branch.vermelho .fx-blabel{color:var(--vermelho)}
+.fx-branch .fx-node{font-size:.9rem;padding:10px 12px;box-shadow:none}
+
+/* ===== Mapa mental interativo (HTML/CSS) ===== */
+.mm{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px;padding:14px 0}
+.mm-side{display:flex;flex-direction:column;gap:16px}
+.mm-left{align-items:flex-end}
+.mm-right{align-items:flex-start}
+.mm-center{display:grid;place-items:center}
+.mm-core{background:linear-gradient(135deg,var(--rosa),var(--lilas),var(--azul));color:#fff;font-family:var(--font-head);font-weight:800;font-size:1.1rem;width:128px;height:128px;border-radius:50%;display:grid;place-items:center;text-align:center;padding:10px;box-shadow:var(--shadow-lg)}
+.mm-core span{display:block;font-size:.62rem;font-weight:700;opacity:.92;margin-top:5px;line-height:1.2}
+.mm-ramo{border-radius:var(--r);padding:11px 15px;background:var(--card);border:2px solid var(--azul);max-width:290px;box-shadow:var(--shadow);position:relative;transition:var(--t)}
+.mm-ramo.rosa{border-color:var(--rosa)}.mm-ramo.azul{border-color:var(--azul)}.mm-ramo.verde{border-color:var(--verde)}
+.mm-ramo.dourado{border-color:var(--dourado)}.mm-ramo.lilas{border-color:var(--lilas)}.mm-ramo.vermelho{border-color:var(--vermelho)}
+.mm-ramo:hover{transform:translateY(-2px)}
+.mm-rhead{font-family:var(--font-head);font-weight:800;font-size:1rem;width:100%;text-align:left;background:none;border:none;cursor:pointer;color:var(--ink);padding:0}
+.mm-rhead::before{content:"▾ ";color:var(--ink-faint)}
+.mm-ramo.collapsed .mm-rhead::before{content:"▸ "}
+.mm-ramo.rosa .mm-rhead{color:var(--rosa)}.mm-ramo.azul .mm-rhead{color:var(--azul)}.mm-ramo.verde .mm-rhead{color:var(--verde)}
+.mm-ramo.dourado .mm-rhead{color:#b5851f}.mm-ramo.lilas .mm-rhead{color:var(--lilas)}.mm-ramo.vermelho .mm-rhead{color:var(--vermelho)}
+.mm-leaves{margin:9px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.mm-leaves li{color:var(--ink-soft);font-weight:600;font-size:.88rem;line-height:1.45}
+.mm-ramo.collapsed .mm-leaves{display:none}
+.mm-left .mm-ramo::after{content:"";position:absolute;right:-20px;top:50%;width:20px;height:2px;background:var(--line)}
+.mm-right .mm-ramo::after{content:"";position:absolute;left:-20px;top:50%;width:20px;height:2px;background:var(--line)}
+@media(max-width:720px){.mm{grid-template-columns:1fr;gap:12px}.mm-left,.mm-right{align-items:stretch}.mm-center{order:-1}.mm-ramo{max-width:none}.mm-left .mm-ramo::after,.mm-right .mm-ramo::after{display:none}}
+</style>
+
 <script>
 /* =====================================================================
    PedAtlas by Jackeline Delfini — single-file, classic script
@@ -1070,53 +1131,58 @@ reg({ id:"dnpm", temaIc:"🌱", t:"Desenvolvimento Neuropsicomotor", sub:"Marcos
  ],
 
  fluxoDx:[
-  '<h2>🔀 Fluxograma diagnóstico — vigilância do DNPM</h2>',
-  '<div class="svg-box"><svg viewBox="0 0 720 470" xmlns="http://www.w3.org/2000/svg">'+
-   '<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#c9a8e8"/></marker></defs>'+
-   '<rect x="250" y="20" width="220" height="48" rx="12" fill="#b58bd6"/><text x="360" y="49" fill="#fff" font-size="15" font-weight="700" text-anchor="middle">Consulta de puericultura</text>'+
-   '<line x1="360" y1="68" x2="360" y2="98" stroke="#c9a8e8" stroke-width="2.5" marker-end="url(#ar)"/>'+
-   '<rect x="230" y="100" width="260" height="48" rx="12" fill="#4aa6e8"/><text x="360" y="129" fill="#fff" font-size="14" text-anchor="middle">Aplicar marcos da faixa etária</text>'+
-   '<line x1="360" y1="148" x2="360" y2="178" stroke="#c9a8e8" stroke-width="2.5" marker-end="url(#ar)"/>'+
-   '<polygon points="360,178 470,220 360,262 250,220" fill="#f2b84b"/><text x="360" y="216" fill="#3a2a00" font-size="13" font-weight="700" text-anchor="middle">Marcos da faixa</text><text x="360" y="232" fill="#3a2a00" font-size="13" font-weight="700" text-anchor="middle">presentes?</text>'+
-   '<line x1="250" y1="220" x2="120" y2="220" stroke="#c9a8e8" stroke-width="2.5" marker-end="url(#ar)"/><text x="180" y="210" fill="#ffd470" font-size="12" font-weight="700">NÃO</text>'+
-   '<line x1="470" y1="220" x2="600" y2="220" stroke="#c9a8e8" stroke-width="2.5" marker-end="url(#ar)"/><text x="520" y="210" fill="#7cc6f3" font-size="12" font-weight="700">SIM</text>'+
-   '<rect x="20" y="196" width="100" height="48" rx="12" fill="#ef5a6f"/><text x="70" y="218" fill="#fff" font-size="12" text-anchor="middle">Falta marco</text><text x="70" y="234" fill="#fff" font-size="12" text-anchor="middle">da faixa?</text>'+
-   '<rect x="560" y="196" width="140" height="48" rx="12" fill="#4cc38a"/><text x="630" y="218" fill="#fff" font-size="12" text-anchor="middle">Adequado:</text><text x="630" y="234" fill="#fff" font-size="12" text-anchor="middle">rotina + orientar</text>'+
-   '<line x1="70" y1="244" x2="70" y2="300" stroke="#c9a8e8" stroke-width="2.5" marker-end="url(#ar)"/>'+
-   '<rect x="10" y="302" width="200" height="64" rx="12" fill="#2a1b35" stroke="#c9a8e8"/><text x="110" y="328" fill="#ffd470" font-size="12" font-weight="700" text-anchor="middle">ALERTA</text><text x="110" y="346" fill="#e9def5" font-size="11" text-anchor="middle">Estimular + reavaliar 30d</text>'+
-   '<rect x="260" y="302" width="220" height="64" rx="12" fill="#2a1b35" stroke="#ef5a6f"/><text x="370" y="322" fill="#ef5a6f" font-size="12" font-weight="700" text-anchor="middle">PROVÁVEL ATRASO</text><text x="370" y="340" fill="#e9def5" font-size="11" text-anchor="middle">Atraso + PC alterado / regressão</text><text x="370" y="356" fill="#e9def5" font-size="11" text-anchor="middle">→ ENCAMINHAR</text>'+
-   '<line x1="360" y1="262" x2="370" y2="302" stroke="#ef5a6f" stroke-width="2.5" marker-end="url(#ar)" stroke-dasharray="5 4"/><text x="395" y="288" fill="#ef5a6f" font-size="11">se grave/regressão</text>'+
-   '<rect x="240" y="400" width="240" height="50" rx="12" fill="#b58bd6"/><text x="360" y="421" fill="#fff" font-size="12" text-anchor="middle">Avaliação especializada</text><text x="360" y="438" fill="#fff" font-size="11" text-anchor="middle">(neuropediatria, fono, audiometria)</text>'+
-   '<line x1="370" y1="366" x2="360" y2="400" stroke="#c9a8e8" stroke-width="2.5" marker-end="url(#ar)"/>'+
-  '</svg><div class="cap">Vigilância do desenvolvimento — Caderneta da Criança (MS)</div></div>'
- ].join(''),
+  {t:"start", x:"Consulta de puericultura"},
+  {t:"step", x:"Aplicar os marcos da faixa etária", info:"Avaliar os 4 domínios (motor grosso, motor fino, linguagem, pessoal-social) + perímetro cefálico. Usar a Caderneta da Criança (MS)."},
+  {t:"decision", x:"Marcos da faixa presentes?", branches:[
+    {label:"SIM", cor:"verde", flow:[
+      {t:"end", x:"✅ Desenvolvimento adequado — elogiar, orientar estímulos e manter o calendário de consultas"}
+    ]},
+    {label:"NÃO", cor:"vermelho", flow:[
+      {t:"decision", x:"Atraso isolado leve OU sinal de gravidade?", branches:[
+        {label:"Atraso isolado leve", cor:"dourado", flow:[
+          {t:"step", x:"⚠️ Alerta: estimulação dirigida + reavaliar em 30 dias"},
+          {t:"decision", x:"Persistiu?", branches:[
+            {label:"Não", cor:"verde", flow:[{t:"end", x:"Seguir rotina"}]},
+            {label:"Sim", cor:"vermelho", flow:[{t:"end", x:"🚨 Encaminhar (neuropediatria)"}]}
+          ]}
+        ]},
+        {label:"PC alterado / múltiplos atrasos / regressão", cor:"vermelho", flow:[
+          {t:"end", x:"🚨 Encaminhar imediatamente — avaliação especializada (neuroped, fono, audiometria); investigar EIM/neurodegenerativo", info:"Regressão de marcos é SEMPRE patológica e exige investigação imediata."}
+        ]}
+      ]}
+    ]}
+  ]}
+ ],
 
  fluxoConduta:[
-  '<h2>🧭 Fluxograma de conduta</h2>',
-  '<table><tr><th>Situação</th><th>Conduta</th></tr>',
-  '<tr><td>Desenvolvimento adequado</td><td>Elogiar, orientar estímulos, manter calendário de consultas</td></tr>',
-  '<tr><td>Alerta (ausência de marco da faixa anterior, sem outros sinais)</td><td>Orientar estimulação dirigida + <b>reavaliar em 30 dias</b></td></tr>',
-  '<tr><td>Persistência do alerta ou novos achados</td><td>Encaminhar para avaliação especializada</td></tr>',
-  '<tr><td>Provável atraso (atraso + perímetro cefálico alterado)</td><td><b>Encaminhar</b> diretamente</td></tr>',
-  '<tr><td>Regressão de marcos</td><td><b>Investigação imediata</b> (neuropediatria; pensar EIM/neurodegenerativo)</td></tr>',
-  '<tr><td>Sinais de TEA (não aponta, sem contato visual, repetitivo)</td><td>M-CHAT + audiometria + encaminhamento</td></tr></table>',
-  '<div class="callout tip"><span class="ci">✅</span><div>Em prova: diante de <b>atraso isolado leve</b> em criança hígida → <b>orientar e reavaliar</b>. Diante de <b>regressão</b> ou <b>múltiplos atrasos</b> → <b>encaminhar/investigar</b>.</div></div>'
- ].join(''),
+  {t:"start", x:"Resultado da vigilância do DNPM"},
+  {t:"decision", x:"Qual o achado?", branches:[
+    {label:"Adequado", cor:"verde", flow:[
+      {t:"end", x:"Elogiar, orientar estímulos e manter calendário de consultas"}
+    ]},
+    {label:"Alerta (1 marco ausente, sem outros sinais)", cor:"dourado", flow:[
+      {t:"step", x:"Orientar estimulação dirigida"},
+      {t:"step", x:"Reavaliar em 30 dias"},
+      {t:"decision", x:"Persistiu na reavaliação?", branches:[
+        {label:"Não", cor:"verde", flow:[{t:"end", x:"Manter rotina"}]},
+        {label:"Sim", cor:"vermelho", flow:[{t:"end", x:"Encaminhar para avaliação especializada"}]}
+      ]}
+    ]},
+    {label:"Provável atraso / regressão / sinais de TEA", cor:"vermelho", flow:[
+      {t:"step", x:"Suspeita de TEA? Aplicar M-CHAT + audiometria", info:"Red flags: não aponta (protodeclarativo), pouco contato visual, comportamento repetitivo, ausência de fala esperada."},
+      {t:"end", x:"🚨 Encaminhar / investigar imediatamente"}
+    ]}
+  ]}
+ ],
 
- mapa:[
-  '<h2>🧠 Mapa mental — DNPM</h2>',
-  '<div class="svg-box"><svg viewBox="0 0 740 420" xmlns="http://www.w3.org/2000/svg">'+
-   '<ellipse cx="370" cy="210" rx="95" ry="48" fill="#b58bd6"/><text x="370" y="205" fill="#fff" font-size="17" font-weight="700" text-anchor="middle">DNPM</text><text x="370" y="225" fill="#ece1f7" font-size="11" text-anchor="middle">4 domínios</text>'+
-   ['Motor grosso|150|70|#ff6fa5','Motor fino|580|70|#4aa6e8','Linguagem|150|350|#f2b84b','Social|580|350|#4cc38a','Leis|370|55|#7cc6f3','Alerta|370|365|#ef5a6f']
-     .map(function(s){var p=s.split('|');var x=+p[1],y=+p[2];return '<line x1="370" y1="210" x2="'+x+'" y2="'+y+'" stroke="#5b4a6b" stroke-width="2"/><rect x="'+(x-78)+'" y="'+(y-20)+'" width="156" height="40" rx="11" fill="'+p[3]+'"/><text x="'+x+'" y="'+(y+5)+'" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">'+p[0]+'</text>';}).join('')+
-   '<text x="150" y="105" fill="#e9def5" font-size="10" text-anchor="middle">sustenta→senta→anda</text>'+
-   '<text x="580" y="105" fill="#e9def5" font-size="10" text-anchor="middle">preensão→pinça</text>'+
-   '<text x="150" y="318" fill="#e9def5" font-size="10" text-anchor="middle">balbucio→palavras→frases</text>'+
-   '<text x="580" y="318" fill="#e9def5" font-size="10" text-anchor="middle">sorriso→estranha→adeus</text>'+
-   '<text x="370" y="30" fill="#e9def5" font-size="10" text-anchor="middle">céfalo-caudal · próximo-distal</text>'+
-   '<text x="370" y="395" fill="#e9def5" font-size="10" text-anchor="middle">regressão = SEMPRE patológico</text>'+
-  '</svg><div class="cap">Síntese visual dos domínios e conceitos-chave</div></div>'
- ].join(''),
+ mapa:{ central:"DNPM", legenda:"4 domínios + leis + alerta", ramos:[
+   {cor:"rosa",   t:"Motor grosso", filhos:["Sustenta cabeça (3m)","Senta sem apoio (6–8m)","Anda sozinho (12–15m)"]},
+   {cor:"azul",   t:"Motor fino",   filhos:["Preensão voluntária (4m)","Pinça inferior (9m)","Pinça fina (12m)"]},
+   {cor:"dourado",t:"Linguagem",    filhos:["Balbucio (6m)","1ªs palavras (12m)","Frases de 2 palavras (24m)"]},
+   {cor:"verde",  t:"Pessoal-social",filhos:["Sorriso social (2m)","Estranha (6–8m)","Dá adeus (9m)"]},
+   {cor:"lilas",  t:"Leis",         filhos:["Céfalo-caudal (cabeça→pés)","Próximo-distal (centro→periferia)","Sequência fixa, ritmo variável"]},
+   {cor:"vermelho",t:"⚠️ Alerta",    filhos:["Não senta aos 9m","Não anda aos 18m","<b>Regressão = SEMPRE patológica</b>"]}
+ ]},
 
  vespera:[
   '<h2>⏰ Revisão de véspera — DNPM</h2>',
@@ -1276,44 +1342,55 @@ reg({ id:"cresc", temaIc:"🌱", t:"Avaliação do Crescimento & Curvas OMS", su
  ],
 
  fluxoDx:[
-  '<h2>🔀 Fluxograma — investigação de baixa estatura</h2>',
-  '<div class="svg-box"><svg viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg">'+
-   '<defs><marker id="ar2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#c9a8e8"/></marker></defs>'+
-   '<rect x="250" y="16" width="220" height="46" rx="12" fill="#b58bd6"/><text x="360" y="44" fill="#fff" font-size="14" text-anchor="middle">Estatura &lt; −2 Z (baixa)</text>'+
-   '<line x1="360" y1="62" x2="360" y2="90" stroke="#c9a8e8" stroke-width="2.5" marker-end="url(#ar2)"/>'+
-   '<polygon points="360,90 480,130 360,170 240,130" fill="#f2b84b"/><text x="360" y="126" fill="#3a2a00" font-size="12" font-weight="700" text-anchor="middle">Velocidade de</text><text x="360" y="142" fill="#3a2a00" font-size="12" font-weight="700" text-anchor="middle">crescimento normal?</text>'+
-   '<line x1="480" y1="130" x2="600" y2="130" stroke="#c9a8e8" stroke-width="2.5" marker-end="url(#ar2)"/><text x="540" y="120" fill="#7cc6f3" font-size="11" font-weight="700">SIM</text>'+
-   '<line x1="240" y1="130" x2="120" y2="130" stroke="#c9a8e8" stroke-width="2.5" marker-end="url(#ar2)"/><text x="170" y="120" fill="#ffd470" font-size="11" font-weight="700">NÃO</text>'+
-   '<rect x="560" y="106" width="150" height="70" rx="12" fill="#4cc38a"/><text x="635" y="132" fill="#fff" font-size="11" text-anchor="middle">Variante normal</text><text x="635" y="150" fill="#fff" font-size="10" text-anchor="middle">familiar / constitucional</text><text x="635" y="166" fill="#fff" font-size="10" text-anchor="middle">(idade óssea decide)</text>'+
-   '<rect x="20" y="106" width="200" height="70" rx="12" fill="#ef5a6f"/><text x="120" y="132" fill="#fff" font-size="11" text-anchor="middle">PATOLÓGICO</text><text x="120" y="150" fill="#fff" font-size="10" text-anchor="middle">VC baixa / cruza canal</text><text x="120" y="166" fill="#fff" font-size="10" text-anchor="middle">→ investigar</text>'+
-   '<line x1="120" y1="176" x2="120" y2="210" stroke="#c9a8e8" stroke-width="2.5" marker-end="url(#ar2)"/>'+
-   '<rect x="20" y="212" width="200" height="60" rx="12" fill="#4aa6e8"/><text x="120" y="236" fill="#fff" font-size="11" text-anchor="middle">Proporcionada?</text><text x="120" y="254" fill="#fff" font-size="10" text-anchor="middle">avaliar segmentos</text>'+
-   '<rect x="20" y="300" width="200" height="56" rx="12" fill="#2a1b35" stroke="#7cc6f3"/><text x="120" y="322" fill="#7cc6f3" font-size="10" text-anchor="middle">Proporcionada: endócrino</text><text x="120" y="338" fill="#e9def5" font-size="9" text-anchor="middle">TSH/T4L, IGF-1, cortisol, cariótipo</text>'+
-   '<rect x="250" y="300" width="200" height="56" rx="12" fill="#2a1b35" stroke="#ef5a6f"/><text x="350" y="322" fill="#ef5a6f" font-size="10" text-anchor="middle">Desproporcionada</text><text x="350" y="338" fill="#e9def5" font-size="9" text-anchor="middle">displasias ósseas, raquitismo</text>'+
-   '<line x1="120" y1="272" x2="120" y2="300" stroke="#c9a8e8" stroke-width="2.5" marker-end="url(#ar2)"/>'+
-   '<line x1="170" y1="272" x2="330" y2="300" stroke="#c9a8e8" stroke-width="2" marker-end="url(#ar2)" stroke-dasharray="4 4"/>'+
-   '<rect x="500" y="300" width="210" height="56" rx="12" fill="#b58bd6"/><text x="605" y="322" fill="#fff" font-size="10" text-anchor="middle">Exames básicos sempre:</text><text x="605" y="338" fill="#fff" font-size="9" text-anchor="middle">hemograma, TSH, idade óssea, rastreio celíaco</text>'+
-  '</svg><div class="cap">Roteiro de investigação da baixa estatura</div></div>'
- ].join(''),
+  {t:"start", x:"Estatura abaixo de −2 escore-Z (baixa estatura)"},
+  {t:"step", x:"Sempre solicitar: hemograma, TSH/T4L, idade óssea, rastreio de doença celíaca"},
+  {t:"decision", x:"Velocidade de crescimento (VC) normal?", branches:[
+    {label:"SIM (VC normal)", cor:"verde", flow:[
+      {t:"step", x:"Variante normal — a idade óssea decide", info:"Idade óssea = idade cronológica + pais baixos → baixa estatura familiar. Idade óssea atrasada + atraso puberal + HF de maturador tardio → retardo constitucional."},
+      {t:"end", x:"Tranquilizar e acompanhar (bom prognóstico)"}
+    ]},
+    {label:"NÃO (VC baixa / cruza canais p/ baixo)", cor:"vermelho", flow:[
+      {t:"step", x:"PATOLÓGICO → investigar"},
+      {t:"decision", x:"É proporcionada?", branches:[
+        {label:"Proporcionada", cor:"azul", flow:[
+          {t:"end", x:"Causas endócrinas/sistêmicas: TSH/T4L, IGF-1, cortisol, cariótipo (meninas — Turner)"}
+        ]},
+        {label:"Desproporcionada", cor:"vermelho", flow:[
+          {t:"end", x:"Displasias ósseas, raquitismo → radiografias + genética"}
+        ]}
+      ]}
+    ]}
+  ]}
+ ],
 
  fluxoConduta:[
-  '<h2>🧭 Fluxograma de conduta</h2>',
-  '<table><tr><th>Cenário</th><th>Conduta</th></tr>',
-  '<tr><td>Estatura adequada, VC normal</td><td>Manter acompanhamento de rotina</td></tr>',
-  '<tr><td>Baixa estatura + VC normal + idade óssea = cronológica + pais baixos</td><td>Baixa estatura familiar → tranquilizar e seguir</td></tr>',
-  '<tr><td>Baixa estatura + idade óssea atrasada + atraso puberal + HF de maturador tardio</td><td>Retardo constitucional → observar (bom prognóstico)</td></tr>',
-  '<tr><td>VC baixa / cruzamento de canal para baixo</td><td><b>Investigar</b> (TSH/T4L, IGF-1, cariótipo em meninas, rastreio celíaco) e encaminhar</td></tr>',
-  '<tr><td>Baixa estatura desproporcionada</td><td>Avaliar displasia óssea (radiografias, genética)</td></tr></table>'
- ].join(''),
+  {t:"start", x:"Avaliação da estatura/velocidade de crescimento"},
+  {t:"decision", x:"Qual o cenário?", branches:[
+    {label:"Estatura adequada, VC normal", cor:"verde", flow:[
+      {t:"end", x:"Manter acompanhamento de rotina"}
+    ]},
+    {label:"Baixa familiar (VC normal, IO = cronológica, pais baixos)", cor:"azul", flow:[
+      {t:"end", x:"Tranquilizar e seguir"}
+    ]},
+    {label:"Retardo constitucional (IO atrasada, atraso puberal, HF)", cor:"dourado", flow:[
+      {t:"end", x:"Observar — bom prognóstico de estatura final"}
+    ]},
+    {label:"VC baixa / cruzamento de canal", cor:"vermelho", flow:[
+      {t:"step", x:"Investigar: TSH/T4L, IGF-1, cariótipo (♀), rastreio celíaco"},
+      {t:"end", x:"🚨 Encaminhar ao endocrinologista"}
+    ]},
+    {label:"Baixa estatura desproporcionada", cor:"vermelho", flow:[
+      {t:"end", x:"Avaliar displasia óssea (radiografias, genética)"}
+    ]}
+  ]}
+ ],
 
- mapa:[
-  '<h2>🧠 Mapa mental — Crescimento</h2>',
-  '<div class="svg-box"><svg viewBox="0 0 740 400" xmlns="http://www.w3.org/2000/svg">'+
-   '<ellipse cx="370" cy="200" rx="100" ry="46" fill="#4aa6e8"/><text x="370" y="196" fill="#fff" font-size="16" font-weight="700" text-anchor="middle">CRESCIMENTO</text><text x="370" y="216" fill="#cfeaff" font-size="11" text-anchor="middle">trajetória &gt; ponto</text>'+
-   ['Medidas|160|70|#ff6fa5|peso/estatura/PC/IMC','Ganhos|580|70|#f2b84b|dobra 4-5m, triplica 12m','Z-score|160|330|#b58bd6|0=P50 · ±2=P3/P97','Baixa estatura|580|330|#ef5a6f|VC + idade óssea']
-     .map(function(s){var p=s.split('|');var x=+p[1],y=+p[2];return '<line x1="370" y1="200" x2="'+x+'" y2="'+y+'" stroke="#5b4a6b" stroke-width="2"/><rect x="'+(x-90)+'" y="'+(y-22)+'" width="180" height="44" rx="11" fill="'+p[3]+'"/><text x="'+x+'" y="'+(y-2)+'" fill="#fff" font-size="13" font-weight="700" text-anchor="middle">'+p[0]+'</text><text x="'+x+'" y="'+(y+14)+'" fill="#fff" font-size="9" text-anchor="middle">'+p[4]+'</text>';}).join('')+
-  '</svg><div class="cap">Síntese: medir, comparar com a curva, interpretar a tendência</div></div>'
- ].join(''),
+ mapa:{ central:"CRESCIMENTO", legenda:"trajetória > ponto isolado", ramos:[
+   {cor:"rosa",   t:"Medidas",      filhos:["Peso · Estatura","Perímetro cefálico","IMC por idade"]},
+   {cor:"dourado",t:"Ganhos-chave", filhos:["Dobra o peso ~4–5m","Triplica ~12m","Cresce ~25 cm no 1º ano"]},
+   {cor:"lilas",  t:"Interpretação",filhos:["Escore-Z: 0 = P50","±2 Z = P3 / P97","Acompanhar a tendência na curva"]},
+   {cor:"vermelho",t:"Baixa estatura",filhos:["Avaliar a velocidade de crescimento","Idade óssea decide","VC baixa = investigar"]}
+ ]},
 
  vespera:[
   '<h2>⏰ Revisão de véspera — Crescimento</h2>',
@@ -1452,51 +1529,54 @@ reg({ id:"puberdade", temaIc:"🌱", t:"Puberdade Normal & Patológica", sub:"Ta
  ],
 
  fluxoDx:[
-  '<h2>🔀 Fluxograma — Puberdade precoce</h2>',
-  '<div class="svg-box">'+
-  '<svg viewBox="0 0 760 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fluxograma diagnóstico de puberdade precoce">'+
-  '<style>.b{fill:#2a1d40;stroke:#b58bd6;stroke-width:2;rx:12}.t{fill:#f3e9ff;font:600 13px Nunito,sans-serif}.y{fill:#ffd6e8;font:700 12px Nunito,sans-serif}.ln{stroke:#7a6aa0;stroke-width:2;fill:none;marker-end:url(#ar)}</style>'+
-  '<defs><marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 z" fill="#7a6aa0"/></marker></defs>'+
-  '<rect class="b" x="250" y="14" width="260" height="46" rx="12"/><text x="380" y="34" text-anchor="middle" class="t">Caracteres 2ários antes de</text><text x="380" y="52" text-anchor="middle" class="t">8a (♀) / 9a (♂)</text>'+
-  '<path class="ln" d="M380,60 L380,92"/>'+
-  '<rect class="b" x="250" y="92" width="260" height="40" rx="12"/><text x="380" y="117" text-anchor="middle" class="t">Dosar LH (basal / pós-GnRH)</text>'+
-  '<path class="ln" d="M380,132 L200,176"/><path class="ln" d="M380,132 L560,176"/>'+
-  '<rect class="b" x="70" y="176" width="260" height="40" rx="12"/><text x="200" y="201" text-anchor="middle" class="y">LH elevado → CENTRAL</text>'+
-  '<rect class="b" x="430" y="176" width="260" height="40" rx="12"/><text x="560" y="201" text-anchor="middle" class="y">LH suprimido → PERIFÉRICA</text>'+
-  '<path class="ln" d="M200,216 L200,260"/><path class="ln" d="M560,216 L560,260"/>'+
-  '<rect class="b" x="60" y="260" width="280" height="58" rx="12"/><text x="200" y="284" text-anchor="middle" class="t">RM de crânio (sempre ♂;</text><text x="200" y="302" text-anchor="middle" class="t">♀ se &lt;6a/sinais SNC) + idade óssea</text>'+
-  '<rect class="b" x="420" y="260" width="280" height="58" rx="12"/><text x="560" y="284" text-anchor="middle" class="t">Esteroides/USG gônada, 17-OHP,</text><text x="560" y="302" text-anchor="middle" class="t">TSH, McCune-Albright?</text>'+
-  '<path class="ln" d="M200,318 L200,360"/><path class="ln" d="M560,318 L560,360"/>'+
-  '<rect class="b" x="70" y="360" width="260" height="40" rx="12"/><text x="200" y="385" text-anchor="middle" class="y">Tratar: análogo de GnRH</text>'+
-  '<rect class="b" x="430" y="360" width="260" height="40" rx="12"/><text x="560" y="385" text-anchor="middle" class="y">Tratar a causa de base</text>'+
-  '</svg></div>',
-  '<div class="callout tip"><span class="ci">✅</span><div>Antes de tudo, separe a <b>puberdade precoce verdadeira</b> (com estirão + avanço de idade óssea + progressão) das <b>variantes benignas isoladas</b> (telarca/pubarca isolada, sem progressão).</div></div>'
- ].join(''),
+  {t:"start", x:"Caracteres sexuais 2ários antes de 8a (♀) ou 9a (♂)"},
+  {t:"step", x:"Confirmar puberdade precoce verdadeira", info:"Verdadeira = estirão + avanço de idade óssea + progressão. Separar das variantes benignas isoladas (telarca/pubarca isolada, sem progressão)."},
+  {t:"step", x:"Dosar LH (basal e/ou pós-estímulo com GnRH)"},
+  {t:"decision", x:"Como está o LH?", branches:[
+    {label:"LH elevado → CENTRAL", cor:"rosa", flow:[
+      {t:"step", x:"RM de crânio (sempre no ♂; na ♀ se <6a ou sinais de SNC) + idade óssea"},
+      {t:"end", x:"Tratar: análogo de GnRH (ex.: leuprolida)"}
+    ]},
+    {label:"LH suprimido → PERIFÉRICA", cor:"azul", flow:[
+      {t:"step", x:"Esteroides sexuais, USG de gônada, 17-OHP, TSH; pensar em McCune-Albright"},
+      {t:"end", x:"Tratar a causa de base"}
+    ]}
+  ]}
+ ],
 
  fluxoConduta:[
-  '<h2>🧭 Fluxograma de conduta</h2>',
-  '<table><tr><th>Cenário</th><th>Conduta</th></tr>',
-  '<tr><td>Telarca/pubarca <b>isolada</b>, sem progressão, IO normal</td><td><b>Observar</b> e reavaliar em 3–6 meses. Sem tratamento.</td></tr>',
-  '<tr><td>Precoce <b>central</b> confirmada</td><td><b>Análogo de GnRH</b> de depósito; tratar lesão SNC se houver. Monitorar VC e IO.</td></tr>',
-  '<tr><td>Precoce <b>periférica</b></td><td>Tratar a causa: ressecar tumor/cisto, corticoide na HAC, levotiroxina no hipotireoidismo, suspender esteroide exógeno.</td></tr>',
-  '<tr><td>Atraso <b>constitucional</b> (♂, IO atrasada, história familiar)</td><td><b>Observação</b>; curso curto de testosterona em casos selecionados.</td></tr>',
-  '<tr><td>Hipogonadismo <b>hipergonadotrófico</b> (Turner/Klinefelter)</td><td>Confirmar <b>cariótipo</b>; indução puberal hormonal + manejo multidisciplinar (GH na Turner).</td></tr>',
-  '<tr><td>Hipogonadismo <b>hipogonadotrófico</b> permanente (ex.: Kallmann)</td><td>Reposição hormonal sexual; investigar causa central.</td></tr></table>'
- ].join(''),
+  {t:"start", x:"Definido o diagnóstico"},
+  {t:"decision", x:"Qual o cenário?", branches:[
+    {label:"Telarca/pubarca isolada, sem progressão", cor:"verde", flow:[
+      {t:"end", x:"Observar e reavaliar em 3–6 meses (sem tratamento)"}
+    ]},
+    {label:"Precoce CENTRAL confirmada", cor:"rosa", flow:[
+      {t:"step", x:"Tratar lesão de SNC se houver; monitorar VC e idade óssea"},
+      {t:"end", x:"Análogo de GnRH de depósito"}
+    ]},
+    {label:"Precoce PERIFÉRICA", cor:"azul", flow:[
+      {t:"end", x:"Tratar causa: ressecar tumor/cisto, corticoide na HAC, levotiroxina no hipotireoidismo, suspender esteroide exógeno"}
+    ]},
+    {label:"Atraso CONSTITUCIONAL (♂, IO atrasada, HF)", cor:"dourado", flow:[
+      {t:"end", x:"Observação; curso curto de testosterona em casos selecionados"}
+    ]},
+    {label:"Hipogonadismo HIPERgonadotrófico (Turner/Klinefelter)", cor:"lilas", flow:[
+      {t:"step", x:"Confirmar cariótipo"},
+      {t:"end", x:"Indução puberal hormonal + manejo multidisciplinar (GH na Turner)"}
+    ]},
+    {label:"Hipogonadismo HIPOgonadotrófico (ex.: Kallmann)", cor:"vermelho", flow:[
+      {t:"end", x:"Reposição hormonal sexual; investigar causa central"}
+    ]}
+  ]}
+ ],
 
- mapa:[
-  '<h2>🧠 Mapa mental — Puberdade</h2>',
-  '<div class="svg-box">'+
-  '<svg viewBox="0 0 760 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa mental de puberdade">'+
-  '<style>.c{fill:#ff6fa5}.c2{fill:#4aa6e8}.c3{fill:#b58bd6}.c4{fill:#f2b84b}.wt{fill:#1b1230;font:700 13px Nunito,sans-serif}.wl{fill:#eee;font:12px Nunito,sans-serif}.ed{stroke:#7a6aa0;stroke-width:2}</style>'+
-  '<line class="ed" x1="380" y1="180" x2="180" y2="70"/><line class="ed" x1="380" y1="180" x2="580" y2="70"/><line class="ed" x1="380" y1="180" x2="180" y2="290"/><line class="ed" x1="380" y1="180" x2="580" y2="290"/>'+
-  '<circle cx="380" cy="180" r="56" class="c3"/><text x="380" y="178" text-anchor="middle" class="wt">PUBERDADE</text><text x="380" y="196" text-anchor="middle" class="wt">eixo H-H-G</text>'+
-  '<circle cx="180" cy="70" r="48" class="c"/><text x="180" y="66" text-anchor="middle" class="wt">SEQUÊNCIA</text><text x="180" y="84" text-anchor="middle" class="wl">♀telarca ♂testículo</text>'+
-  '<circle cx="580" cy="70" r="48" class="c2"/><text x="580" y="66" text-anchor="middle" class="wt">TANNER</text><text x="580" y="84" text-anchor="middle" class="wl">1→5 mama/genital</text>'+
-  '<circle cx="180" cy="290" r="50" class="c4"/><text x="180" y="286" text-anchor="middle" class="wt">PRECOCE</text><text x="180" y="304" text-anchor="middle" class="wl">central×periférica</text>'+
-  '<circle cx="580" cy="290" r="50" class="c2"/><text x="580" y="286" text-anchor="middle" class="wt">ATRASADA</text><text x="580" y="304" text-anchor="middle" class="wl">hipo×hiper-gonado</text>'+
-  '</svg></div>'
- ].join(''),
+ mapa:{ central:"PUBERDADE", legenda:"eixo hipotálamo-hipófise-gônada", ramos:[
+   {cor:"rosa",   t:"Sequência",   filhos:["♀ telarca (1º sinal)","♂ testículo ≥4 mL (1º sinal)","Menarca em Tanner M4"]},
+   {cor:"azul",   t:"Tanner",      filhos:["M1→M5 (mama)","G1→G5 (genital)","P1→P5 (pelos)"]},
+   {cor:"dourado",t:"Precoce",     filhos:["<8a (♀) / <9a (♂)","Central: LH alto → GnRH análogo","Periférica: LH baixo → tratar causa"]},
+   {cor:"verde",  t:"Atrasada",    filhos:["Sem telarca 13a / sem ↑testículo 14a","Gonadotrofina ALTA = gônada (Turner)","Gonadotrofina BAIXA = central (constitucional)"]},
+   {cor:"vermelho",t:"⚠️ Pegadinha",filhos:["♂ central → RM de crânio (orgânica!)","Idade óssea avançada = precoce verdadeira","Adeno ≠ gonadarca"]}
+ ]},
 
  vespera:[
   '<h2>⏰ Revisão de véspera — Puberdade</h2>',
@@ -1766,23 +1846,109 @@ function renderMateria(m){
    '<div class="mat-top"><button class="btn btn-ghost btn-sm" id="backMod">← Módulos</button>'+
    '<h1 class="display mat-title">'+mat.temaIc+' '+esc(mat.t)+'</h1><p class="muted">'+esc(mat.sub||"")+'</p></div>'+
    '<div class="mtabs">'+tabsHtml+'</div>'+
+   '<div class="fc-quick glass" id="fcQuick">'+
+     '<span class="fcq-ic" title="Criar flashcard rápido">🎴</span>'+
+     '<select id="fcqType" class="fcq-type" title="Tipo"><option value="qa">P&amp;R</option><option value="vf">V/F</option><option value="cloze">Cloze</option></select>'+
+     '<input id="fcqFront" class="fcq-in" placeholder="Frente — pergunta/conceito  (Tab → verso)">'+
+     '<input id="fcqBack" class="fcq-in" placeholder="Verso — resposta  (Enter salva)">'+
+     '<button class="btn btn-primary btn-sm fcq-add" id="fcqAdd" title="Criar (+3 XP)">➕ Criar</button>'+
+     '<button class="btn btn-ghost btn-sm" id="fcqMore" title="Editor completo: imagens, formatação, oclusão">⋯</button>'+
+   '</div>'+
    '<div class="mcontent content" id="mContent"></div>';
   $("#backMod").onclick=function(){nav("modules");};
   $all(".mtab").forEach(function(b){ b.onclick=function(){ CURRENT.tab=b.getAttribute("data-k"); $all(".mtab").forEach(function(x){x.classList.remove("active");}); b.classList.add("active"); renderTab(mat); var sc=$("#mContent"); if(sc)sc.scrollIntoView({behavior:"smooth",block:"nearest"}); }; });
+  wireQuickFc(mat);
   renderTab(mat);
+}
+/* ---- Captura rápida de flashcards (fixa em toda matéria) ---- */
+function wireQuickFc(mat){
+  var ty=$("#fcqType"), fr=$("#fcqFront"), bk=$("#fcqBack"), add=$("#fcqAdd"), more=$("#fcqMore");
+  if(!ty)return;
+  function ph(){ if(ty.value==="cloze"){ fr.placeholder="Texto com {{c1::lacuna}}  (Enter salva)"; bk.placeholder="Explicação (opcional)"; } else if(ty.value==="vf"){ fr.placeholder="Afirmação  (Tab → resposta)"; bk.placeholder="Verdadeiro/Falso + porquê  (Enter salva)"; } else { fr.placeholder="Frente — pergunta/conceito  (Tab → verso)"; bk.placeholder="Verso — resposta  (Enter salva)"; } }
+  ty.onchange=ph; ph();
+  function salvar(){
+    var f=fr.value.trim(), b=bk.value.trim();
+    if(!f){ fr.focus(); toast("Escreva ao menos a frente.","err"); return; }
+    var card={id:uid(),tipo:ty.value,tag:mat.t,mat:mat.id,front:esc(f),back:esc(b)};
+    STATE.flashcards.push(card); award("criarFc");
+    toast("🎴 Flashcard criado!","win");
+    fr.value=""; bk.value=""; fr.focus();
+    if(CURRENT.tab==="flashcards") renderTab(mat);
+  }
+  fr.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); if(ty.value==="cloze")salvar(); else bk.focus(); } });
+  bk.addEventListener("keydown",function(e){ if(e.key==="Enter"){ e.preventDefault(); salvar(); } });
+  add.onclick=salvar;
+  more.onclick=function(){ fcEditor(null,{mat:mat.id,tag:mat.t}); };
 }
 function renderTab(mat){
   var c=$("#mContent"); if(!c)return; var k=CURRENT.tab;
   if(k==="questoes"){ c.innerHTML='<h2>❓ Questões comentadas</h2>'; var box=el("div"); c.appendChild(box); renderQuestions(box,(mat.questoes||[]).map(function(q){return {mat:mat,q:q};})); awardOnceView(mat.id,"q"); return; }
-  if(k==="flashcards"){ c.innerHTML='<h2>🎴 Flashcards</h2>'; var b2=el("div"); c.appendChild(b2); renderFlashStudy(b2,(mat.flashcards||[]).map(function(x){var d=Object.assign({},x);d._src=mat.t;return d;})); return; }
+  if(k==="flashcards"){
+    c.innerHTML='<h2>🎴 Flashcards</h2><p class="muted">Cards nativos + os que você criar aqui (a barra de criação fica sempre acima). Clique para virar e avalie com a repetição espaçada.</p>';
+    var b2=el("div"); c.appendChild(b2);
+    var nat=(mat.flashcards||[]).map(function(x){var d=Object.assign({},x);d._src=mat.t;return d;});
+    var meus=STATE.flashcards.filter(function(x){return x.mat===mat.id;}).map(function(x){var d=Object.assign({},x);d._src="Meu card";return d;});
+    renderFlashStudy(b2,nat.concat(meus)); return;
+  }
   if(k==="casos"){ c.innerHTML=renderCasos(mat); awardOnceView(mat.id,"caso"); return; }
   if(k==="dominio"){ renderDominio(c,mat); return; }
   if(k==="anotacoes"){ renderNotes(c,mat); return; }
+  if(k==="fluxoDx"||k==="fluxoConduta"){
+    c.innerHTML='<h2>'+(k==="fluxoDx"?"🔀 Fluxograma diagnóstico":"🧭 Fluxograma de conduta")+'</h2><p class="muted">Toque em um passo com <b>＋</b> para ver detalhes.</p>';
+    var fbox=el("div","fx-flow"); c.appendChild(fbox); renderFluxo(fbox,mat[k]||[]); awardOnceView(mat.id,"resumo"); return;
+  }
+  if(k==="mapa"){
+    c.innerHTML='<h2>🧠 Mapa mental</h2><p class="muted">Toque em um ramo para recolher/expandir.</p>';
+    var mbox=el("div"); c.appendChild(mbox); renderMapa(mbox,mat.mapa); awardOnceView(mat.id,"resumo"); return;
+  }
   // abas de conteúdo HTML puro
   var html=mat[k];
   c.innerHTML = html || '<p class="muted">Conteúdo em preparação.</p>';
   if(k==="teoria"){ awardOnceView(mat.id,"aula"); }
-  if(k==="vespera"||k==="dicas"||k==="scores"||k==="mapa"){ awardOnceView(mat.id,"resumo"); }
+  if(k==="vespera"||k==="dicas"||k==="scores"){ awardOnceView(mat.id,"resumo"); }
+}
+
+/* ---- FLUXOGRAMA (HTML/CSS interativo, sem SVG) ---- */
+function renderFluxo(box,nodes){
+  if(!nodes||!nodes.length){ box.innerHTML='<p class="muted">Fluxograma em preparação.</p>'; return; }
+  box.innerHTML=fluxoHTML(nodes);
+  $all(".fx-node.has-info",box).forEach(function(n){
+    n.onclick=function(){ var inf=n.nextElementSibling; if(inf&&inf.classList.contains("fx-info")) inf.classList.toggle("open"); n.classList.toggle("act"); };
+  });
+}
+function fluxoHTML(nodes){
+  return nodes.map(function(n,i){
+    var conn=i>0?'<div class="fx-arrow">▾</div>':'';
+    if(n.t==="decision"){
+      var head='<div class="fx-node decision">◆ '+n.x+'</div>';
+      var cols='<div class="fx-branches">'+ (n.branches||[]).map(function(b){
+        return '<div class="fx-branch '+(b.cor||'azul')+'"><div class="fx-blabel">'+b.label+'</div><div class="fx-bflow">'+fluxoHTML(b.flow||[])+'</div></div>';
+      }).join('') +'</div>';
+      return conn+'<div class="fx-step">'+head+cols+'</div>';
+    }
+    var info=n.info?'<div class="fx-info">'+n.info+'</div>':'';
+    var hi=n.info?' has-info':'';
+    var badge=n.info?'<span class="fx-plus">＋</span>':'';
+    return conn+'<div class="fx-step"><div class="fx-node '+(n.t||'step')+hi+'">'+n.x+badge+'</div>'+info+'</div>';
+  }).join('');
+}
+
+/* ---- MAPA MENTAL (HTML/CSS interativo, sem SVG) ---- */
+function renderMapa(box,obj){
+  if(!obj||!obj.ramos){ box.innerHTML='<p class="muted">Mapa mental em preparação.</p>'; return; }
+  var ramos=obj.ramos, half=Math.ceil(ramos.length/2);
+  function ramoHTML(r){
+    var leaves='<ul class="mm-leaves">'+(r.filhos||[]).map(function(f){return '<li>'+f+'</li>';}).join('')+'</ul>';
+    return '<div class="mm-ramo '+(r.cor||'azul')+'"><button class="mm-rhead">'+r.t+'</button>'+leaves+'</div>';
+  }
+  var left=ramos.slice(0,half).map(ramoHTML).join('');
+  var right=ramos.slice(half).map(ramoHTML).join('');
+  box.innerHTML='<div class="mm">'+
+    '<div class="mm-side mm-left">'+left+'</div>'+
+    '<div class="mm-center"><div class="mm-core">'+obj.central+(obj.legenda?'<span>'+obj.legenda+'</span>':'')+'</div></div>'+
+    '<div class="mm-side mm-right">'+right+'</div>'+
+  '</div>';
+  $all(".mm-rhead",box).forEach(function(h){ h.onclick=function(){ h.parentNode.classList.toggle("collapsed"); }; });
 }
 /* premiar 1ª visita de certas abas por matéria (sem inflar) */
 function awardOnceView(matId,key){
@@ -2002,8 +2168,9 @@ function renderFlashcards(m){
 function fcTypeLabel(t){ return t==="cloze"?"🧩 Cloze":t==="occlusion"?"🖼️ Oclusão":t==="vf"?"⚖️ V/F":"💬 P&R"; }
 function strip(h){ var d=el("div",null,h); var t=d.textContent||""; return esc(t.slice(0,90)); }
 
-function fcEditor(card){
-  var isNew=!card; card=card||{id:uid(),tipo:"qa",tag:"",front:"",back:"",img:"",imgF:"",imgB:""};
+function fcEditor(card,preset){
+  var isNew=!card; preset=preset||{};
+  card=card||{id:uid(),tipo:"qa",tag:preset.tag||"",mat:preset.mat||"",front:"",back:"",img:"",imgF:"",imgB:""};
   var typeOpts=[["qa","💬 Pergunta e Resposta"],["cloze","🧩 Cloze (lacuna)"],["vf","⚖️ Verdadeiro/Falso"],["occlusion","🖼️ Oclusão de imagem"]]
     .map(function(o){return '<option value="'+o[0]+'"'+(card.tipo===o[0]?" selected":"")+'>'+o[1]+'</option>';}).join('');
   var html='<h2 class="display">'+(isNew?"Novo":"Editar")+' flashcard</h2>'+
