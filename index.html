@@ -926,13 +926,13 @@ var ALERTA=[
 /* ---- CONQUISTAS ---- */
 var ACHIEVEMENTS=[
  {id:"primeiro_passo",ic:"🦶",t:"Primeiro Passo",d:"Complete sua primeira atividade",cond:function(){return STATE.xp>0;}},
- {id:"pediatra_mirim",ic:"🩺",t:"Pediatra Mirim",d:"Alcance 500 XP (criança aos 9 meses)",cond:function(){return STATE.xp>=500;}},
- {id:"calendario",ic:"💉",t:"Calendário Vacinal Completo",d:"Desbloqueie todas as vacinas do 1º ano",cond:function(){return xpToAgeMonths(STATE.xp)>=12;}},
- {id:"dev_adequado",ic:"🧠",t:"Desenvolvimento Adequado",d:"Atinja todos os marcos até 12 meses",cond:function(){return xpToAgeMonths(STATE.xp)>=12;}},
+ {id:"pediatra_mirim",ic:"🩺",t:"Pediatra Mirim",d:"Conclua seu 1º módulo",cond:function(){return matConcluidas()>=1;}},
  {id:"streak7",ic:"🔥",t:"Sequência de Ferro",d:"Estude 7 dias seguidos",cond:function(){return STATE.streak>=7;}},
- {id:"mestre_puericultura",ic:"📒",t:"Mestre da Puericultura",d:"Conclua o Tema 1 e 2",cond:function(){return temaConcluido(0)&&temaConcluido(1);}},
- {id:"futuro_pediatra",ic:"👨‍⚕️",t:"Futuro Pediatra",d:"Alcance 3000 XP (criança na 1ª infância)",cond:function(){return STATE.xp>=3000;}},
- {id:"pediatra_expert",ic:"🏅",t:"Pediatra Expert",d:"Alcance 6000 XP (criança escolar)",cond:function(){return STATE.xp>=6000;}}
+ {id:"primeiro_ano",ic:"💉",t:"Primeiro Ano Completo",d:"Leve a criança aos 12 meses (vacinas e marcos do 1º ano)",cond:function(){return childAgeMonths()>=12;}},
+ {id:"maratona",ic:"📚",t:"Maratona de Estudos",d:"Conclua 10 módulos",cond:function(){return matConcluidas()>=10;}},
+ {id:"meio_caminho",ic:"🧭",t:"Meio Caminho",d:"Conclua metade dos temas da plataforma",cond:function(){return temasConcluidosCount()>=Math.ceil(TEMAS.length/2);}},
+ {id:"futuro_pediatra",ic:"👨‍⚕️",t:"Futuro Pediatra",d:"Conclua todos os temas da plataforma",cond:function(){return temasConcluidosCount()>=TEMAS.length;}},
+ {id:"pediatra_expert",ic:"🏅",t:"Pediatra Expert",d:"Conclua TODOS os módulos — criança formada (adolescente)",cond:function(){return tudoConcluido();}}
 ];
 
 /* =====================================================================
@@ -943,87 +943,102 @@ var MAT={};
 function reg(o){ MAT[o.id]=o; }
 
 var TEMAS=[
- {ic:"🌱",t:"Crescimento e Desenvolvimento",mats:[
+ {id:"puericultura",ic:"🤱",t:"Puericultura & Aleitamento",mats:[
+   {id:"aleitamento",ic:"🤱",t:"Aleitamento Materno",sub:"Tipos, técnica, problemas, contraindicações",ready:true},
+   {id:"consultas",ic:"🗓️",t:"Consultas & Triagens",sub:"Calendário de puericultura",ready:false},
+   {id:"alimentar",ic:"🥄",t:"Introdução Alimentar",sub:"6 meses, esquema, erros",ready:false},
+   {id:"suplem",ic:"💊",t:"Suplementação & Prevenção",sub:"Ferro, vitamina D/K, orientações",ready:false}
+ ]},
+ {id:"imunizacao",ic:"💉",t:"Imunização (PNI)",mats:[
+   {id:"pni",ic:"📅",t:"Calendário Vacinal do PNI",sub:"Tipos, esquema, intervalos e contraindicações",ready:true},
+   {id:"vac-esp",ic:"⭐",t:"Vacinas Especiais & Situações",sub:"CRIE, prematuro, imunossuprimido",ready:false},
+   {id:"eventos",ic:"⚠️",t:"Eventos Adversos & Atraso",sub:"ESAVI e atualização de esquema",ready:false}
+ ]},
+ {id:"cresc_dev",ic:"🌱",t:"Crescimento e Desenvolvimento",mats:[
    {id:"dnpm",ic:"🧠",t:"Desenvolvimento Neuropsicomotor",sub:"Marcos motor/linguagem/social, alerta",ready:true},
    {id:"cresc",ic:"📏",t:"Avaliação do Crescimento & Curvas OMS",sub:"Peso, estatura, PC, percentis/escore-Z",ready:true},
    {id:"puberdade",ic:"🌷",t:"Puberdade",sub:"Normal, precoce, atrasada · central x periférica",ready:true}
  ]},
- {ic:"🍼",t:"Puericultura",mats:[
-   {id:"consultas",ic:"🗓️",t:"Consultas & Triagens",sub:"Calendário de puericultura",ready:false},
-   {id:"aleitamento",ic:"🤱",t:"Aleitamento Materno",sub:"Tipos, técnica, contraindicações",ready:false},
-   {id:"alimentar",ic:"🥄",t:"Introdução Alimentar",sub:"6 meses, esquema, erros",ready:false},
-   {id:"suplem",ic:"💊",t:"Suplementação & Prevenção",sub:"Ferro, vitamina D/K, orientações",ready:false}
+ {id:"diarreia",ic:"💧",t:"Diarreia e Desidratação",mats:[
+   {id:"desidratacao",ic:"🚰",t:"Avaliação & Planos A/B/C",sub:"Estado de hidratação, TRO e reidratação",ready:true},
+   {id:"tro",ic:"🧮",t:"TRO & Cálculos",sub:"Manutenção (Holliday-Segar), déficit e expansão",ready:true}
  ]},
- {ic:"💉",t:"Imunização",mats:[
-   {id:"pni",ic:"📅",t:"Calendário Vacinal do PNI",sub:"Esquema básico e reforços",ready:false},
-   {id:"vac-esp",ic:"⭐",t:"Vacinas Especiais & Situações",sub:"CRIE, prematuro, imunossuprimido",ready:false},
-   {id:"eventos",ic:"⚠️",t:"Eventos Adversos & Atraso",sub:"ESAVI e atualização de esquema",ready:false}
- ]},
- {ic:"🧫",t:"Infecções Congênitas",mats:[
-   {id:"sifilis",ic:"🦠",t:"Sífilis Congênita",sub:"Critérios, VDRL, tratamento",ready:false},
-   {id:"storch",ic:"🧬",t:"Toxo · Rubéola · CMV · Herpes",sub:"STORCH detalhado",ready:false},
-   {id:"zika-hiv",ic:"🍼",t:"Zika & HIV",sub:"Microcefalia e transmissão vertical",ready:false}
- ]},
- {ic:"🫁",t:"Infecções Respiratórias",mats:[
+ {id:"resp",ic:"🫁",t:"Infecções Respiratórias",mats:[
    {id:"vas",ic:"👃",t:"Vias Aéreas Superiores",sub:"IVAS, OMA, faringite, sinusite",ready:false},
    {id:"crupe",ic:"🗣️",t:"Crupe & Epiglotite",sub:"VA intermediária",ready:false},
    {id:"pneumonia",ic:"🫁",t:"Pneumonia & Bronquiolite",sub:"VA inferior",ready:false}
  ]},
- {ic:"🌬️",t:"Asma",mats:[
-   {id:"asma",ic:"💨",t:"Asma na Infância",sub:"Resgate, manutenção, por idade",ready:false}
- ]},
- {ic:"👶",t:"Neonatologia",mats:[
+ {id:"neo",ic:"👶",t:"Neonatologia",mats:[
+   {id:"distresp",ic:"🫁",t:"Distúrbios Respiratórios do RN",sub:"Membrana hialina (SDR), TTRN, SAM e outros",ready:true},
    {id:"reanimacao",ic:"🫀",t:"Reanimação Neonatal",sub:"Fluxograma SBP/AAP",ready:false},
    {id:"ictericia",ic:"💛",t:"Icterícia Neonatal",sub:"Fisiológica x patológica, fototerapia",ready:false},
    {id:"sepse-nn",ic:"🌡️",t:"Sepse & Prematuridade",sub:"Precoce x tardia",ready:false},
    {id:"triagem",ic:"🩸",t:"Triagens & Hipoglicemia",sub:"Testes do pezinho/orelhinha/coraçãozinho",ready:false}
  ]},
- {ic:"💧",t:"Diarreia e Desidratação",mats:[
-   {id:"desidratacao",ic:"🚰",t:"Avaliação & Planos A/B/C",sub:"Classificação e conduta",ready:false},
-   {id:"tro",ic:"🧮",t:"TRO & Cálculos",sub:"Reidratação passo a passo",ready:false}
+ {id:"exantematicas",ic:"🔴",t:"Doenças Exantemáticas",mats:[
+   {id:"exantematicas",ic:"🌡️",t:"Exantemáticas Clássicas",sub:"Sarampo, rubéola, eritema, súbito, varicela, escarlatina",ready:false}
  ]},
- {ic:"🚨",t:"Emergências Pediátricas",mats:[
+ {id:"congenitas",ic:"🧫",t:"Infecções Congênitas",mats:[
+   {id:"sifilis",ic:"🦠",t:"Sífilis Congênita",sub:"Quadro, VDRL, critérios e tratamento",ready:true},
+   {id:"storch",ic:"🧬",t:"Toxo · Rubéola · CMV · Herpes",sub:"STORCH detalhado",ready:false},
+   {id:"zika-hiv",ic:"🍼",t:"Zika & HIV",sub:"Microcefalia e transmissão vertical",ready:false}
+ ]},
+ {id:"asma",ic:"🌬️",t:"Asma",mats:[
+   {id:"asma",ic:"💨",t:"Asma na Infância",sub:"Diagnóstico, GINA, controle e crise asmática",ready:true}
+ ]},
+ {id:"emergencias",ic:"🚨",t:"Emergências Pediátricas",mats:[
    {id:"pcr",ic:"🫁",t:"PCR & Choque",sub:"PALS pediátrico",ready:false},
    {id:"engasgo",ic:"🆘",t:"Engasgo & Trauma",sub:"OVACE e atendimento",ready:false},
    {id:"convulsao",ic:"⚡",t:"Convulsão & Estado de Mal",sub:"Manejo escalonado",ready:false}
  ]},
- {ic:"🥗",t:"Nutrição",mats:[
+ {id:"cardio",ic:"❤️",t:"Cardiologia",mats:[
+   {id:"sopros",ic:"🔊",t:"Sopros",sub:"Inocente x patológico",ready:false},
+   {id:"cardiopatias",ic:"🫀",t:"Cardiopatias Congênitas",sub:"Fallot, CIA, CIV, PCA",ready:false}
+ ]},
+ {id:"nutricao",ic:"🥗",t:"Nutrição",mats:[
    {id:"desnutricao",ic:"📉",t:"Desnutrição",sub:"Marasmo, kwashiorkor, manejo",ready:false},
    {id:"obesidade",ic:"⚖️",t:"Obesidade",sub:"Diagnóstico e abordagem",ready:false},
    {id:"micronutri",ic:"🧪",t:"Micronutrientes",sub:"Ferro, vit. A/D, zinco",ready:false}
  ]},
- {ic:"❤️",t:"Cardiologia",mats:[
-   {id:"sopros",ic:"🔊",t:"Sopros",sub:"Inocente x patológico",ready:false},
-   {id:"cardiopatias",ic:"🫀",t:"Cardiopatias Congênitas",sub:"Fallot, CIA, CIV, PCA",ready:false}
+ {id:"gastro",ic:"🍽️",t:"Gastroenterologia",mats:[
+   {id:"gastro-ped",ic:"🤢",t:"DRGE · Constipação · Celíaca",sub:"+ Dor abdominal recorrente",ready:false}
  ]},
- {ic:"🩸",t:"Hematologia",mats:[
+ {id:"nefro",ic:"🫘",t:"Nefrologia",mats:[
+   {id:"nefro-ped",ic:"💧",t:"Síndromes Nefrótica/Nefrítica",sub:"+ GNPE",ready:false}
+ ]},
+ {id:"hemato",ic:"🩸",t:"Hematologia",mats:[
    {id:"anemias-ped",ic:"🩸",t:"Anemias",sub:"Ferropriva, falciforme, talassemia",ready:false},
    {id:"pti",ic:"🟣",t:"PTI",sub:"Púrpura trombocitopênica imune",ready:false}
  ]},
- {ic:"🔴",t:"Doenças Exantemáticas",mats:[
-   {id:"exantematicas",ic:"🌡️",t:"Exantemáticas Clássicas",sub:"Sarampo, rubéola, eritema, súbito, varicela, escarlatina",ready:false}
- ]},
- {ic:"🍽️",t:"Gastroenterologia",mats:[
-   {id:"gastro-ped",ic:"🤢",t:"DRGE · Constipação · Celíaca",sub:"+ Dor abdominal recorrente",ready:false}
- ]},
- {ic:"🧴",t:"Dermatologia",mats:[
+ {id:"derma",ic:"🧴",t:"Dermatologia",mats:[
    {id:"derma-ped",ic:"🧴",t:"Dermatite, Impetigo, Escabiose",sub:"+ Molusco contagioso",ready:false}
  ]},
- {ic:"🫘",t:"Nefrologia",mats:[
-   {id:"nefro-ped",ic:"💧",t:"Síndromes Nefrótica/Nefrítica",sub:"+ GNPE",ready:false}
- ]},
- {ic:"🧬",t:"Genética",mats:[
+ {id:"genetica",ic:"🧬",t:"Genética",mats:[
    {id:"genetica",ic:"🧬",t:"Down · Turner · Klinefelter",sub:"Principais cromossomopatias",ready:false}
  ]},
- {ic:"🎗️",t:"Oncologia",mats:[
+ {id:"onco",ic:"🎗️",t:"Oncologia",mats:[
    {id:"onco-ped",ic:"🎗️",t:"Leucemias & Tumores Sólidos",sub:"+ Tumores abdominais",ready:false}
  ]}
 ];
+/* Um tema só conta como CONCLUÍDO quando está totalmente construído (todas
+   as matérias prontas) E todas foram concluídas pelo usuário. Temas ainda
+   não construídos nunca contam como concluídos. */
 function temaConcluido(idx){
-  var t=TEMAS[idx]; if(!t)return false;
-  for(var i=0;i<t.mats.length;i++){ var m=t.mats[i]; if(m.ready){ var p=STATE.progress[m.id]; if(!p||!p.done)return false; } }
+  var t=TEMAS[idx]; if(!t||!t.mats.length)return false;
+  for(var i=0;i<t.mats.length;i++){ var m=t.mats[i]; if(!m.ready)return false; var p=STATE.progress[m.id]; if(!p||!p.done)return false; }
   return true;
 }
+function temaConcluidoById(id){ for(var i=0;i<TEMAS.length;i++){ if(TEMAS[i].id===id)return temaConcluido(i); } return false; }
+/* ---- Progresso global da plataforma (base da gamificação) ---- */
+function allMatTotal(){ var n=0; for(var i=0;i<TEMAS.length;i++)n+=TEMAS[i].mats.length; return n; }
+function matConcluidas(){ var n=0; for(var k in STATE.progress){ if(STATE.progress.hasOwnProperty(k)&&STATE.progress[k]&&STATE.progress[k].done)n++; } return n; }
+function temasConcluidosCount(){ var n=0; for(var i=0;i<TEMAS.length;i++){ if(temaConcluido(i))n++; } return n; }
+function tudoConcluido(){ var t=allMatTotal(); return t>0 && matConcluidas()>=t; }
+/* A criança só evolui até a ADOLESCÊNCIA (estágio final) quando TODOS os
+   módulos forem concluídos. Antes disso, o crescimento é limitado ao estágio
+   Escolar — a gamificação nunca se completa estudando poucos módulos. */
+var AGE_CAP_PRE=131;
+function childAgeMonths(){ var a=xpToAgeMonths(STATE.xp); return tudoConcluido()?a:Math.min(a,AGE_CAP_PRE); }
 
 /* ================= MATÉRIA 1.1 — DNPM ================= */
 reg({ id:"dnpm", temaIc:"🌱", t:"Desenvolvimento Neuropsicomotor", sub:"Marcos, domínios e sinais de alerta",
@@ -1608,6 +1623,1299 @@ reg({ id:"puberdade", temaIc:"🌱", t:"Puberdade Normal & Patológica", sub:"Ta
  ]
 });
 
+/* ================= MATÉRIA — ALEITAMENTO MATERNO (alto rendimento) ================= */
+reg({ id:"aleitamento", temaIc:"🤱", t:"Aleitamento Materno", sub:"Tipos, fisiologia, técnica, problemas e contraindicações",
+ teoria:[
+  '<h2>🤱 Aleitamento Materno — alimento, remédio e vínculo</h2>',
+  '<p>Pense no leite materno como três coisas ao mesmo tempo: o <b class="blue">alimento</b> perfeito (na medida e temperatura certas), um <b class="blue">remédio</b> (anticorpos e fatores de defesa que o bebê ainda não produz) e um <b class="blue">vínculo</b> afetivo. Por isso é a intervenção isolada que mais reduz mortalidade infantil no mundo.</p>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>Recomendação (OMS/MS/SBP):</b> aleitamento materno <b>exclusivo até os 6 meses</b> e <b>mantido até 2 anos ou mais</b>, com alimentação complementar a partir dos 6 meses.</div></div>',
+
+  '<h3>Os tipos de aleitamento (definições do MS — caem MUITO)</h3>',
+  '<table><tr><th>Tipo</th><th>O que a criança recebe</th></tr>',
+  '<tr><td><b>Exclusivo (AME)</b></td><td>Só leite materno (direto ou ordenhado), <b>nada mais</b> — exceto SRO, vitaminas, minerais ou medicamentos</td></tr>',
+  '<tr><td><b>Predominante</b></td><td>Leite materno + líquidos à base de <b>água</b> (água, chás, sucos)</td></tr>',
+  '<tr><td><b>Complementado</b></td><td>Leite materno + <b>alimentos sólidos/semissólidos</b> (correto a partir dos 6m)</td></tr>',
+  '<tr><td><b>Misto / parcial</b></td><td>Leite materno + <b>outro leite</b> (fórmula/leite de vaca)</td></tr></table>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Pegadinha clássica:</b> bebê que mama no peito e toma <b>chá/água</b> NÃO está em AME — está em aleitamento <b>predominante</b>. AME admite apenas SRO/vitaminas/minerais/medicamentos.</div></div>',
+
+  '<h3>Do colostro ao leite maduro</h3>',
+  '<ul><li><b>Colostro</b> (1ºs dias): pouco volume, <b>rico em proteínas, IgA secretora e vitamina A</b>; efeito <b>laxante</b> (ajuda a eliminar o mecônio).</li>',
+  '<li><b>Leite de transição</b> → <b>leite maduro</b> (a partir de ~2 semanas).</li>',
+  '<li><b>Leite anterior x posterior:</b> o do <b>fim da mamada (posterior)</b> é mais rico em <b>gordura</b> → dá saciedade e ganho de peso. Por isso: <b>esvaziar uma mama antes de oferecer a outra</b>.</li></ul>',
+
+  '<h3>Fisiologia — duas hormonas-chave</h3>',
+  '<table><tr><th>Hormônio</th><th>Função</th><th>Detalhe de prova</th></tr>',
+  '<tr><td><b>Prolactina</b></td><td><b>Produção</b> do leite</td><td>Liberada pela <b>sucção</b>; picos <b>noturnos</b> (mamadas da madrugada mantêm a produção)</td></tr>',
+  '<tr><td><b>Ocitocina</b></td><td><b>Ejeção</b> ("descida") do leite</td><td>Reflexo condicionado (choro do bebê); <b>inibida por dor/estresse</b>; também contrai o útero</td></tr></table>',
+
+  '<h3>Pega e posicionamento</h3>',
+  '<div class="svg-box"><svg viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Boa pega versus pega incorreta">'+
+   '<style>.lbl{font:700 14px Nunito,sans-serif}.ok{fill:#4cc38a}.bad{fill:#ef5a6f}.sk{fill:#ffd9c2}.mt{fill:#c97a9a}.tx{fill:#cfe6ff;font:11px Nunito,sans-serif}</style>'+
+   '<text x="180" y="26" text-anchor="middle" class="lbl ok">✓ Boa pega</text>'+
+   '<path d="M70,120 q40,-60 110,-50 q70,10 70,50 q0,40 -70,50 q-70,10 -110,-50 z" fill="#3a2740"/>'+
+   '<circle cx="120" cy="115" r="34" class="sk"/>'+
+   '<path d="M250,95 q-60,5 -90,20 q30,15 90,20 z" class="mt"/>'+
+   '<circle cx="232" cy="115" r="6" class="mt"/>'+
+   '<text x="180" y="190" text-anchor="middle" class="tx">Boca bem aberta · lábios evertidos</text>'+
+   '<text x="180" y="206" text-anchor="middle" class="tx">queixo toca a mama · mais aréola acima</text>'+
+   '<line x1="360" y1="40" x2="360" y2="220" stroke="#5b4a6b" stroke-width="1.5" stroke-dasharray="4 4"/>'+
+   '<text x="540" y="26" text-anchor="middle" class="lbl bad">✗ Pega incorreta</text>'+
+   '<path d="M430,120 q40,-60 110,-50 q70,10 70,50 q0,40 -70,50 q-70,10 -110,-50 z" fill="#3a2740"/>'+
+   '<circle cx="480" cy="115" r="34" class="sk"/>'+
+   '<ellipse cx="592" cy="115" rx="14" ry="9" class="mt"/>'+
+   '<text x="540" y="190" text-anchor="middle" class="tx">Só o mamilo · lábios para dentro</text>'+
+   '<text x="540" y="206" text-anchor="middle" class="tx">bochechas encovadas → dor e fissura</text>'+
+  '</svg><div class="cap">A pega correta abocanha a aréola, não só o mamilo — previne fissuras e garante boa transferência de leite.</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div><b>Sinais de boa pega:</b> boca bem aberta, <b>lábio inferior evertido</b>, queixo tocando a mama, <b>mais aréola visível acima</b> do que abaixo, bochechas arredondadas, sucção lenta e profunda com deglutição audível.</div></div>',
+
+  '<h3>Por que vale tanto a pena</h3>',
+  '<ul><li><b>Bebê:</b> menos diarreia, IVAS e otite, menos alergias, menor risco de obesidade e melhor desenvolvimento cognitivo.</li>',
+  '<li><b>Mãe:</b> involução uterina mais rápida, menor risco de câncer de mama e ovário, e <b>LAM</b> (método da amenorreia lactacional) como contracepção — válido apenas com AME + amenorreia + bebê &lt; 6 meses.</li></ul>'
+ ].join(''),
+
+ scores:[
+  '<h2>🎯 Critérios & listas de alto rendimento</h2>',
+  '<h3>Sinais de boa pega (verifique todos)</h3>',
+  '<div class="callout info"><span class="ci">💡</span><div>① Boca <b>bem aberta</b> · ② Lábio inferior <b>evertido</b> (virado para fora) · ③ <b>Queixo</b> toca a mama · ④ <b>Mais aréola</b> visível acima da boca · ⑤ Bochechas <b>arredondadas</b> · ⑥ Sucção <b>lenta e profunda</b> com deglutição audível.</div></div>',
+
+  '<h3>Contraindicações ao aleitamento materno</h3>',
+  '<table><tr><th>Definitivas</th><th>Temporárias / suspensão parcial</th></tr>',
+  '<tr><td><b>Maternas:</b> <b>HIV</b> e <b>HTLV 1/2</b>; uso de <b>quimioterápicos/antineoplásicos</b>, <b>radiofármacos</b> e algumas drogas de abuso</td><td>Lesão de <b>herpes na mama</b> (suspender só na mama afetada); <b>varicela</b> materna de 5 dias antes a 2 dias após o parto (isolar o RN); <b>TB bacilífera</b> não tratada (manter leite ordenhado, máscara, tratar)</td></tr>',
+  '<tr><td><b>Infantis:</b> <b>galactosemia</b> clássica</td><td><b>Fenilcetonúria</b>: aleitamento <b>controlado/parcial</b> com monitorização (não é proibição total)</td></tr></table>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>No Brasil, mãe HIV+ NÃO amamenta</b> (e não doa leite) — orienta-se fórmula e inibição da lactação. Esse é um ponto fixo de prova. A <b>maioria das medicações</b> é compatível com a amamentação; consultar fonte (ex.: bulário do MS) antes de suspender.</div></div>',
+
+  '<h3>Problemas comuns — como reconhecer</h3>',
+  '<table><tr><th>Quadro</th><th>Chave</th></tr>',
+  '<tr><td><b>Fissura/trauma mamilar</b></td><td>Dor + rachadura no mamilo por <b>pega incorreta</b> → corrigir a pega (não suspender)</td></tr>',
+  '<tr><td><b>Ingurgitamento</b></td><td>Mamas <b>tensas, quentes, dolorosas e brilhantes</b>, geralmente bilateral, <b>sem febre alta/eritema localizado</b></td></tr>',
+  '<tr><td><b>Mastite</b></td><td>Área <b>eritematosa, quente e dolorosa</b> (localizada) + <b>febre e mal-estar</b> (sintomas sistêmicos)</td></tr></table>'
+ ].join(''),
+
+ questoes:[
+  {id:"alm-q1",banca:"ENARE (estilo)",stem:"Lactente de 3 meses em uso de leite materno e <b>chá de erva-doce</b> à noite para cólicas, sem outros alimentos. Como se classifica o aleitamento?",
+   opts:["Exclusivo","Predominante","Complementado","Misto"],
+   correct:1, expl:"Leite materno + líquidos à base de <b>água</b> (chá) = aleitamento materno <b>predominante</b>. O exclusivo (AME) só admite leite materno + SRO/vitaminas/minerais/medicamentos."},
+  {id:"alm-q2",banca:"Revalida (estilo)",stem:"Recém-nascido de mãe com <b>sorologia positiva para HIV</b>. Quanto ao aleitamento, a conduta no Brasil é:",
+   opts:["Manter aleitamento exclusivo","Aleitamento misto com fórmula","Contraindicar a amamentação e orientar fórmula + inibir a lactação","Ordenhar e pasteurizar o leite em casa"],
+   correct:2, expl:"<b>HIV é contraindicação definitiva</b> ao aleitamento no Brasil (assim como o HTLV). Orienta-se <b>fórmula infantil</b> e <b>inibição da lactação</b>; a mãe também não deve doar leite."},
+  {id:"alm-q3",banca:"UFRJ (estilo)",stem:"Puérpera no 4º dia com mamilos <b>doloridos e fissurados</b>. Ao exame: bebê abocanha apenas o mamilo, lábios voltados para dentro, bochechas encovadas. Conduta inicial?",
+   opts:["Suspender a amamentação por 48h","Corrigir a pega e o posicionamento","Iniciar antibiótico","Indicar fórmula complementar"],
+   correct:1, expl:"Fissura quase sempre decorre de <b>pega incorreta</b>. A conduta é <b>corrigir pega/posicionamento</b> (boca bem aberta, abocanhar a aréola) — <b>não suspender</b> a amamentação nem partir para fórmula."},
+  {id:"alm-q4",banca:"SES-RJ (estilo)",stem:"Sobre o <b>colostro</b>, é correto afirmar que, comparado ao leite maduro, ele é mais rico em:",
+   opts:["Gordura e lactose","Proteínas, IgA secretora e vitamina A","Água livre","Caseína"],
+   correct:1, expl:"O <b>colostro</b> tem mais <b>proteínas, imunoglobulina A secretora e vitamina A</b>, além de efeito <b>laxante</b> (auxilia na eliminação do mecônio). O leite maduro é mais rico em gordura e lactose."},
+  {id:"alm-q5",banca:"UERJ (estilo)",stem:"Lactante refere que sente a 'descida do leite' ao ouvir o bebê chorar, mas que isso falha quando está muito ansiosa/estressada. Qual hormônio explica esse reflexo?",
+   opts:["Prolactina","Ocitocina","Estrogênio","Hormônio do crescimento"],
+   correct:1, expl:"A <b>ocitocina</b> promove a <b>ejeção</b> do leite (reflexo de descida), pode ser condicionada (choro do bebê) e é <b>inibida por dor e estresse</b>. A prolactina é responsável pela produção."}
+ ],
+
+ flashcards:[
+  {id:"alm-f1",tipo:"qa",tag:"Recomendação",front:"Até quando manter AME e até quando manter o aleitamento?",back:"<b>AME até 6 meses</b>; aleitamento materno mantido até <b>2 anos ou mais</b> (com alimentação complementar a partir dos 6m)."},
+  {id:"alm-f2",tipo:"cloze",tag:"Tipos",front:"Leite materno + chá/água = aleitamento {{c1::predominante}}; leite materno + fórmula = {{c2::misto/parcial}}.",back:"Predominante (líquidos à base de água) · Misto/parcial (outro leite)."},
+  {id:"alm-f3",tipo:"qa",tag:"Hormônios",front:"Prolactina faz o quê? E a ocitocina?",back:"Prolactina = <b>produção</b> (sucção, picos noturnos). Ocitocina = <b>ejeção/descida</b> (inibida por estresse; contrai o útero)."},
+  {id:"alm-f4",tipo:"vf",tag:"Contraindicações",front:"No Brasil, mãe HIV positivo pode amamentar se a carga viral estiver indetectável.",back:"<b>FALSO.</b> HIV é contraindicação <b>definitiva</b> no Brasil → fórmula + inibir lactação."},
+  {id:"alm-f5",tipo:"qa",tag:"Contraindicações",front:"Cite as contraindicações DEFINITIVAS clássicas.",back:"Maternas: <b>HIV</b>, <b>HTLV</b>, quimioterápicos/radiofármacos. Infantil: <b>galactosemia</b>."},
+  {id:"alm-f6",tipo:"qa",tag:"Colostro",front:"O que caracteriza o colostro?",back:"Mais <b>proteína, IgA secretora e vitamina A</b>; efeito <b>laxante</b> (elimina mecônio)."},
+  {id:"alm-f7",tipo:"qa",tag:"Problemas",front:"Como diferenciar ingurgitamento de mastite?",back:"Ingurgitamento: mamas tensas/quentes, geralmente <b>bilateral, sem febre</b>. Mastite: eritema <b>localizado</b> + <b>febre/sintomas sistêmicos</b> → manter amamentação + antibiótico."}
+ ],
+
+ casos:[
+  {titulo:"Caso 1 — Mama dolorosa e febre no 10º dia",
+   caso:"Puérpera no 10º dia pós-parto com dor intensa na mama direita, área avermelhada, quente e endurecida no quadrante superior, febre de 38,8 °C e mal-estar. Amamenta com pega inadequada e 'pula' mamadas por causa da dor.",
+   perguntas:[
+     {q:"Qual o diagnóstico mais provável?",a:"<b>Mastite</b> — eritema/dor localizados + <b>febre e sintomas sistêmicos</b>. Fatores: estase láctea (mamadas puladas) e fissura por pega incorreta (porta de entrada, geralmente <i>S. aureus</i>)."},
+     {q:"O que fazer com a amamentação?",a:"<b>Manter a amamentação</b> (ou ordenhar) na mama afetada — o esvaziamento é parte do tratamento. Suspender favorece abscesso."},
+     {q:"Conduta?",a:"<b>Antibiótico</b> antiestafilocócico (ex.: cefalexina), analgesia/anti-inflamatório, esvaziamento eficaz, corrigir a pega e repouso. Se flutuação/abscesso → drenagem."}
+   ]},
+  {titulo:"Caso 2 — Baixo ganho de peso aos 1,5 mês",
+   caso:"Lactente de 6 semanas em aleitamento exclusivo, ganho de peso aquém do esperado. Mãe relata mamadas muito curtas (≈5 min) alternando as duas mamas a cada vez, e que o bebê 'vive com fome'.",
+   perguntas:[
+     {q:"Qual provável erro de técnica?",a:"Mamadas curtas alternando as mamas fazem o bebê receber só o <b>leite anterior</b> (mais aguado) e não o <b>leite posterior</b> (rico em gordura) → pouca saciedade e baixo ganho de peso."},
+     {q:"Como orientar?",a:"<b>Esvaziar bem uma mama</b> antes de oferecer a outra; livre demanda; avaliar e corrigir a <b>pega</b>; observar uma mamada; checar diurese/eliminações."},
+     {q:"Quando investigar/complementar?",a:"Se, após corrigir a técnica, persistir baixo ganho com sinais de alerta (desidratação, letargia, diurese reduzida) → reavaliar de perto e considerar complementação conforme indicação."}
+   ]}
+ ],
+
+ fluxoDx:[
+  {t:"start", x:"Lactante com queixa mamária"},
+  {t:"decision", x:"Qual o quadro predominante?", branches:[
+    {label:"Dor + fissura no mamilo", cor:"dourado", flow:[
+      {t:"step", x:"Avaliar a pega/posicionamento", info:"Bebê abocanhando só o mamilo, lábios invertidos, bochechas encovadas = pega incorreta."},
+      {t:"end", x:"Fissura por pega incorreta → corrigir a técnica (não suspender)"}
+    ]},
+    {label:"Mamas tensas/quentes, geralmente bilateral, SEM febre", cor:"azul", flow:[
+      {t:"end", x:"Ingurgitamento → ordenha/esvaziamento, compressas, mamadas frequentes"}
+    ]},
+    {label:"Eritema localizado + FEBRE/sintomas sistêmicos", cor:"vermelho", flow:[
+      {t:"step", x:"Mastite → manter amamentação + antibiótico antiestafilocócico"},
+      {t:"decision", x:"Há flutuação/abscesso?", branches:[
+        {label:"Não", cor:"verde", flow:[{t:"end", x:"Tratar clinicamente + esvaziamento"}]},
+        {label:"Sim", cor:"vermelho", flow:[{t:"end", x:"Drenagem do abscesso"}]}
+      ]}
+    ]}
+  ]}
+ ],
+
+ fluxoConduta:[
+  {t:"start", x:"Apoio ao aleitamento na consulta"},
+  {t:"decision", x:"Há contraindicação ao aleitamento?", branches:[
+    {label:"Sim — definitiva (HIV/HTLV, galactosemia...)", cor:"vermelho", flow:[
+      {t:"end", x:"Contraindicar; orientar fórmula adequada + inibição da lactação quando materna"}
+    ]},
+    {label:"Não", cor:"verde", flow:[
+      {t:"step", x:"Reforçar AME até 6m e livre demanda; observar uma mamada"},
+      {t:"decision", x:"Surgiu algum problema?", branches:[
+        {label:"Fissura/ingurgitamento", cor:"dourado", flow:[
+          {t:"end", x:"Corrigir pega, esvaziamento, compressas — MANTER amamentação"}
+        ]},
+        {label:"Mastite", cor:"vermelho", flow:[
+          {t:"end", x:"Antibiótico + esvaziamento + manter amamentação"}
+        ]},
+        {label:"Sem problemas", cor:"verde", flow:[
+          {t:"end", x:"Elogiar e manter acompanhamento; introduzir alimentação complementar aos 6m"}
+        ]}
+      ]}
+    ]}
+  ]}
+ ],
+
+ mapa:{ central:"ALEITAMENTO MATERNO", legenda:"alimento + remédio + vínculo", ramos:[
+   {cor:"rosa",   t:"Tipos",        filhos:["AME (só leite materno)","Predominante (+ água/chá)","Complementado (+ sólidos 6m)","Misto (+ outro leite)"]},
+   {cor:"azul",   t:"Recomendação", filhos:["AME até 6 meses","Manter até 2 anos ou +","Complementar a partir dos 6m"]},
+   {cor:"dourado",t:"Composição",   filhos:["Colostro: proteína/IgA/vit A, laxante","Posterior = mais gordura","Esvaziar uma mama antes da outra"]},
+   {cor:"verde",  t:"Fisiologia",   filhos:["Prolactina = produção (sucção)","Ocitocina = ejeção (inibida por estresse)","Boa pega: aréola, lábio evertido"]},
+   {cor:"lilas",  t:"Contraindicações",filhos:["HIV / HTLV","Galactosemia","Quimioterápicos/radiofármacos"]},
+   {cor:"vermelho",t:"Problemas",   filhos:["Fissura → corrigir pega","Ingurgitamento → esvaziar","Mastite → ATB + manter mamada"]}
+ ]},
+
+ vespera:[
+  '<h2>⏰ Revisão de véspera — Aleitamento</h2>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>AME até 6m</b>; manter até <b>2 anos+</b>. AME admite só leite materno + SRO/vitaminas/minerais/medicamentos.</div></div>',
+  '<ul><li>Leite materno + <b>chá/água</b> = predominante (não é AME).</li>',
+  '<li><b>Colostro</b>: + proteína, + IgA, + vitamina A, laxante.</li>',
+  '<li><b>Posterior</b> = mais gordura → esvaziar uma mama antes da outra.</li>',
+  '<li><b>Prolactina</b> produz (sucção, noturno); <b>ocitocina</b> ejeta (inibida por estresse).</li>',
+  '<li>Contraindicação <b>definitiva</b>: <b>HIV, HTLV</b>, quimioterápico/radiofármaco; <b>galactosemia</b> no bebê.</li>',
+  '<li><b>Fissura</b> → corrigir pega. <b>Mastite</b> → manter amamentação + antibiótico.</li>',
+  '<li><b>HIV+ no Brasil</b>: não amamenta, não doa leite → fórmula + inibir lactação.</li></ul>'
+ ].join(''),
+
+ dicas:[
+  '<h2>💡 Dicas & Pegadinhas</h2>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Diante de <b>fissura/dor</b>, a banca espera <b>corrigir a pega</b> — quase nunca "suspender a amamentação" ou "introduzir fórmula".</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Mastite NÃO é indicação de desmame</b>: o esvaziamento é tratamento. Suspender favorece <b>abscesso</b>.</div></div>',
+  '<div class="callout mne"><span class="ci">🧠</span><div><b>"PrO-lactina PrOduz; ocitocina expulsa (Ocitocina = Out)."</b> E: estresse/dor travam a ocitocina.</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div><b>LAM</b> (contracepção) só vale com os três: AME + amenorreia + bebê &lt; 6 meses. Falhou um? Não confiar.</div></div>'
+ ].join(''),
+
+ dominio:[
+  "Sei classificar os tipos de aleitamento (exclusivo, predominante, complementado, misto)",
+  "Decorei a recomendação: AME até 6m e manter até 2 anos",
+  "Conheço o colostro (proteína, IgA, vitamina A, laxante) e o leite posterior",
+  "Diferencio o papel da prolactina e da ocitocina",
+  "Reconheço os sinais de boa pega",
+  "Sei as contraindicações definitivas (HIV, HTLV, galactosemia)",
+  "Diferencio fissura, ingurgitamento e mastite e suas condutas",
+  "Sei que na mastite mantém-se a amamentação + antibiótico"
+ ]
+});
+
+/* ================= MATÉRIA — CALENDÁRIO VACINAL DO PNI (alto rendimento) ================= */
+reg({ id:"pni", temaIc:"💉", t:"Calendário Vacinal do PNI", sub:"Tipos de vacina, esquema, intervalos e contraindicações",
+ teoria:[
+  '<h2>💉 Imunização — treinando o exército do bebê</h2>',
+  '<p>Imagine a vacina como um <b class="blue">treino militar</b>: mostramos ao sistema imune um "inimigo desarmado" (vírus/bactéria atenuado, morto ou só um pedaço dele) para que ele crie <b>memória</b> e produza armas (anticorpos e células de defesa) <b>antes</b> do confronto real. Quando o agente verdadeiro chega, a resposta é rápida e potente.</p>',
+  '<div class="callout high"><span class="ci">⚡</span><div>A grande divisão que organiza tudo na prova: <b>vacinas VIVAS atenuadas</b> × <b>vacinas NÃO vivas (inativadas/subunidades)</b>. Isso define contraindicações e intervalos.</div></div>',
+
+  '<h3>Vivas × não vivas (decore os exemplos)</h3>',
+  '<table><tr><th>Vivas atenuadas</th><th>Não vivas (inativadas/conjugadas/recombinantes)</th></tr>',
+  '<tr><td><b>BCG</b>, <b>VOP</b> (gotinha), <b>Rotavírus</b>, <b>Febre amarela</b>, <b>Tríplice/Tetra viral</b> (SCR/SCRV), <b>Varicela</b></td><td><b>VIP</b> (injetável), <b>Hepatite B</b>, <b>Pentavalente</b> (DTP+Hib+HepB), <b>Pneumo 10</b>, <b>Meningo C/ACWY</b>, <b>Hepatite A</b>, <b>HPV</b>, <b>Influenza</b>, <b>dT/dTpa</b>, <b>COVID-19</b></td></tr></table>',
+  '<div class="callout mne"><span class="ci">🧠</span><div><b>"Vivas: BC-VR-FA-VV"</b> → <b>B</b>CG, <b>C</b>… (VOP), <b>V</b>aricela, <b>R</b>otavírus, <b>F</b>ebre <b>A</b>marela, <b>V</b>iral (tríplice/tetra). O resto, pense em inativadas.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Vivas são contraindicadas</b> em imunodeprimidos graves e gestantes. As <b>não vivas</b> são seguras nesses grupos (podendo ter resposta reduzida).</div></div>',
+
+  '<h3>Calendário básico da criança (PNI 2024/2025)</h3>',
+  '<div class="svg-box"><svg viewBox="0 0 740 130" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Linha do tempo das principais vacinas">'+
+   '<defs><linearGradient id="vg" x1="0" x2="1"><stop offset="0" stop-color="#ff8fb1"/><stop offset="0.5" stop-color="#c9a8e8"/><stop offset="1" stop-color="#7cc6f3"/></linearGradient></defs>'+
+   '<line x1="40" y1="64" x2="700" y2="64" stroke="url(#vg)" stroke-width="5"/>'+
+   ['0m|BCG/HepB','2m|Penta/VIP/Pneumo/Rota','3m|MenC','4m|2ªs doses','6m|3ªs/Influenza','9m|Febre amarela','12m|SCR/Pneumo-R','15m|DTP/HepA/Tetra','4a|DTP/FA/Varicela','9-14a|HPV/ACWY']
+     .map(function(s,i){var p=s.split('|');var x=40+i*73;return '<circle cx="'+x+'" cy="64" r="6" fill="#fff" stroke="#b58bd6" stroke-width="2"/>'+
+       '<text x="'+x+'" y="40" text-anchor="middle" fill="#ffd6e8" style="font:700 11px Nunito,sans-serif">'+p[0]+'</text>'+
+       '<text x="'+x+'" y="92" text-anchor="middle" fill="#cfe6ff" style="font:8.5px Nunito,sans-serif">'+p[1]+'</text>';}).join('')+
+  '</svg><div class="cap">Veja o calendário completo, clicável, na aba 👶 Caderneta da Criança.</div></div>',
+  '<table><tr><th>Idade</th><th>Vacinas</th></tr>',
+  '<tr><td><b>Ao nascer</b></td><td>BCG (dose única) · Hepatite B (1ª)</td></tr>',
+  '<tr><td><b>2 meses</b></td><td>Pentavalente · VIP · Pneumo 10 · Rotavírus (1ªs)</td></tr>',
+  '<tr><td><b>3 meses</b></td><td>Meningocócica C (1ª)</td></tr>',
+  '<tr><td><b>4 meses</b></td><td>Pentavalente · VIP · Pneumo 10 · Rotavírus (2ªs)</td></tr>',
+  '<tr><td><b>5 meses</b></td><td>Meningocócica C (2ª)</td></tr>',
+  '<tr><td><b>6 meses</b></td><td>Pentavalente · VIP (3ªs) · Influenza · COVID-19</td></tr>',
+  '<tr><td><b>9 meses</b></td><td>Febre amarela</td></tr>',
+  '<tr><td><b>12 meses</b></td><td>Tríplice viral (1ª) · Pneumo 10 (reforço) · Meningo C (reforço)</td></tr>',
+  '<tr><td><b>15 meses</b></td><td>DTP (1º reforço) · VIP (reforço) · Hepatite A · Tetra viral</td></tr>',
+  '<tr><td><b>4 anos</b></td><td>DTP (2º reforço) · VIP (reforço) · Febre amarela (reforço) · Varicela (2ª)</td></tr>',
+  '<tr><td><b>9–14 anos</b></td><td>HPV (dose única) · Meningo ACWY</td></tr></table>',
+
+  '<h3>Regras de ouro (caem direto)</h3>',
+  '<ul><li><b>Dose aplicada é dose contada:</b> em atraso, NUNCA se reinicia o esquema — apenas se completa o que falta.</li>',
+  '<li><b>Doses simultâneas:</b> pode aplicar várias vacinas no mesmo dia, em sítios diferentes.</li>',
+  '<li><b>Vivas não simultâneas:</b> se não forem dadas no mesmo dia, respeitar <b>intervalo de 30 dias</b> entre elas (ex.: febre amarela e tríplice viral).</li>',
+  '<li><b>Prematuro:</b> vacina pela <b>idade cronológica</b> (não corrigida), com peculiaridades (BCG se ≥2 kg; esquemas reforçados de pneumo/hepatite em alguns casos).</li></ul>'
+ ].join(''),
+
+ scores:[
+  '<h2>🎯 Tipos, contraindicações e situações especiais</h2>',
+  '<h3>Resumo por tipo</h3>',
+  '<table><tr><th>Tipo</th><th>Exemplos</th><th>Atenção</th></tr>',
+  '<tr><td><b>Viva atenuada</b></td><td>BCG, VOP, rotavírus, febre amarela, SCR/SCRV, varicela</td><td>Contraindicada em <b>imunodeprimido grave</b> e <b>gestante</b></td></tr>',
+  '<tr><td><b>Inativada/conjugada/recombinante</b></td><td>VIP, HepB, Penta, Pneumo 10, MenC/ACWY, HepA, HPV, Influenza, dT/dTpa</td><td>Seguras em imunodeprimidos (resposta pode ser menor)</td></tr></table>',
+
+  '<h3>Contraindicações VERDADEIRAS</h3>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>① <b>Anafilaxia</b> prévia à vacina ou a um componente. ② <b>Vacinas vivas</b> em <b>imunossupressão grave</b> (ex.: quimioterapia, HIV sintomático/baixo CD4, uso de corticoide em dose imunossupressora) e em <b>gestantes</b>. ③ Para a <b>coqueluche</b> (componente P): encefalopatia sem causa nos 7 dias após dose prévia.</div></div>',
+
+  '<h3>FALSAS contraindicações (PODE vacinar!) — alvo clássico</h3>',
+  '<table><tr><th>Situação</th><th>Conduta</th></tr>',
+  '<tr><td>Doença leve com febre baixa, resfriado</td><td><b>Pode vacinar</b></td></tr>',
+  '<tr><td>Uso de antibiótico</td><td><b>Pode vacinar</b></td></tr>',
+  '<tr><td>Desnutrição</td><td><b>Pode (e deve) vacinar</b></td></tr>',
+  '<tr><td>Prematuridade</td><td>Vacinar pela <b>idade cronológica</b></td></tr>',
+  '<tr><td>Aleitamento materno</td><td><b>Pode vacinar</b> (mãe e bebê)</td></tr>',
+  '<tr><td>História familiar de eventos pós-vacinais</td><td><b>Pode vacinar</b></td></tr>',
+  '<tr><td>Alergia leve (não anafilática)</td><td><b>Pode vacinar</b></td></tr></table>',
+
+  '<h3>Situações especiais</h3>',
+  '<ul><li><b>RN de mãe HBsAg+:</b> Hepatite B + <b>imunoglobulina (HBIG)</b> em sítios diferentes nas primeiras <b>12–24h</b>.</li>',
+  '<li><b>Bloqueio de sarampo:</b> em surto, antecipar dose de tríplice viral aos <b>6 meses</b> ("dose zero" — não conta no esquema; manter 12 e 15m).</li>',
+  '<li><b>Rotavírus:</b> respeitar limites rígidos — 1ª dose até <b>3m15d</b>, 2ª até <b>7m29d</b>; não iniciar fora do prazo.</li></ul>'
+ ].join(''),
+
+ questoes:[
+  {id:"pni-q1",banca:"ENARE (estilo)",stem:"Lactente saudável comparece com calendário <b>atrasado</b> (recebeu apenas as vacinas do nascimento). A conduta correta é:",
+   opts:["Reiniciar todo o esquema do zero","Aplicar as doses faltantes conforme a idade, sem reiniciar","Aguardar avaliação especializada antes de qualquer dose","Aplicar somente vacinas inativadas"],
+   correct:1, expl:"<b>Dose aplicada é dose contada.</b> Em atraso, <b>nunca se reinicia</b> o esquema — completa-se o que falta respeitando intervalos mínimos. Pode-se aplicar várias vacinas simultaneamente."},
+  {id:"pni-q2",banca:"Revalida (estilo)",stem:"Qual das alternativas é uma <b>FALSA</b> contraindicação à vacinação (ou seja, a criança PODE ser vacinada)?",
+   opts:["Anafilaxia prévia ao componente da vacina","Imunossupressão grave para vacina de vírus vivo","Resfriado com febre baixa","Encefalopatia após dose prévia (componente coqueluche)"],
+   correct:2, expl:"Doença leve com febre baixa é <b>falsa contraindicação</b> — pode vacinar. As demais são contraindicações verdadeiras (anafilaxia; vivas em imunossupressão grave; encefalopatia pós-coqueluche)."},
+  {id:"pni-q3",banca:"UFRJ (estilo)",stem:"Criança em quimioterapia para leucemia. Qual vacina está <b>CONTRAINDICADA</b> neste momento?",
+   opts:["Hepatite B","VIP (poliomielite inativada)","Tríplice viral (sarampo, caxumba, rubéola)","Pneumocócica conjugada"],
+   correct:2, expl:"A <b>tríplice viral é vacina VIVA atenuada</b> → contraindicada em imunossupressão grave. As inativadas (HepB, VIP, pneumo) podem ser feitas (com possível resposta reduzida)."},
+  {id:"pni-q4",banca:"SES-RJ (estilo)",stem:"Recém-nascido de mãe <b>HBsAg positivo</b>. Além da vacina de hepatite B ao nascer, deve-se administrar:",
+   opts:["Apenas observar","Imunoglobulina humana anti-hepatite B (HBIG) nas primeiras 12–24h, em sítio diferente","Antiviral oral por 6 meses","Segunda dose de BCG"],
+   correct:1, expl:"RN de mãe HBsAg+ recebe <b>vacina HepB + imunoglobulina (HBIG)</b> em <b>sítios diferentes</b>, idealmente nas primeiras <b>12–24 horas</b> de vida."},
+  {id:"pni-q5",banca:"UERJ (estilo)",stem:"Sobre a vacina <b>rotavírus</b> (VORH), assinale a correta:",
+   opts:["É inativada e pode ser feita em qualquer idade","É viva atenuada oral, com limites rígidos de idade para início","Deve ser repetida se a criança regurgitar","Tem 3 doses no PNI"],
+   correct:1, expl:"O rotavírus é <b>vivo atenuado oral</b>, com <b>limites de idade</b> (1ª até 3m15d; 2ª até 7m29d). Não se repete a dose se a criança regurgitar; são <b>2 doses</b> no PNI."}
+ ],
+
+ flashcards:[
+  {id:"pni-f1",tipo:"qa",tag:"Tipos",front:"Quais são as vacinas VIVAS atenuadas do calendário?",back:"<b>BCG, VOP, rotavírus, febre amarela, tríplice/tetra viral (SCR/SCRV), varicela.</b>"},
+  {id:"pni-f2",tipo:"vf",tag:"Contraindicações",front:"Vacina de vírus vivo pode ser dada a imunodeprimido grave.",back:"<b>FALSO.</b> Vivas são contraindicadas em imunossupressão grave e em gestantes."},
+  {id:"pni-f3",tipo:"qa",tag:"Regras",front:"Como conduzir um calendário atrasado?",back:"<b>Não reiniciar</b> — completar as doses faltantes (dose aplicada é dose contada), respeitando intervalos."},
+  {id:"pni-f4",tipo:"cloze",tag:"Vivas",front:"Vacinas vivas não simultâneas devem respeitar intervalo de {{c1::30}} dias entre si.",back:"30 dias (ex.: febre amarela e tríplice viral)."},
+  {id:"pni-f5",tipo:"qa",tag:"Especiais",front:"RN de mãe HBsAg+: o que fazer além da vacina?",back:"<b>Imunoglobulina (HBIG)</b> em sítio diferente, nas primeiras <b>12–24h</b>."},
+  {id:"pni-f6",tipo:"qa",tag:"FALSAS",front:"Cite 3 falsas contraindicações (pode vacinar).",back:"Doença leve/febre baixa, uso de antibiótico, desnutrição, prematuridade, aleitamento, alergia não anafilática."},
+  {id:"pni-f7",tipo:"qa",tag:"Atualização",front:"Esquema atual de HPV no PNI (2024)?",back:"<b>Dose única</b> para 9–14 anos (meninas e meninos). Imunossuprimidos/HIV: 3 doses."}
+ ],
+
+ casos:[
+  {titulo:"Caso 1 — Caderneta atrasada aos 7 meses",
+   caso:"Lactente de 7 meses, hígido, trazido para 'colocar as vacinas em dia'. Recebeu apenas BCG e hepatite B ao nascer. A mãe teme que seja preciso 'começar tudo de novo'.",
+   perguntas:[
+     {q:"Precisa reiniciar o esquema?",a:"<b>Não.</b> Dose aplicada é dose contada. Aplica-se o que falta conforme a idade, respeitando intervalos mínimos."},
+     {q:"Pode aplicar várias no mesmo dia?",a:"<b>Sim</b> — doses simultâneas em sítios diferentes. Aproveitar a oportunidade para não perder o vínculo."},
+     {q:"E o rotavírus?",a:"Aos 7 meses, atenção ao <b>limite de idade</b>: a 2ª dose vai até 7m29d e a 1ª até 3m15d — se já passou do prazo de início, <b>não se inicia</b> o rotavírus."}
+   ]},
+  {titulo:"Caso 2 — Criança imunossuprimida",
+   caso:"Pré-escolar de 4 anos em tratamento quimioterápico, com calendário a atualizar. A equipe pergunta quais vacinas de rotina podem ser feitas agora.",
+   perguntas:[
+     {q:"Quais estão contraindicadas?",a:"As <b>vivas</b>: tríplice/tetra viral, varicela, febre amarela, VOP, BCG, rotavírus — contraindicadas durante a imunossupressão grave."},
+     {q:"O que pode ser feito?",a:"Vacinas <b>inativadas</b> (ex.: VIP, dT/DTP conforme idade, pneumocócica, influenza), idealmente em momento de melhor resposta imune; encaminhar ao <b>CRIE</b> para esquemas especiais."},
+     {q:"E depois do término do tratamento?",a:"Reavaliar e completar/atualizar as vacinas vivas após o período de recuperação imunológica, conforme orientação do CRIE."}
+   ]}
+ ],
+
+ fluxoDx:[
+  {t:"start", x:"Decisão: posso aplicar esta vacina agora?"},
+  {t:"decision", x:"Há contraindicação VERDADEIRA?", branches:[
+    {label:"Anafilaxia ao componente", cor:"vermelho", flow:[
+      {t:"end", x:"NÃO aplicar essa vacina; notificar e investigar"}
+    ]},
+    {label:"Vacina VIVA + imunossupressão grave/gestante", cor:"vermelho", flow:[
+      {t:"step", x:"Adiar a viva; encaminhar ao CRIE se necessário"},
+      {t:"end", x:"Aplicar apenas as INATIVADAS indicadas"}
+    ]},
+    {label:"Só 'falsa' contraindicação (febre baixa, ATB, desnutrição, prematuro...)", cor:"verde", flow:[
+      {t:"step", x:"Pode vacinar normalmente", info:"Não adiar por: doença leve, antibiótico, desnutrição, prematuridade, aleitamento, alergia não anafilática ou história familiar."},
+      {t:"decision", x:"Calendário em atraso?", branches:[
+        {label:"Sim", cor:"dourado", flow:[{t:"end", x:"Completar o que falta — NÃO reiniciar; doses simultâneas possíveis"}]},
+        {label:"Não", cor:"verde", flow:[{t:"end", x:"Aplicar conforme a idade do calendário"}]}
+      ]}
+    ]}
+  ]}
+ ],
+
+ fluxoConduta:[
+  {t:"start", x:"Atualização do calendário vacinal"},
+  {t:"decision", x:"Situação?", branches:[
+    {label:"Calendário atrasado", cor:"dourado", flow:[
+      {t:"end", x:"Completar doses faltantes (não reiniciar) respeitando intervalos; aplicar simultâneas"}
+    ]},
+    {label:"RN de mãe HBsAg+", cor:"rosa", flow:[
+      {t:"end", x:"HepB + imunoglobulina (HBIG) em sítios diferentes nas primeiras 12–24h"}
+    ]},
+    {label:"Surto de sarampo (6–11m)", cor:"azul", flow:[
+      {t:"end", x:"Antecipar dose zero de tríplice viral aos 6m (não conta no esquema; manter 12 e 15m)"}
+    ]},
+    {label:"Imunossuprimido / situação especial", cor:"vermelho", flow:[
+      {t:"step", x:"Adiar vacinas vivas"},
+      {t:"end", x:"Encaminhar ao CRIE para esquema individualizado"}
+    ]}
+  ]}
+ ],
+
+ mapa:{ central:"PNI", legenda:"Programa Nacional de Imunizações", ramos:[
+   {cor:"rosa",   t:"Vivas",        filhos:["BCG, VOP, rotavírus","Febre amarela","Tríplice/tetra viral, varicela"]},
+   {cor:"azul",   t:"Não vivas",    filhos:["VIP, HepB, Pentavalente","Pneumo 10, Meningo C/ACWY","HPV, Influenza, HepA, dT/dTpa"]},
+   {cor:"dourado",t:"Calendário",   filhos:["0m: BCG + HepB","2/4/6m: Penta/VIP/Pneumo","9m FA · 12m SCR · 4a reforços"]},
+   {cor:"verde",  t:"Regras",       filhos:["Dose aplicada = dose contada","Simultâneas: pode no mesmo dia","Vivas não simultâneas: 30 dias"]},
+   {cor:"lilas",  t:"Contraind. verdadeiras",filhos:["Anafilaxia ao componente","Vivas em imunossup. grave/gestante","Encefalopatia pós-coqueluche"]},
+   {cor:"vermelho",t:"FALSAS (pode!)",filhos:["Febre baixa / ATB / desnutrição","Prematuro (idade cronológica)","Aleitamento / alergia leve"]}
+ ]},
+
+ vespera:[
+  '<h2>⏰ Revisão de véspera — PNI</h2>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>Vivas:</b> BCG, VOP, rotavírus, febre amarela, SCR/SCRV, varicela → contraindicadas em imunossupressão grave e gestante.</div></div>',
+  '<ul><li><b>Atraso:</b> nunca reiniciar — completar o que falta. Simultâneas: pode.</li>',
+  '<li><b>Vivas não simultâneas:</b> intervalo de <b>30 dias</b>.</li>',
+  '<li><b>RN mãe HBsAg+:</b> HepB + <b>HBIG</b> em 12–24h.</li>',
+  '<li><b>Bloqueio sarampo:</b> dose zero de SCR aos 6m (não conta).</li>',
+  '<li><b>Rotavírus:</b> 1ª até 3m15d · 2ª até 7m29d.</li>',
+  '<li><b>HPV (2024):</b> dose única 9–14a.</li>',
+  '<li><b>Prematuro:</b> idade cronológica. Falsas contraindicações: febre baixa, ATB, desnutrição, aleitamento.</li></ul>'
+ ].join(''),
+
+ dicas:[
+  '<h2>💡 Dicas & Pegadinhas</h2>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>A pegadinha favorita das bancas são as <b>falsas contraindicações</b>: febre baixa, antibiótico, desnutrição, prematuridade, aleitamento e alergia leve → <b>vacina-se normalmente</b>.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Imunossuprimido: o que cai é "qual NÃO pode" → a resposta é sempre uma <b>viva</b> (ex.: tríplice viral, febre amarela, BCG, VOP, varicela, rotavírus).</div></div>',
+  '<div class="callout mne"><span class="ci">🧠</span><div><b>"Dose dada é dose contada"</b> — atraso nunca reinicia o esquema.</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div>Atualizações 2024/25: <b>HPV dose única</b> (9–14a) e transição da <b>VOP → VIP</b> nos reforços. Fique atenta às notas técnicas vigentes.</div></div>'
+ ].join(''),
+
+ dominio:[
+  "Diferencio vacinas vivas de não vivas e dou exemplos",
+  "Sei que vivas são contraindicadas em imunossupressão grave e gestante",
+  "Domino o calendário básico idade a idade",
+  "Sei que atraso não reinicia o esquema (dose aplicada = dose contada)",
+  "Conheço a regra dos 30 dias para vivas não simultâneas",
+  "Reconheço as falsas contraindicações (pode vacinar)",
+  "Sei conduzir RN de mãe HBsAg+ e o bloqueio de sarampo",
+  "Lembro dos limites de idade do rotavírus e da HPV dose única (2024)"
+ ]
+});
+
+/* ================= MATÉRIA — DIARREIA & DESIDRATAÇÃO / PLANOS A·B·C (alto rendimento) ================= */
+reg({ id:"desidratacao", temaIc:"💧", t:"Diarreia & Desidratação — Planos A/B/C", sub:"Avaliar a hidratação, TRO e reidratação",
+ teoria:[
+  '<h2>💧 Diarreia & Desidratação</h2>',
+  '<p>Pense no corpo da criança como uma <b class="blue">caixa-d\'água</b>: a diarreia é um <b>vazamento</b> e o vômito, um respingo que se perde. Quanto menor a criança, menor a caixa e mais rápido ela esvazia — por isso o lactente desidrata e descompensa muito mais rápido que o adulto. O objetivo do atendimento é simples: <b>reconhecer o quanto já vazou</b> (estado de hidratação) e <b>repor pela via certa, na velocidade certa</b>.</p>',
+  '<div class="callout info"><span class="ci">💡</span><div><b>Diarreia aguda:</b> ≥ 3 evacuações amolecidas/líquidas em 24h, com duração &lt; 14 dias. <b>Persistente:</b> ≥ 14 dias. <b>Disenteria:</b> diarreia com <b>sangue/muco</b> (pensar em <i>Shigella</i> e bactérias invasivas).</div></div>',
+
+  '<h3>Quem causa</h3>',
+  '<ul><li><b>Viral</b> (maioria): <b>rotavírus</b> (clássico, prevenível por vacina), norovírus. Costuma ser aquosa, autolimitada.</li>',
+  '<li><b>Bacteriana:</b> <i>Shigella, Salmonella, E. coli, Campylobacter</i> — pode dar disenteria/febre alta.</li>',
+  '<li><b>Parasitária:</b> <i>Giardia, Entamoeba</i> (mais ligadas à diarreia persistente).</li></ul>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>O que mata na diarreia aguda não é o germe — é a <b>desidratação</b> e os distúrbios eletrolíticos. Por isso o foco é <b>hidratar</b>, não "dar remédio para parar a diarreia" (antidiarreicos são contraindicados em crianças).</div></div>',
+
+  '<h3>Avaliar o estado de hidratação (a tabela do MS)</h3>',
+  '<div class="svg-box"><svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sinais de desidratação">'+
+   '<style>.h{font:700 13px Nunito,sans-serif}.s{font:11px Nunito,sans-serif;fill:#cfe6ff}.ok{fill:#4cc38a}.mid{fill:#f2b84b}.bad{fill:#ef5a6f}</style>'+
+   '<circle cx="120" cy="70" r="34" fill="#3a2740" stroke="#4cc38a" stroke-width="3"/><text x="120" y="74" text-anchor="middle" class="h ok">😊</text>'+
+   '<text x="120" y="125" text-anchor="middle" class="h ok">Sem desidratação</text><text x="120" y="145" text-anchor="middle" class="s">alerta · prega some rápido</text><text x="120" y="161" text-anchor="middle" class="s">lágrimas · urina normal</text>'+
+   '<circle cx="360" cy="70" r="34" fill="#3a2740" stroke="#f2b84b" stroke-width="3"/><text x="360" y="74" text-anchor="middle" class="h mid">😟</text>'+
+   '<text x="360" y="125" text-anchor="middle" class="h mid">Com desidratação</text><text x="360" y="145" text-anchor="middle" class="s">irritada · olhos fundos · sede +</text><text x="360" y="161" text-anchor="middle" class="s">prega desfaz lenta · mucosa seca</text>'+
+   '<circle cx="600" cy="70" r="34" fill="#3a2740" stroke="#ef5a6f" stroke-width="3"/><text x="600" y="74" text-anchor="middle" class="h bad">😵</text>'+
+   '<text x="600" y="125" text-anchor="middle" class="h bad">Grave / choque</text><text x="600" y="145" text-anchor="middle" class="s">letárgico · bebe mal/incapaz</text><text x="600" y="161" text-anchor="middle" class="s">prega muito lenta · pulso fino</text>'+
+  '</svg><div class="cap">A classificação clínica define o Plano: A (sem), B (com), C (grave).</div></div>',
+  '<table><tr><th>Sinal</th><th>Sem desidratação</th><th>Com desidratação</th><th>Grave</th></tr>',
+  '<tr><td>Estado geral</td><td>Alerta</td><td><b>Irritada/agitada</b></td><td><b>Letárgica/inconsciente</b></td></tr>',
+  '<tr><td>Olhos</td><td>Normais</td><td>Fundos</td><td>Muito fundos</td></tr>',
+  '<tr><td>Sede</td><td>Bebe normal</td><td><b>Sedenta, bebe ávido</b></td><td><b>Bebe mal ou incapaz</b></td></tr>',
+  '<tr><td>Sinal da prega</td><td>Desfaz rápido</td><td><b>Desfaz lenta</b></td><td><b>Desfaz muito lenta (&gt;2s)</b></td></tr>',
+  '<tr><td>Lágrimas/mucosas</td><td>Presentes/úmidas</td><td>Ausentes/secas</td><td>Ausentes/muito secas</td></tr></table>',
+  '<div class="callout mne"><span class="ci">🧠</span><div>Para classificar como "com desidratação" ou "grave", o MS pede <b>2 ou mais sinais</b> na coluna, sendo pelo menos um deles um <b>sinal-chave</b> (estado geral, olhos, sede, prega).</div></div>',
+
+  '<h3>Os três Planos</h3>',
+  '<ul><li><b>Plano A</b> — SEM desidratação → tratar/prevenir <b>em casa</b>.</li>',
+  '<li><b>Plano B</b> — COM desidratação → <b>TRO na unidade</b> de saúde (observação).</li>',
+  '<li><b>Plano C</b> — desidratação <b>GRAVE/choque</b> → <b>reidratação venosa</b> imediata.</li></ul>'
+ ].join(''),
+
+ scores:[
+  '<h2>🎯 Planos A · B · C (decore os números)</h2>',
+  '<h3>Plano A — em casa (sem desidratação)</h3>',
+  '<table><tr><th>Pilar</th><th>Conduta</th></tr>',
+  '<tr><td>Oferecer líquidos</td><td><b>SRO após cada evacuação</b> + líquidos caseiros. Volume: &lt;1 ano <b>50–100 ml</b>; 1–10 anos <b>100–200 ml</b>; maiores: à vontade</td></tr>',
+  '<tr><td>Manter alimentação</td><td><b>Manter aleitamento</b> e a dieta habitual (não suspender leite)</td></tr>',
+  '<tr><td>Zinco</td><td><b>&lt;6 meses: 10 mg/dia</b>; <b>≥6 meses: 20 mg/dia</b>, por <b>10–14 dias</b> (reduz duração e recorrência)</td></tr>',
+  '<tr><td>Sinais de retorno</td><td>Piora, vômitos repetidos, sangue nas fezes, sede intensa, não come/bebe, febre alta, pouca urina</td></tr></table>',
+
+  '<h3>Plano B — TRO na unidade (com desidratação)</h3>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>SRO 50–100 ml/kg em 4 horas</b>, em pequenos volumes frequentes, sob observação. <b>Reavaliar a cada hora</b>. Hidratou (Plano A) → alta orientada. Permaneceu desidratado → manter/ajustar. Evoluiu para grave → Plano C.</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div><b>Vômitos não contraindicam TRO:</b> ofertar volumes pequenos e frequentes (ex.: colher/seringa). Se vômitos persistentes/incoercíveis → <b>gastróclise</b> (SRO por sonda nasogástrica) antes de partir para a veia.</div></div>',
+
+  '<h3>Plano C — venoso (grave/choque)</h3>',
+  '<table><tr><th>Idade</th><th>Esquema (SF 0,9% ou Ringer lactato)</th></tr>',
+  '<tr><td><b>&lt; 1 ano</b></td><td><b>30 ml/kg em 1 hora</b> + <b>70 ml/kg em 5 horas</b> (total 100 ml/kg / 6h)</td></tr>',
+  '<tr><td><b>≥ 1 ano</b></td><td><b>30 ml/kg em 30 min</b> + <b>70 ml/kg em 2h30</b> (total 100 ml/kg / 3h)</td></tr></table>',
+  '<div class="callout info"><span class="ci">💡</span><div>Em <b>choque</b>, fazer <b>expansão rápida</b> com bolus de <b>20 ml/kg</b> de cristaloide (SF/Ringer), repetindo conforme resposta. Iniciar <b>TRO assim que a criança conseguir beber</b> e reavaliar continuamente.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>A SRO do MS é de <b>osmolaridade reduzida</b> (Na⁺ 75 mEq/L, ~245 mOsm/L) — melhor tolerada e mais eficaz que a fórmula antiga.</div></div>'
+ ].join(''),
+
+ questoes:[
+  {id:"des-q1",banca:"ENARE (estilo)",stem:"Lactente de 10 meses com diarreia há 2 dias, irritado, olhos fundos, bebe avidamente e o sinal da prega desfaz lentamente. Classificação e plano?",
+   opts:["Sem desidratação — Plano A","Com desidratação — Plano B (TRO)","Desidratação grave — Plano C (venoso)","Diarreia persistente — investigar"],
+   correct:1, expl:"Irritabilidade + olhos fundos + sede ávida + prega lenta = <b>desidratação (algum grau)</b> → <b>Plano B</b>: TRO com SRO 50–100 ml/kg em 4h sob observação."},
+  {id:"des-q2",banca:"Revalida (estilo)",stem:"Sobre a suplementação de <b>zinco</b> na diarreia aguda em criança de 8 meses, a recomendação é:",
+   opts:["10 mg/dia por 5 dias","20 mg/dia por 10–14 dias","Não está indicada","40 mg/dia por 3 dias"],
+   correct:1, expl:"Zinco: <b>≥6 meses → 20 mg/dia</b> (e &lt;6 meses → 10 mg/dia), por <b>10–14 dias</b>. Reduz duração, gravidade e recorrência da diarreia."},
+  {id:"des-q3",banca:"UFRJ (estilo)",stem:"Criança de 2 anos com desidratação <b>grave</b> e letargia. Qual a conduta de reidratação inicial?",
+   opts:["TRO com SRO 50 ml/kg em 4h","Reidratação venosa (Plano C) com cristaloide","Plano A com líquidos caseiros","Iniciar antibiótico e observar"],
+   correct:1, expl:"Desidratação <b>grave</b> = <b>Plano C</b>: reidratação <b>venosa</b> com SF 0,9%/Ringer (≥1 ano: 30 ml/kg em 30 min + 70 ml/kg em 2h30; em choque, bolus de 20 ml/kg). Iniciar TRO quando conseguir beber."},
+  {id:"des-q4",banca:"SES-RJ (estilo)",stem:"Durante o Plano B, a criança apresenta <b>vômitos</b> ao receber o SRO de colher. A melhor conduta é:",
+   opts:["Suspender a TRO e iniciar soro venoso imediatamente","Oferecer SRO em volumes menores e mais frequentes; se persistir, gastróclise","Trocar SRO por suco/refrigerante","Iniciar antiemético e suspender líquidos"],
+   correct:1, expl:"Vômitos <b>não contraindicam</b> a TRO. Ofertar SRO em <b>pequenos volumes frequentes</b>; se persistirem, <b>gastróclise</b> (SRO por SNG) antes da via venosa."},
+  {id:"des-q5",banca:"UERJ (estilo)",stem:"Em relação à alimentação durante a diarreia aguda, o correto é:",
+   opts:["Suspender o leite materno até cessar a diarreia","Manter o aleitamento e a dieta habitual","Jejum por 24 horas","Diluir o leite pela metade rotineiramente"],
+   correct:1, expl:"<b>Manter o aleitamento</b> e a alimentação habitual — o jejum prolonga a diarreia e piora a nutrição. Antidiarreicos são contraindicados em crianças."}
+ ],
+
+ flashcards:[
+  {id:"des-f1",tipo:"qa",tag:"Definição",front:"O que é diarreia aguda? E disenteria?",back:"Aguda: ≥3 evacuações líquidas/24h por &lt;14 dias. Disenteria: diarreia com <b>sangue/muco</b> (pensar Shigella)."},
+  {id:"des-f2",tipo:"qa",tag:"Planos",front:"Qual plano para SEM, COM e GRAVE desidratação?",back:"Sem → <b>A (casa)</b>. Com → <b>B (TRO na unidade)</b>. Grave → <b>C (venoso)</b>."},
+  {id:"des-f3",tipo:"cloze",tag:"Plano B",front:"Plano B: SRO {{c1::50–100}} ml/kg em {{c2::4}} horas, reavaliando.",back:"50–100 ml/kg em 4 horas, volumes pequenos e frequentes."},
+  {id:"des-f4",tipo:"qa",tag:"Zinco",front:"Dose de zinco na diarreia?",back:"&lt;6m: <b>10 mg/dia</b>; ≥6m: <b>20 mg/dia</b>; por <b>10–14 dias</b>."},
+  {id:"des-f5",tipo:"qa",tag:"Plano C",front:"Plano C ≥1 ano (SF/Ringer)?",back:"<b>30 ml/kg em 30 min + 70 ml/kg em 2h30</b> (100 ml/kg em 3h). Choque: bolus 20 ml/kg."},
+  {id:"des-f6",tipo:"vf",tag:"Vômitos",front:"Vômitos contraindicam a TRO.",back:"<b>FALSO.</b> Ofertar SRO em pequenos volumes frequentes; se persistir → gastróclise antes da veia."},
+  {id:"des-f7",tipo:"qa",tag:"Alimentação",front:"O que fazer com a dieta/aleitamento na diarreia?",back:"<b>Manter</b> aleitamento e dieta habitual. Sem jejum. Antidiarreicos contraindicados."}
+ ],
+
+ casos:[
+  {titulo:"Caso 1 — Diarreia e olhos fundos",
+   caso:"Lactente de 9 meses, diarreia aquosa há 3 dias e 4 vômitos hoje. Ao exame: irritado, olhos fundos, mucosa seca, bebe com avidez quando oferecem água, sinal da prega desfaz lentamente. Pesa 8 kg.",
+   perguntas:[
+     {q:"Como classificar?",a:"<b>Com desidratação</b> (algum grau): ≥2 sinais incluindo sinais-chave (estado geral, olhos, sede, prega)."},
+     {q:"Qual plano e como fazer?",a:"<b>Plano B — TRO</b>: SRO de osmolaridade reduzida <b>50–100 ml/kg em 4h</b> (≈400–800 ml para 8 kg), em pequenos volumes frequentes, reavaliando a cada hora."},
+     {q:"E os vômitos?",a:"Não suspender a TRO — ofertar volumes menores e mais frequentes; se incoercíveis, <b>gastróclise</b>. Após hidratar, alta com <b>Plano A</b> + zinco e sinais de retorno."}
+   ]},
+  {titulo:"Caso 2 — Letargia e pulso fino",
+   caso:"Pré-escolar de 2 anos, diarreia profusa, agora <b>letárgico</b>, bebe muito mal, extremidades frias, enchimento capilar lento, pulso fino. Peso 12 kg.",
+   perguntas:[
+     {q:"Classificação?",a:"<b>Desidratação grave com sinais de choque</b>."},
+     {q:"Conduta imediata?",a:"<b>Plano C</b>: acesso venoso e <b>expansão</b> com cristaloide (SF 0,9%/Ringer) <b>20 ml/kg</b> em bolus, repetindo conforme resposta; depois o esquema de 100 ml/kg (≥1 ano: 30 ml/kg em 30 min + 70 ml/kg em 2h30)."},
+     {q:"Quando iniciar SRO?",a:"<b>Assim que a criança conseguir beber</b>, mantendo a reidratação venosa até a estabilização; reavaliar continuamente."}
+   ]}
+ ],
+
+ fluxoDx:[
+  {t:"start", x:"Criança com diarreia — avaliar a hidratação"},
+  {t:"step", x:"Checar: estado geral, olhos, sede, sinal da prega, lágrimas/mucosas", info:"Classificar pela coluna com 2+ sinais, incluindo um sinal-chave."},
+  {t:"decision", x:"Qual a classificação?", branches:[
+    {label:"Sem desidratação", cor:"verde", flow:[
+      {t:"end", x:"PLANO A — tratar em casa"}
+    ]},
+    {label:"Com desidratação", cor:"dourado", flow:[
+      {t:"end", x:"PLANO B — TRO na unidade (50–100 ml/kg em 4h)"}
+    ]},
+    {label:"Grave / choque", cor:"vermelho", flow:[
+      {t:"end", x:"PLANO C — reidratação venosa imediata"}
+    ]}
+  ]}
+ ],
+
+ fluxoConduta:[
+  {t:"start", x:"Plano definido pela classificação"},
+  {t:"decision", x:"Qual plano?", branches:[
+    {label:"Plano A (casa)", cor:"verde", flow:[
+      {t:"step", x:"SRO após cada evacuação + líquidos; manter alimentação/aleitamento"},
+      {t:"end", x:"Zinco 10–20 mg/dia por 10–14d + sinais de retorno"}
+    ]},
+    {label:"Plano B (TRO)", cor:"dourado", flow:[
+      {t:"step", x:"SRO 50–100 ml/kg em 4h, volumes pequenos e frequentes"},
+      {t:"decision", x:"Reavaliação após 4h?", branches:[
+        {label:"Hidratou", cor:"verde", flow:[{t:"end", x:"Alta com Plano A + zinco"}]},
+        {label:"Vômitos persistentes", cor:"azul", flow:[{t:"end", x:"Gastróclise (SRO por SNG)"}]},
+        {label:"Evoluiu para grave", cor:"vermelho", flow:[{t:"end", x:"Passar ao Plano C"}]}
+      ]}
+    ]},
+    {label:"Plano C (venoso)", cor:"vermelho", flow:[
+      {t:"step", x:"Acesso venoso; choque → bolus 20 ml/kg de cristaloide"},
+      {t:"step", x:"Esquema 100 ml/kg (idade-dependente) com SF/Ringer"},
+      {t:"end", x:"Iniciar TRO assim que beber; reavaliar continuamente"}
+    ]}
+  ]}
+ ],
+
+ mapa:{ central:"DIARREIA & DESIDRATAÇÃO", legenda:"avaliar → classificar → repor", ramos:[
+   {cor:"rosa",   t:"Definições", filhos:["Aguda: ≥3/24h, <14d","Persistente ≥14d","Disenteria = sangue/muco"]},
+   {cor:"azul",   t:"Avaliação",  filhos:["Estado geral, olhos, sede","Sinal da prega, lágrimas","2+ sinais classificam"]},
+   {cor:"verde",  t:"Plano A",    filhos:["Em casa: SRO + líquidos","Manter alimentação","Zinco 10–14 dias"]},
+   {cor:"dourado",t:"Plano B (TRO)",filhos:["SRO 50–100 ml/kg em 4h","Reavaliar a cada hora","Vômitos → gastróclise"]},
+   {cor:"vermelho",t:"Plano C",   filhos:["Venoso: SF/Ringer","Choque: bolus 20 ml/kg","100 ml/kg idade-dependente"]},
+   {cor:"lilas",  t:"Extras",     filhos:["Sem antidiarreicos","SRO osmolaridade reduzida","Iniciar TRO ao beber"]}
+ ]},
+
+ vespera:[
+  '<h2>⏰ Revisão de véspera — Diarreia & Desidratação</h2>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>Sem → Plano A (casa)</b> · <b>Com → Plano B (TRO 50–100 ml/kg em 4h)</b> · <b>Grave → Plano C (venoso)</b>.</div></div>',
+  '<ul><li>Classificar por <b>2+ sinais</b> (estado geral, olhos, sede, prega).</li>',
+  '<li><b>Zinco:</b> &lt;6m 10 mg · ≥6m 20 mg/dia × 10–14 dias.</li>',
+  '<li><b>Manter</b> aleitamento/dieta; <b>sem</b> antidiarreicos.</li>',
+  '<li>Vômitos <b>não</b> contraindicam TRO → volumes pequenos; persistiu → <b>gastróclise</b>.</li>',
+  '<li><b>Plano C</b> ≥1 ano: 30 ml/kg/30 min + 70 ml/kg/2h30; &lt;1 ano: 30 ml/kg/1h + 70 ml/kg/5h. Choque: <b>bolus 20 ml/kg</b>.</li>',
+  '<li>SRO de <b>osmolaridade reduzida</b>; iniciar TRO assim que conseguir beber.</li></ul>'
+ ].join(''),
+
+ dicas:[
+  '<h2>💡 Dicas & Pegadinhas</h2>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>A pegadinha do "vômito": vomitou ≠ falhou a TRO. Só vai para a veia se houver <b>vômitos incoercíveis, alteração de consciência, íleo</b> ou <b>falha</b> da TRO/gastróclise.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>"Suspender o leite" e "dar antidiarreico/antibiótico de rotina" são <b>condutas erradas</b> em diarreia aguda da criança. Antibiótico só em situações específicas (ex.: disenteria por Shigella, cólera, comprometimento sistêmico).</div></div>',
+  '<div class="callout mne"><span class="ci">🧠</span><div><b>A–B–C = Ausência, Bebe (TRO), Crítico (veia).</b> E o número mágico do Plano B: <b>50–100 ml/kg em 4h</b>.</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div>Prevenção que cai junto: <b>vacina rotavírus</b>, aleitamento materno, água tratada e higiene das mãos.</div></div>'
+ ].join(''),
+
+ dominio:[
+  "Defino diarreia aguda, persistente e disenteria",
+  "Avalio o estado de hidratação pela tabela do MS",
+  "Classifico em sem / com / grave e escolho o Plano A, B ou C",
+  "Sei o esquema do Plano B (SRO 50–100 ml/kg em 4h) e reavaliação",
+  "Domino o Plano C (SF/Ringer idade-dependente e bolus no choque)",
+  "Sei a dose de zinco e que mantenho a alimentação",
+  "Sei conduzir vômitos na TRO (volumes pequenos → gastróclise)",
+  "Lembro que antidiarreicos são contraindicados na criança"
+ ]
+});
+
+/* ================= MATÉRIA — TRO & CÁLCULOS DE HIDRATAÇÃO (alto rendimento) ================= */
+reg({ id:"tro", temaIc:"🧮", t:"TRO & Cálculos de Hidratação", sub:"Manutenção (Holliday-Segar), déficit e expansão",
+ teoria:[
+  '<h2>🧮 Hidratação na prática — os três "baldes"</h2>',
+  '<p>Para montar qualquer prescrição de líquidos, pense em <b>três baldes</b> que se somam: ① <b class="blue">Manutenção</b> (o que o corpo gasta por dia, mesmo saudável), ② <b class="blue">Déficit</b> (o que já foi perdido — a desidratação) e ③ <b class="blue">Perdas continuadas</b> (o que continua saindo: diarreia, vômito, febre). Sabendo calcular cada balde, você resolve qualquer questão de hidratação.</p>',
+  '<div class="callout info"><span class="ci">💡</span><div>Por que a <b>TRO</b> funciona mesmo com diarreia? Porque o <b>cotransporte sódio-glicose (SGLT1)</b> no intestino continua ativo: a glicose "puxa" o sódio, e o sódio "puxa" a água. Por isso a SRO tem glicose + sódio na proporção certa (osmolaridade reduzida).</div></div>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>Via oral é a preferida.</b> A via venosa fica para: <b>choque/desidratação grave</b>, <b>alteração de consciência</b>, <b>íleo/distensão</b>, <b>vômitos incoercíveis</b> ou <b>falha</b> da TRO/gastróclise.</div></div>',
+
+  '<h3>① Manutenção — método de Holliday-Segar</h3>',
+  '<div class="svg-box"><svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Regra 4-2-1 de Holliday-Segar">'+
+   '<style>.bk{font:700 14px Nunito,sans-serif;fill:#fff}.cap2{font:11px Nunito,sans-serif;fill:#cfe6ff}.kg{font:700 12px Nunito,sans-serif;fill:#ffd6e8}</style>'+
+   '<rect x="60" y="70" width="150" height="90" rx="12" fill="#ff6fa5"/><text x="135" y="110" text-anchor="middle" class="bk">4 ml/kg/h</text><text x="135" y="132" text-anchor="middle" class="bk">100 ml/kg/dia</text><text x="135" y="184" text-anchor="middle" class="kg">1º aos 10 kg</text>'+
+   '<text x="240" y="120" text-anchor="middle" style="font:700 22px Nunito;fill:#b58bd6">+</text>'+
+   '<rect x="270" y="70" width="150" height="90" rx="12" fill="#4aa6e8"/><text x="345" y="110" text-anchor="middle" class="bk">2 ml/kg/h</text><text x="345" y="132" text-anchor="middle" class="bk">50 ml/kg/dia</text><text x="345" y="184" text-anchor="middle" class="kg">10 → 20 kg</text>'+
+   '<text x="450" y="120" text-anchor="middle" style="font:700 22px Nunito;fill:#b58bd6">+</text>'+
+   '<rect x="480" y="70" width="160" height="90" rx="12" fill="#f2b84b"/><text x="560" y="110" text-anchor="middle" class="bk">1 ml/kg/h</text><text x="560" y="132" text-anchor="middle" class="bk">20 ml/kg/dia</text><text x="560" y="184" text-anchor="middle" class="kg">cada kg &gt; 20</text>'+
+   '<text x="360" y="36" text-anchor="middle" style="font:700 15px Nunito;fill:#f3e9ff">Regra "4-2-1" (por hora) · "100-50-20" (por dia)</text>'+
+  '</svg><div class="cap">Some as faixas conforme o peso da criança.</div></div>',
+  '<table><tr><th>Peso</th><th>Por dia</th><th>Por hora (4-2-1)</th></tr>',
+  '<tr><td>1º aos 10 kg</td><td><b>100 ml/kg</b></td><td><b>4 ml/kg/h</b></td></tr>',
+  '<tr><td>10 a 20 kg (cada kg acima de 10)</td><td>+ <b>50 ml/kg</b></td><td>+ <b>2 ml/kg/h</b></td></tr>',
+  '<tr><td>Acima de 20 kg (cada kg acima de 20)</td><td>+ <b>20 ml/kg</b></td><td>+ <b>1 ml/kg/h</b></td></tr></table>',
+  '<div class="callout tip"><span class="ci">✅</span><div><b>Exemplo (25 kg):</b> dia = 1000 + (10×50) + (5×20) = <b>1600 ml/dia</b>. Hora = 40 + 20 + 5 = <b>65 ml/h</b>.</div></div>',
+
+  '<h3>② Déficit — quanto já se perdeu</h3>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>Déficit (ml) = % de desidratação × peso (kg) × 10.</b> Ex.: criança de 10 kg com 10% → 10 × 10 × 10 = <b>1000 ml</b>.</div></div>',
+  '<table><tr><th>Grau (lactente)</th><th>% perda</th><th>Déficit aproximado</th></tr>',
+  '<tr><td>Leve</td><td>~5%</td><td>~50 ml/kg</td></tr>',
+  '<tr><td>Moderada</td><td>~10%</td><td>~100 ml/kg</td></tr>',
+  '<tr><td>Grave</td><td>~15%</td><td>~150 ml/kg</td></tr></table>',
+  '<p>Na terapia clássica de déficit, repõe-se em ~24h: <b>metade nas primeiras 8 horas</b> e a outra <b>metade nas 16 horas</b> seguintes (somada à manutenção).</p>',
+
+  '<h3>③ Expansão (choque)</h3>',
+  '<div class="callout info"><span class="ci">💡</span><div>No <b>choque/desidratação grave</b>: bolus de <b>20 ml/kg</b> de cristaloide isotônico (SF 0,9% ou Ringer lactato) em 20–60 min, repetindo conforme a resposta. Só depois se calcula manutenção + déficit.</div></div>'
+ ].join(''),
+
+ scores:[
+  '<h2>🎯 Fórmulas & números prontos</h2>',
+  '<h3>Manutenção (Holliday-Segar)</h3>',
+  '<table><tr><th></th><th>Volume/dia</th><th>Volume/hora</th></tr>',
+  '<tr><td>0–10 kg</td><td>100 ml/kg</td><td>4 ml/kg/h</td></tr>',
+  '<tr><td>10–20 kg</td><td>1000 ml + 50 ml/kg (&gt;10 kg)</td><td>40 + 2 ml/kg/h (&gt;10 kg)</td></tr>',
+  '<tr><td>&gt;20 kg</td><td>1500 ml + 20 ml/kg (&gt;20 kg)</td><td>60 + 1 ml/kg/h (&gt;20 kg)</td></tr></table>',
+  '<div class="callout tip"><span class="ci">✅</span><div>Exemplos rápidos: <b>8 kg</b> → 800 ml/dia (32 ml/h). <b>15 kg</b> → 1250 ml/dia (50 ml/h). <b>30 kg</b> → 1700 ml/dia (70 ml/h).</div></div>',
+
+  '<h3>Eletrólitos de manutenção</h3>',
+  '<table><tr><th>Eletrólito</th><th>Necessidade diária</th></tr>',
+  '<tr><td><b>Sódio (Na⁺)</b></td><td>2–3 mEq/kg/dia</td></tr>',
+  '<tr><td><b>Potássio (K⁺)</b></td><td>1–2 mEq/kg/dia (após diurese presente)</td></tr>',
+  '<tr><td><b>Glicose</b></td><td>SG 5% como base (evitar hipoglicemia)</td></tr></table>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Atualização importante:</b> para a maioria das crianças hospitalizadas, recomenda-se <b>solução de manutenção ISOTÔNICA</b> (ex.: SF 0,9% ou solução balanceada, com glicose e KCl) — soluções hipotônicas aumentam o risco de <b>hiponatremia</b> iatrogênica.</div></div>',
+
+  '<h3>Déficit e expansão</h3>',
+  '<div class="callout high"><span class="ci">⚡</span><div>Déficit (ml) = <b>% × peso (kg) × 10</b>. Reposição: metade em 8h + metade em 16h (+ manutenção). Choque: <b>bolus 20 ml/kg</b> de cristaloide, repetir conforme resposta.</div></div>',
+
+  '<h3>TRO — volumes (recap)</h3>',
+  '<ul><li><b>Plano B:</b> SRO <b>50–100 ml/kg em 4 horas</b>.</li>',
+  '<li><b>Plano A (manutenção das perdas):</b> &lt;1 ano 50–100 ml e 1–10 anos 100–200 ml de SRO <b>após cada evacuação</b>.</li>',
+  '<li><b>SRO osmolaridade reduzida:</b> Na⁺ 75 mEq/L, glicose 75 mmol/L, ~245 mOsm/L.</li></ul>'
+ ].join(''),
+
+ questoes:[
+  {id:"tro-q1",banca:"ENARE (estilo)",stem:"Qual o volume de <b>manutenção diária</b> (Holliday-Segar) para uma criança de <b>15 kg</b>?",
+   opts:["750 ml/dia","1250 ml/dia","1500 ml/dia","2000 ml/dia"],
+   correct:1, expl:"1000 ml (primeiros 10 kg) + 50 ml/kg × 5 kg = 1000 + 250 = <b>1250 ml/dia</b>. Por hora: 40 + 10 = 50 ml/h."},
+  {id:"tro-q2",banca:"Revalida (estilo)",stem:"Pela regra <b>4-2-1</b>, a taxa de manutenção horária de uma criança de <b>25 kg</b> é:",
+   opts:["45 ml/h","55 ml/h","65 ml/h","80 ml/h"],
+   correct:2, expl:"4 ml/kg/h × 10 = 40; 2 × 10 = 20; 1 × 5 = 5 → <b>65 ml/h</b>."},
+  {id:"tro-q3",banca:"UFRJ (estilo)",stem:"Lactente de 8 kg com desidratação estimada em <b>10%</b>. Qual o <b>déficit</b> de líquidos?",
+   opts:["400 ml","600 ml","800 ml","1200 ml"],
+   correct:2, expl:"Déficit = % × peso × 10 = 10 × 8 × 10 = <b>800 ml</b> (repor metade em 8h + metade em 16h, além da manutenção)."},
+  {id:"tro-q4",banca:"SES-RJ (estilo)",stem:"Criança de 12 kg em <b>choque</b> por desidratação grave. Qual a expansão inicial?",
+   opts:["120 ml de SF 0,9% em bolus (10 ml/kg)","240 ml de cristaloide em bolus (20 ml/kg), repetir conforme resposta","600 ml em 24h","Iniciar apenas TRO"],
+   correct:1, expl:"Expansão = <b>20 ml/kg</b> de cristaloide isotônico → 20 × 12 = <b>240 ml</b> em bolus (20–60 min), repetindo conforme a resposta clínica."},
+  {id:"tro-q5",banca:"UERJ (estilo)",stem:"Sobre a solução de <b>manutenção</b> venosa em crianças hospitalizadas, a recomendação atual é:",
+   opts:["Sempre solução hipotônica (1/5)","Preferir solução isotônica para reduzir hiponatremia","Não adicionar glicose","Não repor potássio em nenhuma situação"],
+   correct:1, expl:"A tendência atual é usar <b>soluções isotônicas</b> de manutenção (com glicose e KCl) para reduzir a <b>hiponatremia iatrogênica</b> associada às hipotônicas."}
+ ],
+
+ flashcards:[
+  {id:"tro-f1",tipo:"cloze",tag:"Manutenção",front:"Holliday-Segar/dia: {{c1::100}} ml/kg (até 10 kg) + {{c2::50}} ml/kg (10–20) + {{c3::20}} ml/kg (&gt;20).",back:"100 / 50 / 20 ml/kg/dia."},
+  {id:"tro-f2",tipo:"cloze",tag:"4-2-1",front:"Regra horária: {{c1::4}} / {{c2::2}} / {{c3::1}} ml/kg/h.",back:"4 (1ºs 10 kg) / 2 (10–20) / 1 (&gt;20) ml/kg/h."},
+  {id:"tro-f3",tipo:"qa",tag:"Déficit",front:"Fórmula do déficit de líquidos?",back:"<b>% desidratação × peso (kg) × 10</b> = déficit em ml."},
+  {id:"tro-f4",tipo:"qa",tag:"Expansão",front:"Volume de expansão no choque?",back:"<b>20 ml/kg</b> de cristaloide isotônico (SF/Ringer), repetir conforme resposta."},
+  {id:"tro-f5",tipo:"qa",tag:"Eletrólitos",front:"Necessidade diária de Na e K na manutenção?",back:"Na⁺ <b>2–3 mEq/kg/dia</b>; K⁺ <b>1–2 mEq/kg/dia</b> (após diurese)."},
+  {id:"tro-f6",tipo:"vf",tag:"Manutenção",front:"Solução hipotônica é a preferida para manutenção em crianças internadas.",back:"<b>FALSO.</b> Prefere-se <b>isotônica</b> para reduzir hiponatremia iatrogênica."},
+  {id:"tro-f7",tipo:"qa",tag:"TRO",front:"Por que a TRO funciona apesar da diarreia?",back:"Cotransporte <b>sódio-glicose (SGLT1)</b> permanece ativo: glicose puxa Na⁺, que puxa água."}
+ ],
+
+ casos:[
+  {titulo:"Caso 1 — Montando a hidratação venosa",
+   caso:"Lactente de 10 kg, desidratação moderada (~10%), tolerando mal a via oral por vômitos persistentes apesar de gastróclise. Optou-se por via venosa. Diurese presente.",
+   perguntas:[
+     {q:"Qual a manutenção diária?",a:"Holliday-Segar: 100 ml/kg × 10 = <b>1000 ml/dia</b> (~42 ml/h)."},
+     {q:"Qual o déficit a repor?",a:"% × peso × 10 = 10 × 10 × 10 = <b>1000 ml</b>; repor metade (500 ml) nas primeiras 8h e metade nas 16h seguintes, somando à manutenção."},
+     {q:"Que solução e cuidados?",a:"Solução <b>isotônica</b> com glicose; adicionar <b>KCl</b> já que há diurese; reavaliar clínica, diurese e eletrólitos. Voltar à TRO assim que tolerar."}
+   ]},
+  {titulo:"Caso 2 — Choque, depois cálculo",
+   caso:"Pré-escolar de 20 kg, diarreia profusa, agora com sinais de choque (letargia, pulso fino, enchimento capilar lento).",
+   perguntas:[
+     {q:"Primeira medida?",a:"<b>Expansão</b> com cristaloide isotônico: 20 ml/kg × 20 = <b>400 ml</b> em bolus (20–60 min), repetindo conforme resposta."},
+     {q:"Manutenção diária depois de estabilizar?",a:"1000 + 50×10 = <b>1500 ml/dia</b> (60 ml/h)."},
+     {q:"E o déficit?",a:"Estimar pela % (ex.: 10% → 20×10×10 = 2000 ml), descontando o que já foi dado na expansão; repor de forma gradual com reavaliação contínua."}
+   ]}
+ ],
+
+ fluxoDx:[
+  {t:"start", x:"Definir a via e os componentes da hidratação"},
+  {t:"decision", x:"A via oral é viável?", branches:[
+    {label:"Sim", cor:"verde", flow:[
+      {t:"end", x:"TRO — Plano A (perdas) ou Plano B (50–100 ml/kg em 4h)"}
+    ]},
+    {label:"Não (choque, íleo, consciência, vômitos incoercíveis, falha)", cor:"vermelho", flow:[
+      {t:"decision", x:"Há choque/grave?", branches:[
+        {label:"Sim", cor:"vermelho", flow:[
+          {t:"step", x:"Expansão: bolus 20 ml/kg de cristaloide, repetir conforme resposta"},
+          {t:"end", x:"Depois: manutenção (Holliday-Segar) + reposição do déficit"}
+        ]},
+        {label:"Não", cor:"dourado", flow:[
+          {t:"end", x:"Hidratação venosa: manutenção + déficit (metade em 8h + metade em 16h)"}
+        ]}
+      ]}
+    ]}
+  ]}
+ ],
+
+ fluxoConduta:[
+  {t:"start", x:"Prescrição = Manutenção + Déficit + Perdas"},
+  {t:"step", x:"Manutenção: Holliday-Segar (100-50-20 /dia · 4-2-1 /h)", info:"Ex.: 15 kg → 1250 ml/dia (50 ml/h)."},
+  {t:"step", x:"Déficit: % × peso × 10 (metade em 8h, metade em 16h)"},
+  {t:"decision", x:"Há choque?", branches:[
+    {label:"Sim", cor:"vermelho", flow:[
+      {t:"step", x:"Antes de tudo: bolus 20 ml/kg de cristaloide"},
+      {t:"end", x:"Solução ISOTÔNICA + glicose + KCl (com diurese); reavaliar e voltar à TRO"}
+    ]},
+    {label:"Não", cor:"verde", flow:[
+      {t:"end", x:"Solução ISOTÔNICA + glicose + KCl; reavaliar clínica/diurese/eletrólitos"}
+    ]}
+  ]}
+ ],
+
+ mapa:{ central:"HIDRATAÇÃO & CÁLCULOS", legenda:"manutenção + déficit + perdas", ramos:[
+   {cor:"rosa",   t:"Componentes", filhos:["Manutenção (gasto diário)","Déficit (já perdido)","Perdas continuadas"]},
+   {cor:"azul",   t:"Holliday-Segar",filhos:["100-50-20 ml/kg/dia","4-2-1 ml/kg/h","Somar as faixas de peso"]},
+   {cor:"dourado",t:"Déficit",     filhos:["% × peso × 10 (ml)","Leve 5% · Mod 10% · Grave 15%","Metade em 8h + metade em 16h"]},
+   {cor:"vermelho",t:"Expansão",   filhos:["Choque → 20 ml/kg","Cristaloide isotônico","Repetir conforme resposta"]},
+   {cor:"verde",  t:"Eletrólitos", filhos:["Na 2–3 mEq/kg/dia","K 1–2 mEq/kg/dia (com diurese)","Glicose SG 5%"]},
+   {cor:"lilas",  t:"Atualização", filhos:["Manutenção ISOTÔNICA","Evita hiponatremia","TRO sempre que possível"]}
+ ]},
+
+ vespera:[
+  '<h2>⏰ Revisão de véspera — TRO & Cálculos</h2>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>Manutenção:</b> 100-50-20 ml/kg/dia (ou 4-2-1 ml/kg/h). <b>Déficit:</b> % × peso × 10. <b>Choque:</b> bolus 20 ml/kg.</div></div>',
+  '<ul><li>15 kg → 1250 ml/dia (50 ml/h); 25 kg → 1600 ml/dia (65 ml/h).</li>',
+  '<li>Déficit reposto: <b>metade em 8h + metade em 16h</b> (+ manutenção).</li>',
+  '<li>Na 2–3 · K 1–2 mEq/kg/dia (K só com diurese).</li>',
+  '<li><b>Manutenção isotônica</b> (evita hiponatremia).</li>',
+  '<li>TRO funciona pelo <b>cotransporte Na-glicose</b>; via oral é a preferida.</li>',
+  '<li>Venosa se: choque, íleo, consciência alterada, vômitos incoercíveis ou falha da TRO/gastróclise.</li></ul>'
+ ].join(''),
+
+ dicas:[
+  '<h2>💡 Dicas & Pegadinhas</h2>',
+  '<div class="callout mne"><span class="ci">🧠</span><div><b>"4-2-1 por hora · 100-50-20 por dia."</b> E o déficit: <b>"por cento × peso × dez"</b>.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Não esqueça de <b>somar a manutenção ao déficit</b> — a banca adora a pegadinha de repor só o déficit.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Em choque, <b>expandir primeiro</b> (20 ml/kg); só depois pensar em manutenção/déficit. E preferir <b>isotônica</b> na manutenção.</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div>Confira a conta: volume/dia ÷ 24 deve bater (aprox.) com a taxa/hora pela regra 4-2-1.</div></div>'
+ ].join(''),
+
+ dominio:[
+  "Calculo a manutenção pelo Holliday-Segar (dia e hora)",
+  "Aplico a regra 4-2-1 corretamente somando as faixas de peso",
+  "Calculo o déficit por % × peso × 10 e sei repor (8h + 16h)",
+  "Sei a expansão no choque (20 ml/kg) e que vem primeiro",
+  "Conheço as necessidades de Na e K de manutenção",
+  "Sei que a manutenção isotônica reduz hiponatremia",
+  "Explico por que a TRO funciona (cotransporte Na-glicose)",
+  "Sei as indicações de via venosa vs oral"
+ ]
+});
+
+/* ================= MATÉRIA — ASMA NA INFÂNCIA (alto rendimento) ================= */
+reg({ id:"asma", temaIc:"🌬️", t:"Asma na Infância", sub:"Quadro, diagnóstico por idade, GINA, controle e crise",
+ teoria:[
+  '<h2>🌬️ Asma — a via aérea "irritável"</h2>',
+  '<p>Pense no brônquio asmático como um <b class="blue">cano sensível</b> com a parede <b>inflamada cronicamente</b>: a qualquer gatilho (vírus, alérgeno, exercício, ar frio, fumaça) ele responde de forma exagerada — a musculatura aperta (<b>broncoespasmo</b>), a parede incha (<b>edema</b>) e produz muco (<b>hipersecreção</b>). O resultado é uma obstrução ao fluxo que é <b>variável</b> e <b>reversível</b> (espontaneamente ou com broncodilatador) — essa reversibilidade é a assinatura da asma.</p>',
+  '<div class="svg-box"><svg viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Via aérea normal versus via aérea na asma">'+
+   '<style>.t1{font:700 14px Nunito,sans-serif}.s1{font:11px Nunito,sans-serif;fill:#cfe6ff}.ok{fill:#4cc38a}.bad{fill:#ef5a6f}</style>'+
+   '<text x="180" y="28" text-anchor="middle" class="t1 ok">Normal</text>'+
+   '<circle cx="180" cy="110" r="70" fill="#3a2740"/><circle cx="180" cy="110" r="46" fill="#5b4a6b"/><circle cx="180" cy="110" r="40" fill="#0e1320"/>'+
+   '<text x="180" y="200" text-anchor="middle" class="s1">lúmen amplo · parede fina</text>'+
+   '<line x1="360" y1="30" x2="360" y2="200" stroke="#5b4a6b" stroke-width="1.5" stroke-dasharray="4 4"/>'+
+   '<text x="540" y="28" text-anchor="middle" class="t1 bad">Asma (crise)</text>'+
+   '<circle cx="540" cy="110" r="70" fill="#3a2740"/><circle cx="540" cy="110" r="52" fill="#7a3550"/><circle cx="540" cy="110" r="44" fill="#5b4a6b"/><circle cx="540" cy="110" r="16" fill="#0e1320"/>'+
+   '<circle cx="534" cy="104" r="4" fill="#ffd470"/><circle cx="548" cy="116" r="3" fill="#ffd470"/><circle cx="540" cy="98" r="3" fill="#ffd470"/>'+
+   '<text x="540" y="196" text-anchor="middle" class="s1">broncoespasmo + edema + muco</text>'+
+   '<text x="540" y="212" text-anchor="middle" class="s1">→ lúmen estreito</text>'+
+  '</svg><div class="cap">Inflamação crônica + hiper-responsividade → obstrução variável e reversível.</div></div>',
+
+  '<h3>Quadro clínico</h3>',
+  '<p>Sintomas <b>recorrentes e variáveis</b>: <b>sibilância</b> ("chiado"), <b>tosse</b>, <b>dispneia</b> e <b>aperto/opressão no peito</b>. Pioram à <b>noite/madrugada</b> e com <b>gatilhos</b> (infecções virais — o mais comum em crianças, exercício, alérgenos, ar frio, riso/choro, fumaça). Caráter <b>episódico</b> com melhora entre as crises e resposta a broncodilatador apontam para asma.</p>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Pegadinha 1 — Tosse variante da asma:</b> <b>tosse crônica seca</b>, de predomínio <b>noturno</b> e/ou desencadeada por exercício/ar frio, como <b>ÚNICA manifestação</b> (sem sibilos evidentes). É causa frequentemente esquecida de tosse crônica na criança; pode responder a teste terapêutico com broncodilatador/CI.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Pegadinha 2 — Asma/broncoespasmo induzido por exercício (BIE):</b> tosse/sibilos/dispneia <b>durante ou logo após</b> o esforço (pico ~5–10 min após), com melhora em ~30–60 min. Conduta: bom controle de base + <b>SABA 10–15 min antes</b> do exercício; sintomas frequentes indicam asma mal controlada.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Pegadinha 3 — Lactente sibilante:</b> nem todo lactente que chia tem asma! Muitos são <b>sibilantes transitórios</b> (vias aéreas pequenas + viroses, melhoram com a idade). Em &lt;3 anos com sibilância recorrente, use o <b>Índice Preditivo de Asma (API)</b> para estimar o risco de asma escolar.</div></div>',
+
+  '<h3>Diagnóstico de acordo com a idade</h3>',
+  '<table><tr><th>Faixa</th><th>Como diagnosticar</th></tr>',
+  '<tr><td><b>&lt; 6 anos (sobretudo &lt;5)</b></td><td><b>Clínico:</b> padrão de sintomas recorrentes/variáveis + gatilhos + resposta ao tratamento; <b>API</b> ajuda a estratificar risco. Espirometria não é confiável nessa idade.</td></tr>',
+  '<tr><td><b>≥ 6 anos</b></td><td><b>Espirometria:</b> distúrbio <b>obstrutivo</b> (VEF1/CVF reduzido) com <b>resposta ao broncodilatador</b> (aumento do VEF1 <b>≥12%</b>). Pode-se usar variabilidade do pico de fluxo (PFE).</td></tr>',
+  '<tr><td><b>Adulto</b> (contexto)</td><td>Espirometria com reversibilidade (↑VEF1 ≥12% e ≥200 ml) e/ou variabilidade do PFE; teste de broncoprovocação se dúvida.</td></tr></table>',
+  '<div class="callout info"><span class="ci">💡</span><div>Espirometria <b>normal não exclui</b> asma (a obstrução é variável) — repetir sintomática ou prosseguir com prova terapêutica.</div></div>'
+ ].join(''),
+
+ scores:[
+  '<h2>🎯 Índices, classificações e critérios</h2>',
+  '<h3>Índice Preditivo de Asma (API) — &lt;3 anos com sibilância recorrente (≥3 episódios/ano)</h3>',
+  '<table><tr><th>Critérios MAIORES (≥1)</th><th>Critérios MENORES (≥2)</th></tr>',
+  '<tr><td>① Pai ou mãe com <b>asma</b><br>② <b>Dermatite atópica</b> (eczema) na criança</td><td>① <b>Rinite alérgica</b> diagnosticada<br>② Sibilância <b>fora de resfriados</b><br>③ <b>Eosinofilia ≥ 4%</b></td></tr></table>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>API positivo</b> = <b>1 critério maior</b> OU <b>2 menores</b> → alto risco de asma na idade escolar. API negativo torna a asma futura pouco provável.</div></div>',
+
+  '<h3>Classificação de GRAVIDADE (esquema clássico)</h3>',
+  '<table><tr><th>Tipo</th><th>Sintomas diurnos</th><th>Despertares noturnos</th></tr>',
+  '<tr><td><b>Intermitente</b></td><td>≤ 2×/semana</td><td>≤ 2×/mês</td></tr>',
+  '<tr><td><b>Persistente leve</b></td><td>&gt; 2×/semana (não diário)</td><td>3–4×/mês</td></tr>',
+  '<tr><td><b>Persistente moderada</b></td><td>Diários</td><td>&gt; 1×/semana</td></tr>',
+  '<tr><td><b>Persistente grave</b></td><td>Contínuos, limitam atividade</td><td>Frequentes/quase diários</td></tr></table>',
+  '<div class="callout info"><span class="ci">💡</span><div>A <b>GINA</b> atual prioriza avaliar o <b>CONTROLE</b> e ajustar por <b>degraus</b> — a gravidade é definida retrospectivamente pela intensidade de tratamento necessária para controlar.</div></div>',
+
+  '<h3>Classificação do CONTROLE (GINA — últimas 4 semanas)</h3>',
+  '<p>Avaliar 4 itens: ① sintomas diurnos &gt; 2×/semana; ② <b>qualquer</b> despertar noturno; ③ uso de resgate &gt; 2×/semana; ④ <b>limitação de atividade</b>.</p>',
+  '<table><tr><th>Controlada</th><th>Parcialmente controlada</th><th>Não controlada</th></tr>',
+  '<tr><td>Nenhum dos 4</td><td>1–2 dos 4</td><td>3–4 dos 4</td></tr></table>',
+
+  '<h3>Tratamento de MANUTENÇÃO — degraus GINA (foco pediátrico)</h3>',
+  '<table><tr><th>Degrau</th><th>≤ 5 anos</th><th>6–11 anos</th></tr>',
+  '<tr><td><b>1</b></td><td>SABA conforme necessidade (+ considerar CI sempre que usar SABA)</td><td>CI dose baixa sempre que usar SABA (ou CI baixa diária)</td></tr>',
+  '<tr><td><b>2</b></td><td><b>CI dose baixa diária</b> (preferencial)</td><td><b>CI dose baixa diária</b></td></tr>',
+  '<tr><td><b>3</b></td><td><b>Dobrar</b> a dose baixa de CI</td><td>CI baixa + LABA <b>ou</b> CI dose média <b>ou</b> CI + antileucotrieno</td></tr>',
+  '<tr><td><b>4</b></td><td>Manter e <b>encaminhar</b> ao especialista</td><td>CI média + LABA e <b>encaminhar</b></td></tr></table>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Atualização GINA:</b> abandonou-se o tratamento <b>só com SABA</b> — toda asma deve ter terapia <b>contendo corticoide inalatório (CI)</b>. O CI é o <b>controlador</b>; o SABA é o <b>resgate</b>. Sobe-se de degrau se não controlada; desce-se após ~3 meses controlada.</div></div>',
+
+  '<h3>Gravidade da EXACERBAÇÃO (crise)</h3>',
+  '<table><tr><th></th><th>Leve a moderada</th><th>Grave</th><th>Iminência de parada</th></tr>',
+  '<tr><td>Fala</td><td>Frases</td><td>Palavras</td><td>Não fala</td></tr>',
+  '<tr><td>Consciência</td><td>Normal/agitada</td><td>Agitada</td><td><b>Sonolência/confusão</b></td></tr>',
+  '<tr><td>SatO₂ (ar ambiente)</td><td>≥ 92–94%</td><td>&lt; 92%</td><td>&lt; 90% / cianose</td></tr>',
+  '<tr><td>Ausculta / esforço</td><td>Sibilos, leve tiragem</td><td>Tiragem, taquipneia/taquicardia</td><td><b>Tórax silencioso</b>, bradicardia</td></tr></table>',
+
+  '<h3>Critérios de INTERNAÇÃO</h3>',
+  '<div class="callout high"><span class="ci">⚡</span><div>Resposta <b>insuficiente após 1–2h</b> de tratamento; <b>necessidade persistente de O₂</b> (SatO₂ &lt; 92% em ar ambiente); crise <b>grave/iminência de parada</b>; <b>recidiva precoce</b>; fatores de risco (crise grave prévia, <b>internação/UTI/IOT</b>, uso recente de corticoide oral); exaustão; dificuldade de acesso/seguimento.</div></div>',
+
+  '<h3>Critérios de ALTA e prescrição para casa</h3>',
+  '<table><tr><th>Liberar quando</th><th>Prescrição para casa</th></tr>',
+  '<tr><td>Melhora clínica sustentada; <b>SatO₂ ≥ 94%</b> em ar ambiente; SABA espaçado (≥ 3–4h); boa técnica inalatória; alimenta/hidrata bem</td><td>① <b>SABA de resgate</b> (com espaçador) · ② <b>Corticoide oral 3–5 dias</b> (prednisolona 1–2 mg/kg/dia, máx 40 mg) se foi usado na crise · ③ <b>Iniciar/manter CI controlador</b> · ④ <b>Técnica inalatória + espaçador</b> revisados · ⑤ <b>Plano de ação escrito</b> + evitar gatilhos · ⑥ <b>Retorno</b> em 24–48h e reavaliação em 1–4 semanas</td></tr></table>'
+ ].join(''),
+
+ questoes:[
+  {id:"asm-q1",banca:"ENARE (estilo)",stem:"Escolar de 7 anos com <b>tosse seca há 8 semanas</b>, pior à noite e ao correr, sem sibilos evidentes ao exame. Ausculta normal no momento. Hipótese mais provável?",
+   opts:["Coqueluche","Tosse variante da asma","Refluxo gastroesofágico","Bronquiolite"],
+   correct:1, expl:"Tosse crônica seca, de predomínio <b>noturno</b> e desencadeada por exercício, como sintoma isolado, sugere <b>tosse variante da asma</b> — pode haver ausculta normal entre episódios. Considerar prova terapêutica/espirometria."},
+  {id:"asm-q2",banca:"Revalida (estilo)",stem:"Lactente de 2 anos com 4 episódios de sibilância no último ano. Mãe asmática e a criança tem dermatite atópica. Sobre o <b>Índice Preditivo de Asma</b>:",
+   opts:["É negativo, pois precisa de espirometria","É positivo (≥1 critério maior)","Só se aplica acima de 6 anos","Exige eosinofilia obrigatoriamente"],
+   correct:1, expl:"O API exige <b>≥1 critério maior</b> (pai/mãe com asma OU dermatite atópica) ou <b>≥2 menores</b>. Aqui há <b>dois maiores</b> → <b>API positivo</b> = alto risco de asma escolar."},
+  {id:"asm-q3",banca:"UFRJ (estilo)",stem:"Menino de 6 anos com asma. Espirometria mostra padrão obstrutivo. Qual achado <b>confirma reversibilidade</b> após broncodilatador?",
+   opts:["Queda do VEF1 ≥12%","Aumento do VEF1 ≥12%","CVF inalterada","Relação VEF1/CVF aumentada"],
+   correct:1, expl:"Reversibilidade = <b>aumento do VEF1 ≥ 12%</b> após broncodilatador (em adultos, também ≥200 ml). É a confirmação funcional clássica de asma a partir dos ~6 anos."},
+  {id:"asm-q4",banca:"SES-RJ (estilo)",stem:"Criança de 5 anos em crise asmática <b>moderada</b> (frases curtas, tiragem leve, SatO₂ 93%). Qual a conduta inicial mais adequada?",
+   opts:["Apenas oxigênio e observação","SABA inalatório por espaçador repetido + corticoide sistêmico precoce","Antibiótico e nebulização com soro","Sulfato de magnésio como primeira medida"],
+   correct:1, expl:"Crise leve-moderada: <b>SABA (salbutamol) por espaçador</b>, repetindo na 1ª hora, + <b>corticoide sistêmico precoce</b> (prednisolona 1–2 mg/kg). O₂ para manter SatO₂ ≥ 94%. Magnésio fica para a crise grave refratária."},
+  {id:"asm-q5",banca:"UERJ (estilo)",stem:"Sobre o tratamento de manutenção da asma segundo a GINA atual, é correto:",
+   opts:["Tratar asma leve apenas com SABA de horário","Toda asma deve conter corticoide inalatório (controlador)","LABA isolado é a base do tratamento","Antileucotrieno substitui o CI em todos os casos"],
+   correct:1, expl:"A GINA <b>não recomenda mais o tratamento só com SABA</b>: toda asma deve ter terapia <b>contendo corticoide inalatório</b>. O SABA é resgate; o CI é o controlador. Ajusta-se por degraus conforme o controle."}
+ ],
+
+ flashcards:[
+  {id:"asm-f1",tipo:"qa",tag:"Pegadinhas",front:"O que é a tosse variante da asma?",back:"Tosse crônica <b>seca</b>, noturna/ao exercício, como <b>único</b> sintoma (sem sibilos óbvios)."},
+  {id:"asm-f2",tipo:"qa",tag:"BIE",front:"Como manejar a asma induzida por exercício?",back:"Bom controle de base + <b>SABA 10–15 min antes</b> do exercício. Sintomas frequentes = asma mal controlada."},
+  {id:"asm-f3",tipo:"cloze",tag:"API",front:"API positivo: {{c1::1}} critério maior ou {{c2::2}} menores.",back:"Maiores: asma nos pais, dermatite atópica. Menores: rinite, sibilância fora de resfriado, eosinofilia ≥4%."},
+  {id:"asm-f4",tipo:"qa",tag:"Diagnóstico",front:"Como diagnosticar asma por idade?",back:"&lt;6 anos: <b>clínico</b> + API. ≥6 anos: <b>espirometria</b> com reversibilidade (↑VEF1 ≥12%)."},
+  {id:"asm-f5",tipo:"vf",tag:"GINA",front:"Asma leve pode ser tratada apenas com SABA de resgate.",back:"<b>FALSO.</b> GINA atual: toda asma deve conter <b>corticoide inalatório</b> (controlador)."},
+  {id:"asm-f6",tipo:"qa",tag:"Controle",front:"Quais os 4 itens do controle (GINA)?",back:"Sintomas diurnos &gt;2×/sem; despertar noturno; resgate &gt;2×/sem; limitação de atividade. 0=controlada, 1–2=parcial, 3–4=não controlada."},
+  {id:"asm-f7",tipo:"qa",tag:"Crise",front:"Tríade do manejo da crise leve-moderada?",back:"<b>SABA por espaçador</b> (repetir) + <b>corticoide sistêmico precoce</b> + <b>O₂</b> se SatO₂ baixa."}
+ ],
+
+ casos:[
+  {titulo:"Caso 1 — Lactente que chia",
+   caso:"Menino de 2 anos, 4 episódios de sibilância no último ano, sempre com 'gripes'. Mãe tem asma; a criança tem eczema. Entre os episódios fica bem e ativo.",
+   perguntas:[
+     {q:"Como avaliar o risco de asma?",a:"Aplicar o <b>Índice Preditivo de Asma (API)</b>. Há <b>2 critérios maiores</b> (asma materna + dermatite atópica) → <b>API positivo</b> = alto risco de asma na idade escolar."},
+     {q:"Já posso fechar 'asma' e fazer espirometria?",a:"Em &lt;5–6 anos o diagnóstico é <b>clínico</b> (espirometria não é confiável). O API estratifica risco e ajuda a decidir prova terapêutica com CI."},
+     {q:"Qual conduta de manutenção considerar?",a:"Se sintomas recorrentes/persistentes, <b>teste com CI dose baixa diária</b> (degrau 2 GINA ≤5 anos) e reavaliar resposta; orientar controle ambiental e plano de ação."}
+   ]},
+  {titulo:"Caso 2 — Crise no pronto-socorro",
+   caso:"Menina de 6 anos, asma conhecida, chega com dispneia, fala frases curtas, tiragem subcostal, FR elevada, sibilos difusos, SatO₂ 91% em ar ambiente.",
+   perguntas:[
+     {q:"Qual a gravidade e as primeiras medidas?",a:"Crise <b>moderada-grave</b>. <b>O₂</b> para SatO₂ ≥ 94%, <b>SABA (salbutamol) por espaçador/nebulização repetido</b> na 1ª hora, associar <b>ipratrópio</b> e <b>corticoide sistêmico precoce</b> (prednisolona 1–2 mg/kg)."},
+     {q:"E se não melhorar?",a:"Considerar <b>sulfato de magnésio IV</b> (crise grave refratária), reavaliar continuamente e preparar para possível <b>internação</b>."},
+     {q:"Quando internar?",a:"Resposta insuficiente após 1–2h, O₂ persistente (SatO₂ &lt;92% em ar ambiente), crise grave/iminência de parada, recidiva precoce ou fatores de risco (crise grave/UTI/IOT prévias)."}
+   ]}
+ ],
+
+ fluxoDx:[
+  {t:"start", x:"Criança com sibilância/tosse/dispneia recorrentes"},
+  {t:"decision", x:"Qual a idade?", branches:[
+    {label:"< 6 anos", cor:"rosa", flow:[
+      {t:"step", x:"Diagnóstico CLÍNICO: padrão recorrente/variável + gatilhos + resposta ao tratamento"},
+      {t:"decision", x:"<3 anos com sibilância recorrente?", branches:[
+        {label:"Sim", cor:"dourado", flow:[
+          {t:"step", x:"Aplicar API (maiores: asma nos pais, eczema; menores: rinite, sibilo fora de resfriado, eosinofilia ≥4%)"},
+          {t:"end", x:"API positivo → alto risco; considerar prova terapêutica com CI"}
+        ]},
+        {label:"Não", cor:"verde", flow:[
+          {t:"end", x:"Acompanhar padrão clínico + prova terapêutica"}
+        ]}
+      ]}
+    ]},
+    {label:"≥ 6 anos", cor:"azul", flow:[
+      {t:"step", x:"Espirometria: padrão obstrutivo (VEF1/CVF baixo)"},
+      {t:"decision", x:"Reversibilidade (↑VEF1 ≥12%)?", branches:[
+        {label:"Sim", cor:"verde", flow:[{t:"end", x:"Confirma asma"}]},
+        {label:"Não / normal", cor:"dourado", flow:[{t:"end", x:"Não exclui — repetir sintomática, variabilidade do PFE ou broncoprovocação"}]}
+      ]}
+    ]}
+  ]}
+ ],
+
+ fluxoConduta:[
+  {t:"start", x:"Crise asmática — avaliar gravidade (fala, consciência, SatO₂, esforço)"},
+  {t:"decision", x:"Qual a gravidade?", branches:[
+    {label:"Leve a moderada", cor:"dourado", flow:[
+      {t:"step", x:"SABA (salbutamol) por espaçador, repetir na 1ª hora"},
+      {t:"step", x:"Corticoide sistêmico precoce (prednisolona 1–2 mg/kg, máx 40 mg)"},
+      {t:"step", x:"O₂ se SatO₂ < 94%; reavaliar em 1h"},
+      {t:"decision", x:"Boa resposta?", branches:[
+        {label:"Sim", cor:"verde", flow:[{t:"end", x:"ALTA: SABA resgate + CO 3–5d + CI controlador + plano de ação + retorno 24–48h"}]},
+        {label:"Não", cor:"vermelho", flow:[{t:"end", x:"Tratar como grave / considerar internação"}]}
+      ]}
+    ]},
+    {label:"Grave", cor:"vermelho", flow:[
+      {t:"step", x:"O₂ (alvo ≥94%) + SABA + ipratrópio frequentes"},
+      {t:"step", x:"Corticoide sistêmico (oral ou IV)"},
+      {t:"step", x:"Refratária → sulfato de magnésio IV (25–50 mg/kg, máx 2 g)"},
+      {t:"end", x:"INTERNAR (O₂ persistente / resposta insuficiente / fatores de risco)"}
+    ]},
+    {label:"Iminência de parada (sonolência, tórax silencioso)", cor:"vermelho", flow:[
+      {t:"end", x:"🚨 Suporte avançado / UTI — O₂, broncodilatador contínuo, corticoide IV, MgSO₄; considerar via aérea"}
+    ]}
+  ]}
+ ],
+
+ mapa:{ central:"ASMA", legenda:"inflamação + hiper-responsividade reversível", ramos:[
+   {cor:"rosa",   t:"Quadro & pegadinhas", filhos:["Sibilo/tosse/dispneia variáveis","Tosse variante (tosse seca isolada)","BIE · lactente sibilante"]},
+   {cor:"azul",   t:"Diagnóstico",  filhos:["<6a: clínico + API","≥6a: espirometria + reversibilidade (↑VEF1 ≥12%)","Espiro normal não exclui"]},
+   {cor:"dourado",t:"API",          filhos:["1 maior ou 2 menores","Maiores: asma pais, eczema","Menores: rinite, sibilo fora de resfriado, eos ≥4%"]},
+   {cor:"verde",  t:"Controle/Gravidade",filhos:["Controle: 4 itens (GINA)","0=controlada · 1-2=parcial · 3-4=não","Gravidade pelo tratamento necessário"]},
+   {cor:"lilas",  t:"Manutenção (GINA)",filhos:["Toda asma com CI (não só SABA)","Degraus: subir se não controla","Descer após ~3 meses controlada"]},
+   {cor:"vermelho",t:"Crise",       filhos:["SABA espaçador + corticoide precoce + O₂","Grave: + ipratrópio + MgSO₄ IV","Internar; alta com plano de ação"]}
+ ]},
+
+ vespera:[
+  '<h2>⏰ Revisão de véspera — Asma</h2>',
+  '<div class="callout high"><span class="ci">⚡</span><div>Obstrução <b>variável e reversível</b>. &lt;6a: diagnóstico <b>clínico + API</b>; ≥6a: <b>espirometria</b> com ↑VEF1 ≥12%.</div></div>',
+  '<ul><li><b>Pegadinhas:</b> tosse variante (tosse seca isolada), BIE (SABA antes do exercício), lactente sibilante (usar API).</li>',
+  '<li><b>API+:</b> 1 maior (asma nos pais / eczema) OU 2 menores (rinite, sibilo fora de resfriado, eos ≥4%).</li>',
+  '<li><b>Controle (GINA):</b> 4 itens → 0 controlada, 1–2 parcial, 3–4 não controlada.</li>',
+  '<li><b>Manutenção:</b> toda asma com <b>CI</b> (não só SABA); subir/descer degraus GINA.</li>',
+  '<li><b>Crise leve-moderada:</b> SABA por espaçador + <b>corticoide sistêmico precoce</b> + O₂.</li>',
+  '<li><b>Crise grave:</b> + ipratrópio + corticoide + <b>MgSO₄ IV</b>; iminência de parada → UTI.</li>',
+  '<li><b>Internar:</b> O₂ persistente / má resposta em 1–2h / fatores de risco. <b>Alta:</b> SatO₂ ≥94%, SABA espaçado, plano de ação, CI controlador, CO 3–5d, retorno 24–48h.</li></ul>'
+ ].join(''),
+
+ dicas:[
+  '<h2>💡 Dicas & Pegadinhas</h2>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Tosse crônica seca noturna isolada</b> em criança → lembre da <b>tosse variante da asma</b> (a ausculta pode estar normal).</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Nem todo <b>lactente sibilante</b> é asmático — muitos são sibilantes transitórios. O <b>API</b> é o instrumento para estratificar risco em &lt;3 anos.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Não trate asma <b>só com SABA</b> (erro clássico hoje): o <b>corticoide inalatório</b> é o controlador. SABA é resgate.</div></div>',
+  '<div class="callout mne"><span class="ci">🧠</span><div>Crise: <b>"O-S-C"</b> = <b>O</b>xigênio + <b>S</b>ABA (espaçador, repetir) + <b>C</b>orticoide sistêmico precoce. Grave: acrescente ipratrópio e magnésio.</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div>Espirometria <b>normal não exclui</b> asma; e na alta nunca esqueça <b>técnica inalatória + espaçador</b> e <b>plano de ação por escrito</b>.</div></div>'
+ ].join(''),
+
+ dominio:[
+  "Reconheço o quadro clínico e as 3 pegadinhas (tosse variante, BIE, lactente sibilante)",
+  "Sei diagnosticar por idade (<6a clínico+API; ≥6a espirometria com reversibilidade)",
+  "Aplico o Índice Preditivo de Asma (maiores e menores)",
+  "Classifico gravidade e, sobretudo, o CONTROLE pela GINA",
+  "Conheço o tratamento de manutenção e os degraus GINA (CI é o controlador)",
+  "Classifico a exacerbação por gravidade",
+  "Domino o manejo da crise (O₂ + SABA + corticoide; grave: +ipratrópio +MgSO₄)",
+  "Sei os critérios de internação, de alta e a prescrição para casa"
+ ]
+});
+
+/* ================= MATÉRIA — DISTÚRBIOS RESPIRATÓRIOS DO RN (alto rendimento) ================= */
+reg({ id:"distresp", temaIc:"👶", t:"Distúrbios Respiratórios do RN", sub:"Membrana hialina (SDR), TTRN, SAM e outros",
+ teoria:[
+  '<h2>🫁 Desconforto respiratório no recém-nascido</h2>',
+  '<p>Ao nascer, o pulmão precisa fazer uma <b class="blue">virada</b>: deixar de estar cheio de líquido para encher-se de ar e manter os alvéolos abertos. Três coisas garantem isso: <b>surfactante</b> (reduz a tensão superficial e impede o colabamento), <b>reabsorção do líquido</b> pulmonar e um <b>bom esforço</b> respiratório. Quando algo falha, surge o <b>desconforto respiratório</b> — e o padrão de quem falhou (prematuro? cesárea? mecônio?) aponta o diagnóstico.</p>',
+  '<div class="callout info"><span class="ci">💡</span><div><b>Sinais de desconforto:</b> taquipneia (FR &gt; 60), <b>tiragem</b>/retrações, <b>batimento de asa de nariz</b>, <b>gemido expiratório</b> (grunting) e cianose. Quantifique com o <b>Boletim de Silverman-Andersen</b>.</div></div>',
+  '<div class="svg-box"><svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Alvéolo com e sem surfactante">'+
+   '<style>.t1{font:700 14px Nunito,sans-serif}.s1{font:11px Nunito,sans-serif;fill:#cfe6ff}.ok{fill:#4cc38a}.bad{fill:#ef5a6f}</style>'+
+   '<text x="180" y="26" text-anchor="middle" class="t1 ok">Com surfactante</text>'+
+   '<circle cx="180" cy="105" r="58" fill="#3a2740" stroke="#4cc38a" stroke-width="3"/><circle cx="180" cy="105" r="40" fill="#0e1320"/>'+
+   '<text x="180" y="185" text-anchor="middle" class="s1">alvéolo aberto e estável</text>'+
+   '<line x1="360" y1="30" x2="360" y2="185" stroke="#5b4a6b" stroke-width="1.5" stroke-dasharray="4 4"/>'+
+   '<text x="540" y="26" text-anchor="middle" class="t1 bad">Sem surfactante (DMH)</text>'+
+   '<circle cx="540" cy="105" r="58" fill="#3a2740" stroke="#ef5a6f" stroke-width="3"/><circle cx="540" cy="105" r="16" fill="#0e1320"/>'+
+   '<text x="540" y="185" text-anchor="middle" class="s1">colabamento → atelectasia difusa</text>'+
+  '</svg><div class="cap">A falta de surfactante (prematuro) colaba os alvéolos: é a base da Doença da Membrana Hialina.</div></div>',
+
+  '<h3>As principais causas</h3>',
+  '<h4>1) Doença da Membrana Hialina (DMH / SDR)</h4>',
+  '<p>Por <b>deficiência de surfactante</b>. Típica do <b>prematuro</b> (quanto menor a idade gestacional, maior o risco). Início <b>precoce e progressivo</b> nas primeiras horas. Raio-X: <b>infiltrado reticulogranular difuso ("vidro fosco")</b> com <b>broncogramas aéreos</b> e volume pulmonar reduzido. <b>Prevenção:</b> corticoide antenatal. <b>Tratamento:</b> <b>surfactante exógeno</b> + suporte (CPAP/ventilação).</p>',
+  '<h4>2) Taquipneia Transitória do RN (TTRN)</h4>',
+  '<p>Por <b>retardo na reabsorção do líquido pulmonar</b>. Típica do <b>termo/quase-termo</b> nascido de <b>cesárea sem trabalho de parto</b>. <b>Taquipneia precoce</b>, geralmente leve e <b>autolimitada</b> (resolve em 24–72h). Raio-X: <b>trama vascular aumentada</b>, <b>líquido nas cisuras</b>, leve hiperinsuflação. Conduta: <b>suporte</b> (O₂ se preciso) — é <b>benigna</b>.</p>',
+  '<h4>3) Síndrome de Aspiração Meconial (SAM)</h4>',
+  '<p><b>Pós-termo</b> com <b>sofrimento fetal</b> e <b>líquido meconial</b>: a aspiração causa obstrução, <b>pneumonite química</b>, aprisionamento aéreo e risco de <b>hipertensão pulmonar persistente</b>. Raio-X: <b>infiltrados grosseiros irregulares</b>, hiperinsuflação, podendo haver <b>pneumotórax</b>.</p>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Outras causas a lembrar: <b>pneumonia/sepse neonatal precoce</b> (ex.: <b>Streptococcus do grupo B</b> — pode mimetizar a DMH!), <b>pneumotórax</b>, <b>hipertensão pulmonar persistente (HPPRN)</b> e <b>hérnia diafragmática congênita</b> (abdome escavado + ausência de MV à esquerda).</div></div>'
+ ].join(''),
+
+ scores:[
+  '<h2>🎯 Boletim de Silverman e o diferencial</h2>',
+  '<h3>Boletim de Silverman-Andersen (0–10)</h3>',
+  '<p>Cinco sinais, cada um de <b>0 a 2</b>: ① movimento tóraco-abdominal · ② tiragem intercostal · ③ retração xifoide · ④ batimento de asa de nariz · ⑤ gemido expiratório.</p>',
+  '<table><tr><th>Pontuação</th><th>Interpretação</th></tr>',
+  '<tr><td><b>0</b></td><td>Sem desconforto</td></tr>',
+  '<tr><td><b>1–4</b></td><td>Desconforto leve a moderado</td></tr>',
+  '<tr><td><b>≥ 5–7</b></td><td>Desconforto importante / grave</td></tr></table>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>No Silverman, ao contrário do Apgar, <b>quanto MAIOR a nota, PIOR</b> o desconforto.</div></div>',
+
+  '<h3>Diferencial DMH × TTRN × SAM (alto rendimento)</h3>',
+  '<table><tr><th></th><th>DMH (SDR)</th><th>TTRN</th><th>SAM</th></tr>',
+  '<tr><td>Quem</td><td><b>Prematuro</b></td><td><b>Termo, cesárea</b> sem trabalho de parto</td><td><b>Pós-termo</b>, líquido meconial</td></tr>',
+  '<tr><td>Início/curso</td><td>Precoce, <b>progressivo</b></td><td>Precoce, <b>autolimitado (24–72h)</b></td><td>Precoce, pode complicar (HPP, pneumotórax)</td></tr>',
+  '<tr><td>Raio-X</td><td><b>Vidro fosco</b> + broncogramas, ↓volume</td><td><b>Trama ↑, líquido nas cisuras</b>, hiperinsuflação</td><td><b>Infiltrados grosseiros</b>, hiperinsuflação</td></tr>',
+  '<tr><td>Tratamento</td><td><b>Surfactante</b> + CPAP/VM; prevenção: corticoide antenatal</td><td><b>Suporte</b> (O₂), benigna</td><td>Suporte; vigiar HPP/pneumotórax</td></tr></table>',
+
+  '<h3>Prevenção e tratamento específicos</h3>',
+  '<ul><li><b>Corticoide antenatal</b> (betametasona/dexametasona) para gestantes com risco de parto prematuro entre <b>24 e 34 semanas</b> → acelera a maturação pulmonar e reduz DMH.</li>',
+  '<li><b>Surfactante exógeno</b> intratraqueal na DMH estabelecida/grave; <b>CPAP precoce</b> para manter os alvéolos abertos.</li>',
+  '<li>Se fatores de risco para infecção (bolsa rota prolongada, GBS+, corioamnionite) → considerar <b>antibiótico</b> e investigar sepse.</li></ul>'
+ ].join(''),
+
+ questoes:[
+  {id:"dr-q1",banca:"ENARE (estilo)",stem:"RN de 30 semanas com desconforto respiratório <b>progressivo</b> nas primeiras horas. Raio-X com infiltrado reticulogranular difuso ('vidro fosco') e broncogramas aéreos. Diagnóstico e tratamento?",
+   opts:["TTRN — suporte e observação","Doença da membrana hialina — surfactante + suporte","SAM — antibiótico","Pneumotórax — drenagem"],
+   correct:1, expl:"Prematuro + desconforto progressivo + RX em <b>vidro fosco com broncogramas</b> = <b>Doença da Membrana Hialina</b> (deficiência de surfactante). Tratar com <b>surfactante exógeno</b> + CPAP/ventilação; prevenção é corticoide antenatal."},
+  {id:"dr-q2",banca:"Revalida (estilo)",stem:"RN a termo, nascido de <b>cesárea eletiva sem trabalho de parto</b>, com taquipneia leve desde o nascimento, que melhora progressivamente em 48h. RX com líquido nas cisuras. Hipótese?",
+   opts:["Doença da membrana hialina","Taquipneia transitória do RN","Síndrome de aspiração meconial","Cardiopatia cianótica"],
+   correct:1, expl:"Termo, cesárea sem trabalho de parto, taquipneia precoce <b>autolimitada</b> + RX com <b>líquido nas cisuras</b> = <b>TTRN</b> (retardo na reabsorção do líquido pulmonar). Conduta: suporte."},
+  {id:"dr-q3",banca:"UFRJ (estilo)",stem:"RN <b>pós-termo</b>, com líquido amniótico <b>meconial</b> e sofrimento fetal, evolui com desconforto, hiperinsuflação e infiltrados grosseiros no RX. Principal complicação a temer?",
+   opts:["Hipertensão pulmonar persistente","Hipoglicemia isolada","Anemia","Estenose hipertrófica de piloro"],
+   correct:0, expl:"Quadro de <b>síndrome de aspiração meconial</b>; complicações temidas são <b>hipertensão pulmonar persistente</b> e <b>pneumotórax</b> (por aprisionamento aéreo)."},
+  {id:"dr-q4",banca:"SES-RJ (estilo)",stem:"Sobre o Boletim de Silverman-Andersen, assinale a correta:",
+   opts:["Quanto maior a nota, melhor o esforço respiratório","Avalia 5 sinais; quanto MAIOR a nota, PIOR o desconforto","É o mesmo que o Apgar","Só pode ser aplicado após 6 horas de vida"],
+   correct:1, expl:"O Silverman avalia 5 sinais (0–2 cada). Diferente do Apgar, <b>nota alta = desconforto grave</b>."},
+  {id:"dr-q5",banca:"UERJ (estilo)",stem:"Gestante com risco de parto prematuro na 30ª semana. Qual medida reduz a doença da membrana hialina no RN?",
+   opts:["Surfactante materno via oral","Corticoide antenatal (betametasona)","Antibiótico de rotina","Oxigênio materno contínuo"],
+   correct:1, expl:"<b>Corticoide antenatal</b> (24–34 semanas) acelera a maturação pulmonar fetal e reduz a incidência e gravidade da <b>DMH</b>."}
+ ],
+
+ flashcards:[
+  {id:"dr-f1",tipo:"qa",tag:"DMH",front:"DMH: quem, RX e tratamento?",back:"Prematuro; RX em <b>vidro fosco + broncogramas</b>; tratar com <b>surfactante</b> + CPAP/VM; prevenção: corticoide antenatal."},
+  {id:"dr-f2",tipo:"qa",tag:"TTRN",front:"TTRN: quem, curso e RX?",back:"Termo/cesárea sem trabalho de parto; <b>autolimitada (24–72h)</b>; RX: trama ↑, <b>líquido nas cisuras</b>. Suporte."},
+  {id:"dr-f3",tipo:"qa",tag:"SAM",front:"SAM: quem e o que temer?",back:"Pós-termo + líquido meconial + sofrimento fetal; temer <b>HPP</b> e <b>pneumotórax</b>."},
+  {id:"dr-f4",tipo:"cloze",tag:"Antenatal",front:"Corticoide antenatal entre {{c1::24}} e {{c2::34}} semanas reduz a DMH.",back:"24–34 semanas (betametasona/dexametasona)."},
+  {id:"dr-f5",tipo:"vf",tag:"Silverman",front:"No Silverman, quanto maior a nota melhor o esforço respiratório.",back:"<b>FALSO.</b> Maior nota = <b>pior</b> desconforto (≥5–7 grave)."},
+  {id:"dr-f6",tipo:"qa",tag:"Infecção",front:"Qual infecção neonatal precoce mimetiza a DMH?",back:"Pneumonia/sepse por <b>Streptococcus do grupo B (GBS)</b>."},
+  {id:"dr-f7",tipo:"qa",tag:"Sinais",front:"Cite sinais de desconforto respiratório no RN.",back:"Taquipneia (&gt;60), tiragem, batimento de asa de nariz, gemência, cianose."}
+ ],
+
+ casos:[
+  {titulo:"Caso 1 — Prematuro que piora",
+   caso:"RN de 31 semanas, parto sem corticoide antenatal, com gemência, tiragem e taquipneia que se intensificam nas primeiras 4 horas. SatO₂ caindo. RX: infiltrado reticulogranular difuso com broncogramas.",
+   perguntas:[
+     {q:"Diagnóstico?",a:"<b>Doença da Membrana Hialina (SDR)</b> por deficiência de surfactante — quadro precoce e <b>progressivo</b> no prematuro, com RX clássico em vidro fosco."},
+     {q:"Conduta?",a:"Suporte com <b>CPAP precoce</b> e <b>surfactante exógeno</b> intratraqueal; monitorização e ventilação conforme gravidade. Avaliar infecção associada."},
+     {q:"Como poderia ter sido prevenido?",a:"<b>Corticoide antenatal</b> (betametasona) na gestante com risco de prematuridade entre 24–34 semanas."}
+   ]},
+  {titulo:"Caso 2 — Taquipneia após cesárea",
+   caso:"RN a termo, cesárea eletiva sem trabalho de parto, com taquipneia (FR 75) e leve tiragem desde o nascimento, sem piora, bom estado geral. RX com líquido nas cisuras e trama vascular aumentada.",
+   perguntas:[
+     {q:"Hipótese mais provável?",a:"<b>Taquipneia Transitória do RN (TTRN)</b> — retardo na reabsorção do líquido pulmonar, comum em cesárea sem trabalho de parto."},
+     {q:"Conduta e prognóstico?",a:"<b>Suporte</b> (O₂ se necessário), observação; quadro <b>benigno e autolimitado</b> (resolve em 24–72h). Vigiar sinais de infecção/piora."}
+   ]}
+ ],
+
+ fluxoDx:[
+  {t:"start", x:"RN com desconforto respiratório (taquipneia, tiragem, gemência)"},
+  {t:"step", x:"Avaliar idade gestacional, tipo de parto e líquido amniótico + RX de tórax", info:"Silverman quantifica a gravidade; RX e história costumam definir o padrão."},
+  {t:"decision", x:"Qual o cenário?", branches:[
+    {label:"Prematuro + progressivo + vidro fosco", cor:"rosa", flow:[
+      {t:"end", x:"Doença da Membrana Hialina → surfactante + CPAP/VM"}
+    ]},
+    {label:"Termo/cesárea sem TP + autolimitado + líquido nas cisuras", cor:"azul", flow:[
+      {t:"end", x:"TTRN → suporte (benigna)"}
+    ]},
+    {label:"Pós-termo + mecônio + infiltrados grosseiros", cor:"dourado", flow:[
+      {t:"step", x:"SAM → suporte; vigiar HPP/pneumotórax"},
+      {t:"end", x:"Pneumotórax/HPP? → conduta específica (drenagem, suporte ventilatório)"}
+    ]},
+    {label:"Fatores de risco infeccioso (bolsa rota, GBS+, corioamnionite)", cor:"vermelho", flow:[
+      {t:"end", x:"Pneumonia/sepse precoce → hemocultura + antibiótico empírico"}
+    ]}
+  ]}
+ ],
+
+ fluxoConduta:[
+  {t:"start", x:"Estabilizar: via aérea, O₂/CPAP, temperatura, glicemia"},
+  {t:"decision", x:"Diagnóstico provável?", branches:[
+    {label:"DMH", cor:"rosa", flow:[
+      {t:"step", x:"CPAP precoce + surfactante exógeno"},
+      {t:"end", x:"Ventilação conforme gravidade; checar infecção"}
+    ]},
+    {label:"TTRN", cor:"azul", flow:[
+      {t:"end", x:"Suporte e observação — resolve em 24–72h"}
+    ]},
+    {label:"SAM", cor:"dourado", flow:[
+      {t:"step", x:"Suporte ventilatório; vigiar HPP e pneumotórax"},
+      {t:"end", x:"Tratar complicações (drenagem, manejo da HPP)"}
+    ]},
+    {label:"Suspeita de infecção", cor:"vermelho", flow:[
+      {t:"end", x:"Hemocultura + antibiótico empírico precoce"}
+    ]}
+  ]}
+ ],
+
+ mapa:{ central:"DISTÚRBIOS RESPIRATÓRIOS DO RN", legenda:"o padrão revela a causa", ramos:[
+   {cor:"verde",  t:"Sinais",  filhos:["Taquipneia >60","Tiragem, asa de nariz, gemência","Silverman: nota alta = pior"]},
+   {cor:"rosa",   t:"DMH (SDR)",filhos:["Prematuro, progressivo","RX vidro fosco + broncogramas","Surfactante; prevenir c/ corticoide antenatal"]},
+   {cor:"azul",   t:"TTRN",    filhos:["Termo/cesárea sem TP","Autolimitada 24–72h","RX líquido nas cisuras"]},
+   {cor:"dourado",t:"SAM",     filhos:["Pós-termo + mecônio","Infiltrados grosseiros","Temer HPP e pneumotórax"]},
+   {cor:"vermelho",t:"Outros", filhos:["Pneumonia/sepse (GBS)","Pneumotórax / HPPRN","Hérnia diafragmática"]},
+   {cor:"lilas",  t:"Manejo",  filhos:["O₂/CPAP, termorregulação","Surfactante na DMH","Antibiótico se infecção"]}
+ ]},
+
+ vespera:[
+  '<h2>⏰ Revisão de véspera — Distúrbios respiratórios do RN</h2>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>DMH</b> = prematuro + vidro fosco → surfactante. <b>TTRN</b> = termo/cesárea, autolimitada. <b>SAM</b> = pós-termo + mecônio → temer HPP/pneumotórax.</div></div>',
+  '<ul><li><b>Silverman:</b> nota alta = desconforto grave (≠ Apgar).</li>',
+  '<li><b>Corticoide antenatal</b> 24–34 sem previne DMH.</li>',
+  '<li><b>GBS</b> pode mimetizar DMH — pensar em infecção com fatores de risco.</li>',
+  '<li>RX: DMH = vidro fosco/broncogramas · TTRN = líquido nas cisuras · SAM = infiltrados grosseiros.</li>',
+  '<li>Manejo geral: O₂/CPAP, termorregulação, glicemia; específico conforme a causa.</li></ul>'
+ ].join(''),
+
+ dicas:[
+  '<h2>💡 Dicas & Pegadinhas</h2>',
+  '<div class="callout mne"><span class="ci">🧠</span><div><b>"PRÉ-maturo → membrana; TERMO-cesárea → transitória; PÓS-termo → mecônio."</b></div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>RX em <b>vidro fosco com broncogramas</b> = DMH. <b>Líquido nas cisuras</b> = TTRN. Infiltrados grosseiros + hiperinsuflação = SAM.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Pneumonia por <b>GBS</b> pode ter quadro e RX <b>idênticos à DMH</b> — na dúvida com fatores de risco, cobrir infecção.</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div>Silverman: <b>maior = pior</b>. Não confunda com o Apgar (onde maior é melhor).</div></div>'
+ ].join(''),
+
+ dominio:[
+  "Reconheço os sinais de desconforto e aplico o Silverman (nota alta = pior)",
+  "Diferencio DMH, TTRN e SAM por população, curso e raio-X",
+  "Sei o tratamento da DMH (surfactante + CPAP) e a prevenção (corticoide antenatal)",
+  "Sei que a TTRN é benigna e autolimitada",
+  "Conheço as complicações da SAM (HPP, pneumotórax)",
+  "Lembro que GBS pode mimetizar a DMH",
+  "Sei o manejo geral de estabilização do RN com desconforto"
+ ]
+});
+
+/* ================= MATÉRIA — SÍFILIS CONGÊNITA (alto rendimento) ================= */
+reg({ id:"sifilis", temaIc:"🧫", t:"Sífilis Congênita", sub:"Transmissão, quadro, VDRL, critérios e tratamento",
+ teoria:[
+  '<h2>🦠 Sífilis Congênita</h2>',
+  '<p>O <b>Treponema pallidum</b> atravessa a placenta e infecta o feto — pode ocorrer em <b>qualquer fase</b> da gestação e em <b>qualquer estágio</b> da sífilis materna (o risco é maior na sífilis <b>recente/não tratada</b>). É uma doença <b>evitável</b>: o pré-natal com triagem e o tratamento materno adequado interrompem a transmissão. Por isso é <b>agravo de notificação compulsória</b> e tema certo nas provas.</p>',
+  '<div class="callout high"><span class="ci">⚡</span><div>A chave da prova quase sempre é: <b>a mãe foi tratada ADEQUADAMENTE?</b> Disso depende toda a investigação e o tratamento do RN.</div></div>',
+
+  '<h3>Quadro clínico</h3>',
+  '<p><b>Precoce (até 2 anos):</b> a maioria nasce <b>assintomática</b>. Quando há sinais: <b>hepatoesplenomegalia</b>, icterícia, <b>rinite serossanguinolenta</b> ("coriza" persistente — <i>snuffles</i>), <b>lesões cutâneas</b> (incluindo <b>pênfigo palmoplantar</b>), <b>pseudoparalisia de Parrot</b> (dor óssea por periostite/osteocondrite), anemia, plaquetopenia, exantema e baixo peso.</p>',
+  '<p><b>Tardia (após 2 anos):</b> sequelas — <b>tríade de Hutchinson</b> (dentes de Hutchinson + <b>ceratite intersticial</b> + <b>surdez</b> neurossensorial), <b>nariz em sela</b>, <b>tíbia em sabre</b>, fronte olímpica e rágades.</p>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Pegadinhas clássicas:</b> a <b>rinite serossanguinolenta</b> e o <b>pênfigo palmoplantar</b> são muito sugestivos; e a maioria dos RN é <b>assintomática</b> ao nascer — por isso não se confia só no exame físico.</div></div>',
+
+  '<h3>Diagnóstico — os testes</h3>',
+  '<ul><li><b>Testes não treponêmicos</b> (<b>VDRL</b>/RPR): quantitativos (titulam), úteis para <b>diagnóstico, comparação mãe-RN e seguimento</b> do tratamento.</li>',
+  '<li><b>Testes treponêmicos</b> (FTA-ABS, TPHA, teste rápido): confirmam o contato; permanecem positivos por toda a vida.</li>',
+  '<li>No RN, colher <b>VDRL de sangue periférico</b> (não do cordão). Um VDRL do RN com título <b>≥ 2 diluições maior</b> que o materno é muito sugestivo, mas a decisão se baseia sobretudo no <b>tratamento materno</b>.</li></ul>',
+  '<div class="callout info"><span class="ci">💡</span><div><b>Avaliação do RN sob investigação:</b> VDRL, <b>hemograma</b>, <b>análise do líquor</b> (VDRL no LCR, células e proteínas — para <b>neurossífilis</b>), <b>radiografia de ossos longos</b> (periostite/osteocondrite), avaliação hepática e, quando indicado, exames complementares conforme o PCDT.</div></div>'
+ ].join(''),
+
+ scores:[
+  '<h2>🎯 Critérios e tratamento (base MS/PCDT-IST)</h2>',
+  '<h3>O que é tratamento materno ADEQUADO?</h3>',
+  '<div class="callout high"><span class="ci">⚡</span><div>Considera-se adequado quando: <b>penicilina benzatina</b> na dose correta <b>para o estágio</b> da sífilis, <b>iniciada e concluída até 30 dias antes do parto</b>, com <b>queda adequada dos títulos</b> (resposta) e parceria tratada. <b>Qualquer falha</b> nesses itens = tratamento <b>inadequado</b> → investigar e tratar o RN.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Tratamento com outro antibiótico que não a <b>penicilina</b>, incompleto, tardio (&lt; 30 dias do parto) ou sem documentação de queda de títulos é considerado <b>INADEQUADO</b> para fins de sífilis congênita.</div></div>',
+
+  '<h3>Conduta conforme o tratamento materno</h3>',
+  '<table><tr><th>Cenário</th><th>Conduta no RN</th></tr>',
+  '<tr><td><b>Mãe adequadamente tratada</b>, RN assintomático e VDRL do RN não reagente ou ≤ materno</td><td>Acompanhamento clínico-laboratorial; seguir VDRL seriado. (Conforme PCDT, considerar dose única de penicilina benzatina em situações específicas de seguimento não garantido.)</td></tr>',
+  '<tr><td><b>Mãe NÃO/inadequadamente tratada</b></td><td><b>Investigar completamente</b> (VDRL, hemograma, LCR, RX ossos longos) e <b>tratar</b> o RN</td></tr>',
+  '<tr><td><b>RN sintomático</b> ou <b>exames alterados</b> ou <b>LCR alterado (neurossífilis)</b></td><td><b>Tratar</b> — esquema venoso (ver abaixo)</td></tr></table>',
+
+  '<h3>Tratamento do RN (penicilina é a regra)</h3>',
+  '<table><tr><th>Situação</th><th>Esquema</th></tr>',
+  '<tr><td><b>Neurossífilis</b> (LCR alterado)</td><td><b>Penicilina cristalina IV</b> 50.000 UI/kg/dose, por <b>10 dias</b> (intervalo conforme a idade pós-natal)</td></tr>',
+  '<tr><td>Sem neurossífilis, com indicação de tratar</td><td>Penicilina cristalina IV <b>ou</b> <b>procaína IM</b> 50.000 UI/kg/dia por <b>10 dias</b></td></tr>',
+  '<tr><td>Situações específicas de seguimento (RN assintomático, exames normais, mãe adequada)</td><td>Penicilina <b>benzatina</b> 50.000 UI/kg <b>dose única</b> (conforme PCDT), com seguimento garantido</td></tr></table>',
+  '<div class="callout tip"><span class="ci">✅</span><div><b>Seguimento:</b> VDRL seriado (ex.: 1, 3, 6, 12, 18 meses) esperando <b>queda dos títulos</b>; avaliação auditiva, oftalmológica e neurológica. <b>Notificar</b> o caso.</div></div>'
+ ].join(''),
+
+ questoes:[
+  {id:"sif-q1",banca:"ENARE (estilo)",stem:"RN assintomático cuja mãe teve sífilis tratada com <b>azitromicina</b> no 3º trimestre. Quanto à sífilis congênita, o tratamento materno é considerado:",
+   opts:["Adequado, pois tratou no pré-natal","Inadequado — não foi penicilina","Adequado se VDRL caiu","Irrelevante para o RN"],
+   correct:1, expl:"Só a <b>penicilina</b> é considerada tratamento adequado para fins de sífilis congênita. Tratamento com outro antibiótico = <b>inadequado</b> → investigar e tratar o RN."},
+  {id:"sif-q2",banca:"Revalida (estilo)",stem:"Qual achado é uma manifestação <b>precoce</b> típica da sífilis congênita?",
+   opts:["Tríade de Hutchinson","Rinite serossanguinolenta e pênfigo palmoplantar","Nariz em sela","Tíbia em sabre"],
+   correct:1, expl:"<b>Rinite serossanguinolenta</b> (snuffles) e <b>pênfigo palmoplantar</b> são manifestações <b>precoces</b>. A tríade de Hutchinson, nariz em sela e tíbia em sabre são <b>tardias</b>."},
+  {id:"sif-q3",banca:"UFRJ (estilo)",stem:"Na investigação de sífilis congênita, qual exame é essencial para detectar <b>neurossífilis</b> e definir o esquema de tratamento?",
+   opts:["Hemograma","Radiografia de ossos longos","Análise do líquor (VDRL, células, proteínas)","Ultrassom abdominal"],
+   correct:2, expl:"A <b>punção lombar</b> com análise do <b>LCR</b> (VDRL, celularidade, proteínas) define <b>neurossífilis</b> → indica <b>penicilina cristalina IV por 10 dias</b>."},
+  {id:"sif-q4",banca:"SES-RJ (estilo)",stem:"Para coletar o teste não treponêmico do recém-nascido na investigação de sífilis congênita, deve-se usar:",
+   opts:["Sangue do cordão umbilical","Sangue periférico do RN","Apenas o resultado materno","Líquor exclusivamente"],
+   correct:1, expl:"Colher <b>VDRL de sangue periférico do RN</b> (não do cordão, que pode ter contaminação/transferência passiva), comparando com o título materno."},
+  {id:"sif-q5",banca:"UERJ (estilo)",stem:"RN com sífilis congênita e <b>líquor alterado</b>. Qual o tratamento de escolha?",
+   opts:["Penicilina benzatina dose única","Penicilina cristalina IV por 10 dias","Ceftriaxona oral 7 dias","Azitromicina 5 dias"],
+   correct:1, expl:"Neurossífilis (LCR alterado) → <b>penicilina cristalina IV 50.000 UI/kg/dose por 10 dias</b>. Benzatina dose única não trata neurossífilis."}
+ ],
+
+ flashcards:[
+  {id:"sif-f1",tipo:"qa",tag:"Transmissão",front:"Como e quando ocorre a transmissão da sífilis congênita?",back:"<b>Transplacentária</b>, em qualquer fase da gestação e qualquer estágio materno; maior risco na sífilis <b>recente/não tratada</b>."},
+  {id:"sif-f2",tipo:"qa",tag:"Precoce",front:"Manifestações precoces clássicas?",back:"Hepatoesplenomegalia, <b>rinite serossanguinolenta</b>, <b>pênfigo palmoplantar</b>, pseudoparalisia de Parrot, anemia/plaquetopenia."},
+  {id:"sif-f3",tipo:"qa",tag:"Tardia",front:"O que compõe a tríade de Hutchinson?",back:"<b>Dentes de Hutchinson + ceratite intersticial + surdez</b> (tardia). Também: nariz em sela, tíbia em sabre."},
+  {id:"sif-f4",tipo:"vf",tag:"Tratamento materno",front:"Tratar a gestante com azitromicina é adequado para evitar sífilis congênita.",back:"<b>FALSO.</b> Só a <b>penicilina</b> é adequada; o resto = inadequado → tratar o RN."},
+  {id:"sif-f5",tipo:"cloze",tag:"Adequado",front:"Tratamento materno adequado: penicilina, dose certa p/ estágio, concluído até {{c1::30}} dias antes do parto, com queda de títulos.",back:"30 dias antes do parto + resposta sorológica + parceria tratada."},
+  {id:"sif-f6",tipo:"qa",tag:"Diagnóstico",front:"Qual teste titula e serve para seguimento?",back:"O <b>não treponêmico (VDRL/RPR)</b> — quantitativo. Colher do <b>sangue periférico</b> do RN, não do cordão."},
+  {id:"sif-f7",tipo:"qa",tag:"Neurossífilis",front:"Tratamento da neurossífilis no RN?",back:"<b>Penicilina cristalina IV 50.000 UI/kg/dose por 10 dias</b>."}
+ ],
+
+ casos:[
+  {titulo:"Caso 1 — Mãe sem tratamento documentado",
+   caso:"RN a termo, assintomático. A mãe teve VDRL reagente no 3º trimestre, mas não há registro de tratamento com penicilina. VDRL do RN reagente com título 2 diluições acima do materno.",
+   perguntas:[
+     {q:"O tratamento materno foi adequado?",a:"<b>Não</b> — sem penicilina documentada e sem comprovação de resposta. Para fins de sífilis congênita, é tratamento <b>inadequado</b>."},
+     {q:"Qual a investigação no RN?",a:"<b>Avaliação completa</b>: VDRL (já reagente), hemograma, <b>análise do líquor</b>, <b>RX de ossos longos</b> e avaliação hepática; rastrear acometimentos."},
+     {q:"Conduta?",a:"<b>Tratar</b> o RN (penicilina cristalina IV ou procaína por 10 dias; cristalina IV se neurossífilis). <b>Notificar</b> e programar seguimento com VDRL seriado."}
+   ]},
+  {titulo:"Caso 2 — Sinais ao nascer",
+   caso:"RN com hepatoesplenomegalia, icterícia, coriza serossanguinolenta e lesões bolhosas em palmas e plantas. Mãe com sífilis não tratada.",
+   perguntas:[
+     {q:"Quais sinais sugerem sífilis congênita precoce?",a:"<b>Hepatoesplenomegalia</b>, <b>rinite serossanguinolenta</b> e <b>pênfigo palmoplantar</b> — achados precoces muito sugestivos."},
+     {q:"Como confirmar e estadiar?",a:"VDRL do RN + treponêmico; <b>LCR</b> (neurossífilis), <b>RX ossos longos</b>, hemograma e função hepática."},
+     {q:"Tratamento?",a:"<b>Penicilina</b> por 10 dias (cristalina IV se neurossífilis/exames alterados); notificar e seguir com VDRL seriado e avaliações auditiva/oftalmológica/neurológica."}
+   ]}
+ ],
+
+ fluxoDx:[
+  {t:"start", x:"Gestante/RN com exposição à sífilis"},
+  {t:"decision", x:"A mãe foi tratada ADEQUADAMENTE? (penicilina, dose p/ estágio, até 30d antes do parto, com queda de títulos)", branches:[
+    {label:"Sim", cor:"verde", flow:[
+      {t:"step", x:"Comparar VDRL do RN (sangue periférico) com o materno"},
+      {t:"decision", x:"RN sintomático ou VDRL ≥2 diluições > materno?", branches:[
+        {label:"Não", cor:"verde", flow:[{t:"end", x:"Acompanhamento clínico-laboratorial (VDRL seriado)"}]},
+        {label:"Sim", cor:"vermelho", flow:[{t:"end", x:"Investigar (LCR, RX, hemograma) e tratar"}]}
+      ]}
+    ]},
+    {label:"Não / inadequado", cor:"vermelho", flow:[
+      {t:"step", x:"Investigação completa: VDRL, hemograma, LCR, RX ossos longos, função hepática"},
+      {t:"end", x:"TRATAR o RN + notificar"}
+    ]}
+  ]}
+ ],
+
+ fluxoConduta:[
+  {t:"start", x:"Decisão de tratamento do RN"},
+  {t:"decision", x:"Há neurossífilis (LCR alterado)?", branches:[
+    {label:"Sim", cor:"vermelho", flow:[
+      {t:"end", x:"Penicilina CRISTALINA IV 50.000 UI/kg/dose por 10 dias"}
+    ]},
+    {label:"Não, mas há indicação de tratar (mãe inadequada / RN sintomático / exames alterados)", cor:"dourado", flow:[
+      {t:"end", x:"Penicilina cristalina IV ou procaína IM 50.000 UI/kg/dia por 10 dias"}
+    ]},
+    {label:"RN assintomático, exames normais, mãe adequada", cor:"verde", flow:[
+      {t:"step", x:"Acompanhamento; conforme PCDT, considerar benzatina dose única se seguimento não garantido"},
+      {t:"end", x:"VDRL seriado + avaliações auditiva/oftalmo/neuro + notificar"}
+    ]}
+  ]}
+ ],
+
+ mapa:{ central:"SÍFILIS CONGÊNITA", legenda:"a chave é o tratamento materno", ramos:[
+   {cor:"rosa",   t:"Transmissão", filhos:["Transplacentária","Qualquer fase da gestação","Maior risco: sífilis recente"]},
+   {cor:"azul",   t:"Precoce",    filhos:["Hepatoesplenomegalia","Rinite serossanguinolenta","Pênfigo palmoplantar · Parrot"]},
+   {cor:"lilas",  t:"Tardia",     filhos:["Tríade de Hutchinson","Nariz em sela","Tíbia em sabre"]},
+   {cor:"dourado",t:"Diagnóstico",filhos:["VDRL (titula, seguimento)","Treponêmico confirma","RN: sangue periférico + LCR + RX"]},
+   {cor:"verde",  t:"Mãe adequada?",filhos:["Penicilina, dose p/ estágio","Até 30d antes do parto","Queda de títulos + parceria"]},
+   {cor:"vermelho",t:"Tratamento",filhos:["Penicilina é a regra","Neurossífilis: cristalina IV 10d","Notificação compulsória"]}
+ ]},
+
+ vespera:[
+  '<h2>⏰ Revisão de véspera — Sífilis congênita</h2>',
+  '<div class="callout high"><span class="ci">⚡</span><div>A pergunta-chave: <b>mãe tratada adequadamente?</b> = penicilina, dose p/ estágio, <b>até 30 dias antes do parto</b>, com queda de títulos.</div></div>',
+  '<ul><li><b>Precoce:</b> hepatoesplenomegalia, <b>rinite serossanguinolenta</b>, <b>pênfigo palmoplantar</b>, Parrot.</li>',
+  '<li><b>Tardia:</b> tríade de Hutchinson (dentes + ceratite + surdez), nariz em sela, tíbia em sabre.</li>',
+  '<li><b>VDRL</b> titula e segue; colher do <b>sangue periférico</b> do RN (não cordão).</li>',
+  '<li>Investigação: VDRL, hemograma, <b>LCR</b>, <b>RX ossos longos</b>.</li>',
+  '<li><b>Neurossífilis</b> → <b>penicilina cristalina IV 50.000 UI/kg/dose × 10 dias</b>.</li>',
+  '<li>Só <b>penicilina</b> conta como tratamento materno adequado. <b>Notificação compulsória</b>.</li></ul>'
+ ].join(''),
+
+ dicas:[
+  '<h2>💡 Dicas & Pegadinhas</h2>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Mãe tratada com <b>qualquer coisa que não seja penicilina</b> (ex.: azitromicina) = <b>inadequado</b> → investigar e tratar o RN.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>A maioria dos RN é <b>assintomática</b> ao nascer — não exclua sífilis pelo exame físico normal.</div></div>',
+  '<div class="callout mne"><span class="ci">🧠</span><div><b>Precoce</b> = "snuffles + pênfigo palmoplantar"; <b>tardia</b> = Hutchinson + nariz em sela + tíbia em sabre.</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div>Sempre lembrar de <b>LCR</b> (neurossífilis) e <b>RX de ossos longos</b> na investigação — definem o esquema e a gravidade.</div></div>'
+ ].join(''),
+
+ dominio:[
+  "Sei a via e o momento da transmissão da sífilis congênita",
+  "Diferencio manifestações precoces e tardias (Hutchinson)",
+  "Reconheço rinite serossanguinolenta e pênfigo palmoplantar",
+  "Entendo VDRL × teste treponêmico e a coleta no sangue periférico",
+  "Defino tratamento materno adequado (penicilina, 30 dias, títulos)",
+  "Sei a investigação do RN (VDRL, hemograma, LCR, RX ossos longos)",
+  "Domino o tratamento (penicilina; cristalina IV 10d na neurossífilis)",
+  "Lembro da notificação compulsória e do seguimento com VDRL seriado"
+ ]
+});
+
 /* =====================================================================
    MOTOR DE RENDERIZAÇÃO E LÓGICA (chunk D)
    ===================================================================== */
@@ -1652,11 +2960,11 @@ function bumpStreak(){
 }
 function award(type,times){
   times=times||1;
-  var before=xpToAgeMonths(STATE.xp);
+  var before=childAgeMonths();
   var gain=(XP_RULES[type]||0)*times;
   if(gain>0){ STATE.xp+=gain; }
   bumpStreak();
-  var after=xpToAgeMonths(STATE.xp);
+  var after=childAgeMonths();
   if(after>before){ celebrate("🎉 A criança cresceu! Agora tem "+fmtAge(after)+"."); }
   checkAchievements();
   refreshTop();
@@ -1748,21 +3056,28 @@ function render(){
 
 /* ---- Card fixo da criança (reutilizável) ---- */
 function childCardHTML(){
-  var m=xpToAgeMonths(STATE.xp), st=stageFor(m), g=growthFor(m), nx=xpForNextAge(STATE.xp);
+  var raw=xpToAgeMonths(STATE.xp), m=childAgeMonths(), st=stageFor(m), g=growthFor(m), nx=xpForNextAge(STATE.xp);
   var vacCount=0,vacTotal=0; VACINAS.forEach(function(v){ v.items.forEach(function(){vacTotal++; if(v.m<=m)vacCount++;}); });
   var marcoAtt=0; MARCOS.forEach(function(k){ if(k.m<=m)marcoAtt++; });
   var vacPct=Math.round(vacCount/vacTotal*100), devPct=Math.round(marcoAtt/MARCOS.length*100);
-  var toGo=nx?(nx[0]-STATE.xp):0;
+  var done=matConcluidas(), total=allMatTotal(), modPct=total?Math.round(done/total*100):0;
+  var C=2*Math.PI*34, off=C*(1-(total?done/total:0));
   var nm=STATE.child.name||"Seu paciente";
+  var lockTop=!tudoConcluido() && (raw>=AGE_CAP_PRE || (nx && nx[1]>AGE_CAP_PRE));
+  var nextHTML;
+  if(tudoConcluido()){ nextHTML = nx ? ('⭐ Faltam <b>'+(nx[0]-STATE.xp)+' XP</b> para '+fmtAge(nx[1])) : '🏆 Desenvolvimento completo — criança formada!'; }
+  else if(lockTop){ nextHTML = '📱 Conclua <b>todos os módulos</b> ('+done+'/'+total+') para a criança chegar à adolescência!'; }
+  else { nextHTML = nx ? ('⭐ Faltam <b>'+(nx[0]-STATE.xp)+' XP</b> para '+fmtAge(nx[1])) : '🌟 Continue estudando!'; }
   return '<div class="child-card glass">'+
-    '<div class="cc-avatar"><div class="cc-emoji">'+st.emoji+'</div><div class="cc-ring"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" class="ring-bg"/><circle cx="40" cy="40" r="34" class="ring-fg" style="stroke-dasharray:'+(2*Math.PI*34)+';stroke-dashoffset:'+(2*Math.PI*34*(1-(toGo&&nx?clamp((STATE.xp-(AGE_XP[Math.max(0,findAgeIdx()-1)][0]))/((nx[0]-(AGE_XP[Math.max(0,findAgeIdx()-1)][0]))||1),0,1):1)))+'"/></svg></div></div>'+
+    '<div class="cc-avatar" title="Anel = módulos concluídos"><div class="cc-emoji">'+st.emoji+'</div><div class="cc-ring"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" class="ring-bg"/><circle cx="40" cy="40" r="34" class="ring-fg" style="stroke-dasharray:'+C+';stroke-dashoffset:'+off+'"/></svg></div></div>'+
     '<div class="cc-body"><div class="cc-name">'+esc(nm)+' <span class="cc-stage">'+st.label+'</span></div>'+
     '<div class="cc-age">📅 '+fmtAge(m)+' &nbsp;·&nbsp; ⚖️ '+g.peso+' kg &nbsp;·&nbsp; 📏 '+g.altura+' cm</div>'+
     '<div class="cc-bars">'+
+      '<div class="ccb"><span>📚 Módulos</span><div class="bar"><i style="width:'+modPct+'%"></i></div><b>'+done+'/'+total+'</b></div>'+
       '<div class="ccb"><span>💉 Vacinas</span><div class="bar"><i style="width:'+vacPct+'%"></i></div><b>'+vacPct+'%</b></div>'+
       '<div class="ccb"><span>🧠 Desenvolvimento</span><div class="bar"><i style="width:'+devPct+'%"></i></div><b>'+devPct+'%</b></div>'+
     '</div>'+
-    '<div class="cc-next">'+(nx?('⭐ Faltam <b>'+toGo+' XP</b> para '+fmtAge(nx[1])):'🏆 Desenvolvimento completo!')+'</div>'+
+    '<div class="cc-next">'+nextHTML+'</div>'+
     '</div></div>';
 }
 function findAgeIdx(){ var idx=0; for(var i=0;i<AGE_XP.length;i++){ if(STATE.xp>=AGE_XP[i][0]) idx=i; } return idx; }
@@ -2071,7 +3386,7 @@ function renderNotes(c,mat){
 
 /* ---- CADERNETA ---- */
 function renderCaderneta(m){
-  var months=xpToAgeMonths(STATE.xp), st=stageFor(months), g=growthFor(months);
+  var months=childAgeMonths(), st=stageFor(months), g=growthFor(months);
   m.innerHTML=
    '<div class="page-head"><h1 class="display">👶 Caderneta Virtual da Criança</h1><p class="muted">Seu paciente cresce conforme você estuda. Dados de vacinas (PNI) e marcos (SBP) reais e atualizados.</p></div>'+
    childCardHTML()+
