@@ -2436,19 +2436,63 @@ reg({ id:"asma", temaIc:"🌬️", t:"Asma na Infância", sub:"Quadro, diagnóst
   '<tr><td><b>4</b></td><td>Manter e <b>encaminhar</b> ao especialista</td><td>CI média + LABA e <b>encaminhar</b></td></tr></table>',
   '<div class="callout peg"><span class="ci">⚠️</span><div><b>Atualização GINA:</b> abandonou-se o tratamento <b>só com SABA</b> — toda asma deve ter terapia <b>contendo corticoide inalatório (CI)</b>. O CI é o <b>controlador</b>; o SABA é o <b>resgate</b>. Sobe-se de degrau se não controlada; desce-se após ~3 meses controlada.</div></div>',
 
-  '<h3>Gravidade da EXACERBAÇÃO (crise)</h3>',
+].join(''),
+
+ exacerbacao:[
+  '<h2>🚑 Exacerbação (crise) da asma — por faixa etária</h2>',
+  '<div class="callout high"><span class="ci">⚡</span><div>Pilares da <b>1ª hora</b> (todas as idades): <b>Oxigênio</b> se hipoxemia + <b>SABA inalatório repetido</b> (a cada 20 min, 3×) + <b>corticoide sistêmico PRECOCE</b>. Moderada-grave → acrescentar <b>ipratrópio</b>. Grave/refratária → <b>sulfato de magnésio IV</b>.</div></div>',
+  '<div class="svg-box"><svg viewBox="0 0 720 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pacote da primeira hora">'+
+   '<line x1="40" y1="70" x2="680" y2="70" stroke="#7a6aa0" stroke-width="3"/>'+
+   ['0 min|SABA + corticoide','20 min|SABA','40 min|SABA','60 min|reavaliar'].map(function(s,i){var p=s.split("|");var x=40+i*210;return "<circle cx=\""+x+"\" cy=\"70\" r=\"7\" fill=\"#ff6fa5\" stroke=\"#fff\" stroke-width=\"2\"/>"+"<text x=\""+x+"\" y=\"48\" text-anchor=\"middle\" fill=\"#ffd6e8\" style=\"font:700 12px Nunito,sans-serif\">"+p[0]+"</text>"+"<text x=\""+x+"\" y=\"96\" text-anchor=\"middle\" fill=\"#cfe6ff\" style=\"font:10px Nunito,sans-serif\">"+p[1]+"</text>";}).join("")+
+  '</svg><div class="cap">A "1ª hora": 3 séries de SABA a cada 20 min + corticoide sistêmico logo no início.</div></div>',
+
+  '<h3>1) Avaliar a gravidade</h3>',
   '<table><tr><th></th><th>Leve a moderada</th><th>Grave</th><th>Iminência de parada</th></tr>',
   '<tr><td>Fala</td><td>Frases</td><td>Palavras</td><td>Não fala</td></tr>',
   '<tr><td>Consciência</td><td>Normal/agitada</td><td>Agitada</td><td><b>Sonolência/confusão</b></td></tr>',
   '<tr><td>SatO₂ (ar ambiente)</td><td>≥ 92–94%</td><td>&lt; 92%</td><td>&lt; 90% / cianose</td></tr>',
   '<tr><td>Ausculta / esforço</td><td>Sibilos, leve tiragem</td><td>Tiragem, taquipneia/taquicardia</td><td><b>Tórax silencioso</b>, bradicardia</td></tr></table>',
 
-  '<h3>Critérios de INTERNAÇÃO</h3>',
-  '<div class="callout high"><span class="ci">⚡</span><div>Resposta <b>insuficiente após 1–2h</b> de tratamento; <b>necessidade persistente de O₂</b> (SatO₂ &lt; 92% em ar ambiente); crise <b>grave/iminência de parada</b>; <b>recidiva precoce</b>; fatores de risco (crise grave prévia, <b>internação/UTI/IOT</b>, uso recente de corticoide oral); exaustão; dificuldade de acesso/seguimento.</div></div>',
+  '<h3>2) Medidas gerais (todas as idades)</h3>',
+  '<ul><li><b>Oxigênio</b> titulado ao alvo de SatO₂; posição confortável; <b>monitorização</b> (SatO₂, FC, FR, esforço).</li>',
+  '<li><b>Corticoide sistêmico precoce</b> (idealmente na 1ª hora) — efeito em ~4–6 h; cursos curtos não precisam de desmame.</li>',
+  '<li><b>Não</b> usar sedativos (depressão respiratória); antibiótico só se infecção bacteriana.</li></ul>',
 
-  '<h3>Critérios de ALTA e prescrição para casa</h3>',
+  '<h3>3) Tratamento POR FAIXA ETÁRIA</h3>',
+  '<p class="muted">A estratégia é a mesma; o que muda são a <b>técnica de inalação</b>, as <b>doses máximas</b> e alguns detalhes. As doses de SABA/ipratrópio/magnésio são <b>por peso</b>.</p>',
+  '<table><tr><th>Etapa</th><th>≤ 5 anos (lactente/pré-escolar)</th><th>6–11 anos (escolar)</th><th>≥ 12 anos / adolescente</th></tr>',
+  '<tr><td><b>O₂ (alvo)</b></td><td>SatO₂ ≥ 94%</td><td>SatO₂ ≥ 94%</td><td>SatO₂ 93–95%</td></tr>',
+  '<tr><td><b>SABA</b> (salbutamol) — 1ª linha</td><td>Espaçador <b>COM MÁSCARA</b>: 2–6 jatos <br>ou neb 0,15 mg/kg (mín 2,5 mg)</td><td>Espaçador (bocal): 4–10 jatos <br>ou neb 0,15 mg/kg (máx 5 mg)</td><td>Espaçador: 4–10 jatos <br>ou neb 2,5–5 mg</td></tr>',
+  '<tr><td>↳ frequência</td><td colspan="3" style="text-align:center">A cada <b>20 min na 1ª hora</b> (3 séries); depois conforme resposta. Na crise grave: <b>SABA contínuo</b> nebulizado.</td></tr>',
+  '<tr><td><b>Ipratrópio</b> (moderada-grave)</td><td>250 mcg neb (ou 2–4 jatos)</td><td>250–500 mcg neb (ou 2–4 jatos)</td><td>500 mcg neb (ou 4–8 jatos)</td></tr>',
+  '<tr><td>↳ frequência</td><td colspan="3" style="text-align:center">Associado ao SABA, a cada 20 min por <b>até 3 doses</b>; depois suspender e manter SABA.</td></tr>',
+  '<tr><td><b>Corticoide sistêmico</b> (precoce)</td><td>Prednisolona 1–2 mg/kg/dia <br>(máx <b>20 mg</b> se &lt;2a · <b>30 mg</b> se 2–5a), 3–5 dias</td><td>Prednisolona 1–2 mg/kg/dia <br>(máx <b>40 mg</b>), 3–5 dias</td><td>Prednisona/prednisolona <br><b>40–50 mg/dia</b> (1 mg/kg), 5–7 dias</td></tr>',
+  '<tr><td><b>Magnésio IV</b> (grave refratária)</td><td>25–50 mg/kg (máx 2 g) — menos evidência, casos selecionados</td><td>25–50 mg/kg (máx 2 g) em 20 min</td><td>1–2 g (25–50 mg/kg) em 20 min</td></tr>',
+  '<tr><td>Sem tolerar VO / grave</td><td colspan="3" style="text-align:center">Corticoide IV: <b>metilprednisolona 1–2 mg/kg/dia</b> ou <b>hidrocortisona 4–8 mg/kg/dose</b>.</td></tr></table>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>≤ 5 anos:</b> use SEMPRE <b>espaçador com máscara</b>. Muitos episódios são <b>sibilância induzida por vírus</b> — se a resposta ao SABA for ruim, <b>reavalie o diagnóstico</b>. O benefício do corticoide sistêmico é claro na <b>asma</b>, porém menor na sibilância viral episódica pura; respeite as <b>doses máximas menores</b>.</div></div>',
+  '<div class="callout info"><span class="ci">💡</span><div><b>6–11 anos:</b> espaçador com <b>bocal</b>; abordagem padrão. <b>≥ 12 anos/adolescente:</b> conduta "tipo adulto"; a GINA permite <b>CI-formoterol</b> como resgate (estratégia MART) na asma leve/manutenção — útil também para reduzir crises.</div></div>',
+
+  '<h3>4) Crise grave / refratária — escalonar</h3>',
+  '<ul><li><b>Sulfato de magnésio IV</b> (doses na tabela) na crise grave que não responde à terapia inicial.</li>',
+  '<li><b>SABA contínuo</b> nebulizado; considerar <b>β₂ IV</b> (terbutalina/salbutamol) em ambiente monitorizado.</li>',
+  '<li>Aminofilina IV é de <b>uso excepcional</b> (mais efeitos adversos).</li>',
+  '<li><b>Iminência de parada</b> (sonolência, tórax silencioso, bradicardia) → <b>UTI</b>, suporte ventilatório e equipe avançada.</li></ul>',
+
+  '<h3>5) O que NÃO fazer de rotina</h3>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Antibiótico</b> (só se infecção bacteriana), <b>sedativos</b> (contraindicados), <b>mucolíticos</b> e <b>fisioterapia respiratória</b> na crise aguda não são indicados.</div></div>',
+
+  '<h3>6) Reavaliar após a 1ª hora</h3>',
+  '<table><tr><th>Resposta</th><th>Conduta</th></tr>',
+  '<tr><td><b>Boa</b> (melhora sustentada, SatO₂ ≥ 94%, SABA espaçando)</td><td>Observar e <b>preparar alta</b> com prescrição para casa</td></tr>',
+  '<tr><td><b>Incompleta</b></td><td>Manter SABA ± ipratrópio + corticoide; reavaliar e considerar internação</td></tr>',
+  '<tr><td><b>Má / piora</b></td><td>Tratar como <b>grave</b> (magnésio, SABA contínuo) e <b>internar</b> / acionar UTI</td></tr></table>',
+
+  '<h3>7) Critérios de INTERNAÇÃO</h3>',
+  '<div class="callout high"><span class="ci">⚡</span><div>Resposta <b>insuficiente após 1–2h</b>; <b>O₂ persistente</b> (SatO₂ &lt; 92% em ar ambiente); crise <b>grave/iminência de parada</b>; <b>recidiva precoce</b>; fatores de risco (crise grave prévia, <b>internação/UTI/IOT</b>, uso recente de corticoide oral); exaustão; dificuldade de acesso/seguimento.</div></div>',
+
+  '<h3>8) Critérios de ALTA e prescrição para casa</h3>',
   '<table><tr><th>Liberar quando</th><th>Prescrição para casa</th></tr>',
-  '<tr><td>Melhora clínica sustentada; <b>SatO₂ ≥ 94%</b> em ar ambiente; SABA espaçado (≥ 3–4h); boa técnica inalatória; alimenta/hidrata bem</td><td>① <b>SABA de resgate</b> (com espaçador) · ② <b>Corticoide oral 3–5 dias</b> (prednisolona 1–2 mg/kg/dia, máx 40 mg) se foi usado na crise · ③ <b>Iniciar/manter CI controlador</b> · ④ <b>Técnica inalatória + espaçador</b> revisados · ⑤ <b>Plano de ação escrito</b> + evitar gatilhos · ⑥ <b>Retorno</b> em 24–48h e reavaliação em 1–4 semanas</td></tr></table>'
+  '<tr><td>Melhora clínica sustentada; <b>SatO₂ ≥ 94%</b> em ar ambiente; SABA espaçado (≥ 3–4h); boa técnica inalatória; alimenta/hidrata bem</td><td>① <b>SABA de resgate</b> (com espaçador) · ② <b>Corticoide oral</b> (3–5 dias na criança; 5–7 no adolescente) se usado na crise · ③ <b>Iniciar/manter CI controlador</b> · ④ <b>Técnica inalatória + espaçador</b> revisados · ⑤ <b>Plano de ação escrito</b> + evitar gatilhos · ⑥ <b>Retorno</b> em 24–48h e reavaliação em 1–4 semanas</td></tr></table>'
  ].join(''),
 
  questoes:[
@@ -3153,10 +3197,21 @@ function renderModules(m){
 function openMateria(id){ CURRENT.view="materia"; CURRENT.mat=id; CURRENT.tab="teoria"; $all(".nav-item").forEach(function(n){n.classList.remove("active");}); render(); window.scrollTo(0,0); }
 
 /* ---- MATÉRIA (abas) ---- */
+/* Abas por matéria: base + abas opcionais que a matéria declarar.
+   Ex.: se a matéria define `exacerbacao`, mostra a aba 🚑 Exacerbação após Scores. */
+function tabsFor(mat){
+  var t=TABS.slice();
+  if(mat && mat.exacerbacao){
+    var pos=0; for(var i=0;i<t.length;i++){ if(t[i].k==="scores"){ pos=i+1; break; } }
+    t.splice(pos,0,{k:"exacerbacao",ic:"🚑",t:"Exacerbação"});
+  }
+  return t;
+}
 function renderMateria(m){
   var mat=MAT[CURRENT.mat]; if(!mat){nav("modules");return;}
   if(!STATE.progress[mat.id]) STATE.progress[mat.id]={dominio:[],notes:"",done:false};
-  var tabsHtml=TABS.map(function(t){return '<button class="mtab'+(t.k===CURRENT.tab?' active':'')+'" data-k="'+t.k+'">'+t.ic+' '+t.t+'</button>';}).join('');
+  var matTabs=tabsFor(mat);
+  var tabsHtml=matTabs.map(function(t){return '<button class="mtab'+(t.k===CURRENT.tab?' active':'')+'" data-k="'+t.k+'">'+t.ic+' '+t.t+'</button>';}).join('');
   m.innerHTML=
    '<div class="mat-top"><button class="btn btn-ghost btn-sm" id="backMod">← Módulos</button>'+
    '<h1 class="display mat-title">'+mat.temaIc+' '+esc(mat.t)+'</h1><p class="muted">'+esc(mat.sub||"")+'</p></div>'+
@@ -3220,7 +3275,7 @@ function renderTab(mat){
   var html=mat[k];
   c.innerHTML = html || '<p class="muted">Conteúdo em preparação.</p>';
   if(k==="teoria"){ awardOnceView(mat.id,"aula"); }
-  if(k==="vespera"||k==="dicas"||k==="scores"){ awardOnceView(mat.id,"resumo"); }
+  if(k==="vespera"||k==="dicas"||k==="scores"||k==="exacerbacao"){ awardOnceView(mat.id,"resumo"); }
 }
 
 /* ---- FLUXOGRAMA (HTML/CSS interativo, sem SVG) ---- */
