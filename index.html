@@ -970,8 +970,8 @@ var TEMAS=[
  ]},
  {id:"neo",ic:"👶",t:"Neonatologia",mats:[
    {id:"distresp",ic:"🫁",t:"Distúrbios Respiratórios do RN",sub:"Membrana hialina (SDR), TTRN, SAM e outros",ready:true},
-   {id:"reanimacao",ic:"🫀",t:"Reanimação Neonatal",sub:"Fluxograma SBP/AAP",ready:false},
-   {id:"ictericia",ic:"💛",t:"Icterícia Neonatal",sub:"Fisiológica x patológica, fototerapia",ready:false},
+   {id:"reanimacao",ic:"🫀",t:"Reanimação Neonatal",sub:"Passos iniciais, VPP, compressões (SBP)",ready:true},
+   {id:"ictericia",ic:"💛",t:"Icterícia Neonatal",sub:"Fisiológica x patológica, Kramer, fototerapia",ready:true},
    {id:"sepse-nn",ic:"🌡️",t:"Sepse & Prematuridade",sub:"Precoce x tardia",ready:false},
    {id:"triagem",ic:"🩸",t:"Triagens & Hipoglicemia",sub:"Testes do pezinho/orelhinha/coraçãozinho",ready:false}
  ]},
@@ -980,8 +980,8 @@ var TEMAS=[
  ]},
  {id:"congenitas",ic:"🧫",t:"Infecções Congênitas",mats:[
    {id:"sifilis",ic:"🦠",t:"Sífilis Congênita",sub:"Quadro, VDRL, critérios e tratamento",ready:true},
-   {id:"storch",ic:"🧬",t:"Toxo · Rubéola · CMV · Herpes",sub:"STORCH detalhado",ready:false},
-   {id:"zika-hiv",ic:"🍼",t:"Zika & HIV",sub:"Microcefalia e transmissão vertical",ready:false}
+   {id:"storch",ic:"🧬",t:"Toxo · Rubéola · CMV · Herpes",sub:"STORCH: tríades, calcificações e tratamento",ready:true},
+   {id:"zika-hiv",ic:"🍼",t:"Zika & HIV (transmissão vertical)",sub:"Zika congênito e prevenção da TV do HIV",ready:true}
  ]},
  {id:"asma",ic:"🌬️",t:"Asma",mats:[
    {id:"asma",ic:"💨",t:"Asma na Infância",sub:"Diagnóstico, GINA, controle e crise asmática",ready:true}
@@ -2957,6 +2957,716 @@ reg({ id:"sifilis", temaIc:"🧫", t:"Sífilis Congênita", sub:"Transmissão, q
   "Sei a investigação do RN (VDRL, hemograma, LCR, RX ossos longos)",
   "Domino o tratamento (penicilina; cristalina IV 10d na neurossífilis)",
   "Lembro da notificação compulsória e do seguimento com VDRL seriado"
+ ]
+});
+
+/* ================= MATÉRIA — STORCH: TOXO · RUBÉOLA · CMV · HERPES (alto rendimento) ================= */
+reg({ id:"storch", temaIc:"🧬", t:"STORCH — Toxo · Rubéola · CMV · Herpes", sub:"Tríades, padrões de calcificação e tratamento",
+ teoria:[
+  '<h2>🧬 Infecções congênitas (STORCH)</h2>',
+  '<p>O acrônimo <b class="blue">STORCH</b> reúne as infecções que passam da mãe para o feto/RN: <b>S</b>ífilis, <b>T</b>oxoplasmose, <b>O</b>utros (parvovírus B19, varicela, Zika, HIV, hepatites), <b>R</b>ubéola, <b>C</b>itomegalovírus e <b>H</b>erpes. Muitas compartilham um "pano de fundo" comum: <b>RCIU</b>, <b>hepatoesplenomegalia</b>, <b>icterícia</b>, <b>petéquias</b> (rash em "blueberry muffin"), alterações do SNC e <b>perda auditiva</b>. O que diferencia cada uma é a <b>marca registrada</b>.</p>',
+  '<div class="callout high"><span class="ci">⚡</span><div>O detalhe que mais cai é o <b>padrão de calcificação cerebral</b>: <b>Toxoplasmose = calcificações DIFUSAS</b>; <b>CMV = calcificações PERIVENTRICULARES</b>.</div></div>',
+  '<div class="svg-box"><svg viewBox="0 0 720 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Calcificações difusas (toxo) versus periventriculares (CMV)">'+
+   '<style>.t1{font:700 14px Nunito,sans-serif}.s1{font:11px Nunito,sans-serif;fill:#cfe6ff}.tx{fill:#ff6fa5}.cm{fill:#4aa6e8}</style>'+
+   '<text x="180" y="26" text-anchor="middle" class="t1" fill="#ffd6e8">Toxoplasmose — DIFUSAS</text>'+
+   '<ellipse cx="180" cy="105" rx="78" ry="62" fill="#3a2740" stroke="#7a6aa0" stroke-width="2"/>'+
+   ['150,80','205,75','165,110','210,120','185,140','140,120','220,100'].map(function(p){var c=p.split(",");return "<circle cx=\""+c[0]+"\" cy=\""+c[1]+"\" r=\"4\" class=\"tx\"/>";}).join("")+
+   '<text x="180" y="188" text-anchor="middle" class="s1">espalhadas pelo parênquima</text>'+
+   '<line x1="360" y1="30" x2="360" y2="185" stroke="#5b4a6b" stroke-width="1.5" stroke-dasharray="4 4"/>'+
+   '<text x="540" y="26" text-anchor="middle" class="t1" fill="#cfe6ff">CMV — PERIVENTRICULARES</text>'+
+   '<ellipse cx="540" cy="105" rx="78" ry="62" fill="#3a2740" stroke="#7a6aa0" stroke-width="2"/>'+
+   '<ellipse cx="540" cy="105" rx="34" ry="26" fill="none" stroke="#5b4a6b" stroke-width="2"/>'+
+   ['508,92','572,92','512,120','568,120','540,84','540,130'].map(function(p){var c=p.split(",");return "<circle cx=\""+c[0]+"\" cy=\""+c[1]+"\" r=\"4\" class=\"cm\"/>";}).join("")+
+   '<text x="540" y="188" text-anchor="middle" class="s1">ao redor dos ventrículos</text>'+
+  '</svg><div class="cap">Calcificações: toxo espalhadas; CMV "abraçando" os ventrículos.</div></div>',
+
+  '<h3>1) Toxoplasmose congênita (<i>Toxoplasma gondii</i>)</h3>',
+  '<p>Quanto <b>mais tarde</b> na gestação a mãe se infecta, <b>maior a transmissão</b>, porém <b>menor a gravidade</b>; infecção <b>precoce</b> transmite pouco, mas quando ocorre é <b>grave</b>. Marca registrada — <b>tríade de Sabin</b>: <b>hidrocefalia + calcificações intracranianas difusas + coriorretinite</b>.</p>',
+  '<p><b>Diagnóstico:</b> sorologia materna (IgG/IgM, teste de avidez de IgG), PCR no líquido amniótico; no RN: IgM/IgA, neuroimagem, <b>fundoscopia</b> e LCR. <b>Tratamento:</b> <b>sulfadiazina + pirimetamina + ácido folínico</b> por ~1 ano (corticoide se coriorretinite em atividade/proteína alta no LCR). Na gestante com infecção aguda sem acometimento fetal: <b>espiramicina</b> (reduz transmissão).</p>',
+
+  '<h3>2) Rubéola congênita (SRC)</h3>',
+  '<p>Risco máximo no <b>1º trimestre</b>. Marca registrada — <b>tríade de Gregg</b>: <b>catarata + cardiopatia (persistência do canal arterial) + surdez</b>. Também: microcefalia, "blueberry muffin", RCIU. <b>Sem tratamento específico</b> (suporte). <b>Prevenção:</b> vacinação (tríplice viral) — é <b>vacina viva</b>, contraindicada na gestação.</p>',
+
+  '<h3>3) Citomegalovírus congênito (CMV)</h3>',
+  '<p>É a <b>infecção congênita mais comum</b> e a principal <b>causa infecciosa de surdez neurossensorial</b>. A maioria é <b>assintomática ao nascer</b> (mas pode evoluir com surdez tardia). Sintomáticos: microcefalia, <b>calcificações periventriculares</b>, coriorretinite, petéquias, hepatoesplenomegalia. <b>Diagnóstico:</b> <b>PCR na urina/saliva nas primeiras 2–3 semanas de vida</b> (depois não distingue congênito de adquirido). <b>Tratamento:</b> <b>ganciclovir/valganciclovir</b> nos sintomáticos com acometimento (melhora audição e neurodesenvolvimento).</p>',
+
+  '<h3>4) Herpes neonatal (HSV)</h3>',
+  '<p>Transmissão sobretudo <b>perinatal</b> (canal de parto), maior risco no <b>herpes genital primário</b> materno próximo ao parto — muitas vezes <b>sem história materna</b>. Três formas: <b>pele-olho-boca (SEM)</b>, <b>SNC (encefalite)</b> e <b>disseminada</b> (grave, "sepse-like"). <b>Tratamento:</b> <b>aciclovir IV</b> em altas doses; <b>cesárea</b> se lesões ativas no momento do parto.</p>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Herpes neonatal frequentemente <b>não tem história materna</b> de herpes — pense nele em RN com quadro séptico/encefalite sem outra causa e inicie <b>aciclovir</b> empírico.</div></div>'
+ ].join(''),
+
+ scores:[
+  '<h2>🎯 Comparativo e condutas</h2>',
+  '<table><tr><th>Agente</th><th>Marca registrada</th><th>Diagnóstico</th><th>Tratamento</th></tr>',
+  '<tr><td><b>Toxoplasmose</b></td><td>Tríade de Sabin: <b>hidrocefalia + calcificações DIFUSAS + coriorretinite</b></td><td>Sorologia/avidez; IgM/IgA no RN; PCR líquido amniótico; fundoscopia</td><td><b>Sulfadiazina + pirimetamina + ácido folínico</b> (~1 ano); espiramicina na gestante</td></tr>',
+  '<tr><td><b>Rubéola</b></td><td>Tríade de Gregg: <b>catarata + PCA + surdez</b></td><td>Sorologia, PCR; achados clínicos</td><td><b>Suporte</b>; prevenção pela vacina (viva)</td></tr>',
+  '<tr><td><b>CMV</b></td><td><b>Calcificações PERIVENTRICULARES</b> + surdez; mais comum</td><td><b>PCR urina/saliva nas 1ªs 2–3 semanas</b></td><td><b>Ganciclovir/valganciclovir</b> nos sintomáticos</td></tr>',
+  '<tr><td><b>Herpes</b></td><td>Pele-olho-boca / SNC / disseminada; perinatal</td><td>PCR (sangue/LCR), cultura</td><td><b>Aciclovir IV</b>; cesárea se lesões ativas</td></tr></table>',
+  '<div class="callout mne"><span class="ci">🧠</span><div><b>Sabin = toxo (difusas).</b> <b>Gregg = rubéola (catarata-coração-surdez).</b> <b>CMV = peri</b>ventricular + <b>surdez</b> (mais comum). <b>Herpes = aciclovir</b>, muitas vezes sem história materna.</div></div>',
+  '<div class="callout info"><span class="ci">💡</span><div><b>Toxoplasmose — idade gestacional:</b> infecção <b>tardia</b> = mais transmissão, menos gravidade; <b>precoce</b> = menos transmissão, mais gravidade.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Achados que se repetem em quase todas: RCIU, hepatoesplenomegalia, icterícia, petéquias ("blueberry muffin"), alterações do SNC e <b>surdez</b> — a <b>marca registrada</b> é que decide o agente.</div></div>'
+ ].join(''),
+
+ questoes:[
+  {id:"sto-q1",banca:"ENARE (estilo)",stem:"RN com hidrocefalia, <b>calcificações intracranianas difusas</b> e coriorretinite. Qual a infecção congênita mais provável e a tríade correspondente?",
+   opts:["CMV — tríade de Gregg","Toxoplasmose — tríade de Sabin","Rubéola — tríade de Sabin","Herpes — tríade de Gregg"],
+   correct:1, expl:"Hidrocefalia + <b>calcificações difusas</b> + coriorretinite = <b>tríade de Sabin</b> da <b>toxoplasmose congênita</b>. Tratar com sulfadiazina + pirimetamina + ácido folínico."},
+  {id:"sto-q2",banca:"Revalida (estilo)",stem:"Lactente com <b>catarata</b>, <b>persistência do canal arterial</b> e <b>surdez</b>. Mãe sem vacinação. Diagnóstico?",
+   opts:["CMV congênito","Síndrome da rubéola congênita","Toxoplasmose","Herpes neonatal"],
+   correct:1, expl:"Catarata + PCA + surdez = <b>tríade de Gregg</b> → <b>síndrome da rubéola congênita</b>. Sem tratamento específico; prevenção é a vacinação (viva, contraindicada na gestação)."},
+  {id:"sto-q3",banca:"UFRJ (estilo)",stem:"RN com microcefalia, petéquias e <b>calcificações periventriculares</b>. Qual exame confirma a etiologia mais provável e em que prazo?",
+   opts:["Sorologia IgG a qualquer momento","PCR para CMV na urina nas primeiras 2–3 semanas de vida","Hemocultura","Fundoscopia isolada"],
+   correct:1, expl:"Calcificações <b>periventriculares</b> + surdez sugerem <b>CMV congênito</b>. Confirma-se com <b>PCR na urina/saliva nas primeiras 2–3 semanas</b> (depois não distingue congênito de adquirido)."},
+  {id:"sto-q4",banca:"SES-RJ (estilo)",stem:"RN com quadro de encefalite/sepse sem causa aparente; mãe sem história de herpes. Conduta inicial mais adequada?",
+   opts:["Apenas observação","Iniciar aciclovir IV empírico e investigar HSV","Antifúngico","Corticoide isolado"],
+   correct:1, expl:"Herpes neonatal frequentemente <b>não tem história materna</b>. Diante de encefalite/quadro séptico sem causa, iniciar <b>aciclovir IV</b> empírico e investigar (PCR sangue/LCR)."},
+  {id:"sto-q5",banca:"UERJ (estilo)",stem:"Sobre o tratamento da toxoplasmose congênita confirmada, o esquema clássico é:",
+   opts:["Espiramicina isolada por 3 semanas","Sulfadiazina + pirimetamina + ácido folínico por cerca de 1 ano","Ganciclovir por 6 semanas","Aciclovir por 21 dias"],
+   correct:1, expl:"Toxoplasmose congênita confirmada: <b>sulfadiazina + pirimetamina + ácido folínico</b> por ~1 ano. A espiramicina é usada na <b>gestante</b> para reduzir a transmissão."}
+ ],
+
+ flashcards:[
+  {id:"sto-f1",tipo:"qa",tag:"Toxo",front:"Tríade de Sabin (toxoplasmose)?",back:"<b>Hidrocefalia + calcificações DIFUSAS + coriorretinite.</b>"},
+  {id:"sto-f2",tipo:"qa",tag:"Rubéola",front:"Tríade de Gregg (rubéola)?",back:"<b>Catarata + cardiopatia (PCA) + surdez.</b>"},
+  {id:"sto-f3",tipo:"cloze",tag:"Calcificações",front:"Toxo = calcificações {{c1::difusas}}; CMV = calcificações {{c2::periventriculares}}.",back:"Difusas (toxo) × periventriculares (CMV)."},
+  {id:"sto-f4",tipo:"qa",tag:"CMV",front:"Como confirmar CMV congênito?",back:"<b>PCR na urina/saliva nas primeiras 2–3 semanas de vida.</b> Tratar sintomáticos com ganciclovir/valganciclovir."},
+  {id:"sto-f5",tipo:"qa",tag:"Herpes",front:"Tratamento do herpes neonatal e via de parto?",back:"<b>Aciclovir IV</b>; <b>cesárea</b> se lesões ativas. Muitas vezes sem história materna."},
+  {id:"sto-f6",tipo:"qa",tag:"Toxo-tto",front:"Tratamento da toxoplasmose congênita?",back:"<b>Sulfadiazina + pirimetamina + ácido folínico</b> (~1 ano). Gestante: espiramicina."},
+  {id:"sto-f7",tipo:"vf",tag:"CMV",front:"CMV é a infecção congênita mais comum e principal causa infecciosa de surdez.",back:"<b>VERDADEIRO.</b>"}
+ ],
+
+ casos:[
+  {titulo:"Caso 1 — Hidrocefalia e calcificações difusas",
+   caso:"RN com perímetro cefálico aumentado (hidrocefalia), neuroimagem com calcificações intracranianas difusas e fundoscopia mostrando coriorretinite. Mãe relatou contato com gatos/carne malcozida na gestação.",
+   perguntas:[
+     {q:"Diagnóstico e tríade?",a:"<b>Toxoplasmose congênita</b> — <b>tríade de Sabin</b> (hidrocefalia + calcificações difusas + coriorretinite)."},
+     {q:"Como confirmar?",a:"Sorologia materna (IgG/IgM, avidez), <b>IgM/IgA no RN</b>, neuroimagem, <b>fundoscopia</b> e LCR; PCR em líquido amniótico quando disponível."},
+     {q:"Tratamento?",a:"<b>Sulfadiazina + pirimetamina + ácido folínico</b> por ~1 ano; corticoide se coriorretinite ativa/LCR muito alterado. Seguimento oftalmológico e neurológico."}
+   ]},
+  {titulo:"Caso 2 — RN pequeno com petéquias e surdez",
+   caso:"RN com RCIU, microcefalia, petéquias, hepatoesplenomegalia e falha na triagem auditiva. Neuroimagem com calcificações periventriculares.",
+   perguntas:[
+     {q:"Qual a etiologia mais provável?",a:"<b>CMV congênito</b> — calcificações <b>periventriculares</b> + surdez + petéquias/hepatoesplenomegalia."},
+     {q:"Como e quando confirmar?",a:"<b>PCR para CMV na urina/saliva nas primeiras 2–3 semanas de vida</b> (após isso, não diferencia congênito de adquirido)."},
+     {q:"Conduta?",a:"Nos <b>sintomáticos com acometimento</b>, <b>ganciclovir/valganciclovir</b> (melhora auditiva e do neurodesenvolvimento); seguimento audiológico prolongado (surdez pode ser tardia)."}
+   ]}
+ ],
+
+ fluxoDx:[
+  {t:"start", x:"RN com sinais sugestivos de infecção congênita (RCIU, hepatoesplenomegalia, petéquias, SNC, surdez)"},
+  {t:"step", x:"Buscar a 'marca registrada' + neuroimagem + fundoscopia + triagem auditiva", info:"Calcificações: difusas (toxo) × periventriculares (CMV)."},
+  {t:"decision", x:"Qual o padrão dominante?", branches:[
+    {label:"Hidrocefalia + calcificações difusas + coriorretinite", cor:"rosa", flow:[
+      {t:"end", x:"Toxoplasmose → IgM/IgA, fundoscopia, LCR; tratar (sulfadiazina+pirimetamina+folínico)"}
+    ]},
+    {label:"Catarata + PCA + surdez", cor:"azul", flow:[
+      {t:"end", x:"Rubéola congênita → suporte; investigar sorologia/PCR"}
+    ]},
+    {label:"Calcificações periventriculares + surdez", cor:"dourado", flow:[
+      {t:"end", x:"CMV → PCR urina/saliva nas 1ªs 2–3 semanas; tratar sintomáticos"}
+    ]},
+    {label:"Encefalite/sepse-like, vesículas, perinatal", cor:"vermelho", flow:[
+      {t:"end", x:"Herpes → aciclovir IV empírico + PCR (sangue/LCR)"}
+    ]}
+  ]}
+ ],
+
+ fluxoConduta:[
+  {t:"start", x:"Etiologia definida/suspeita"},
+  {t:"decision", x:"Qual agente?", branches:[
+    {label:"Toxoplasmose", cor:"rosa", flow:[
+      {t:"end", x:"Sulfadiazina + pirimetamina + ácido folínico (~1 ano) ± corticoide"}
+    ]},
+    {label:"Rubéola", cor:"azul", flow:[
+      {t:"end", x:"Suporte; reabilitação (auditiva/visual/cardíaca); prevenção pela vacina"}
+    ]},
+    {label:"CMV", cor:"dourado", flow:[
+      {t:"step", x:"Confirmar por PCR urina/saliva (1ªs 2–3 semanas)"},
+      {t:"end", x:"Ganciclovir/valganciclovir nos sintomáticos; seguir audição"}
+    ]},
+    {label:"Herpes", cor:"vermelho", flow:[
+      {t:"step", x:"Aciclovir IV em altas doses"},
+      {t:"end", x:"Cesárea se lesões ativas no parto; suporte conforme forma clínica"}
+    ]}
+  ]}
+ ],
+
+ mapa:{ central:"STORCH", legenda:"a marca registrada decide o agente", ramos:[
+   {cor:"rosa",   t:"Toxoplasmose",filhos:["Tríade de Sabin","Calcificações DIFUSAS","Sulfadiazina+pirimetamina+folínico"]},
+   {cor:"azul",   t:"Rubéola",    filhos:["Tríade de Gregg","Catarata + PCA + surdez","Suporte; prevenir com vacina"]},
+   {cor:"dourado",t:"CMV",        filhos:["Mais comum; surdez","Calcificações PERIVENTRICULARES","PCR urina 2–3 sem; ganciclovir"]},
+   {cor:"vermelho",t:"Herpes",    filhos:["Perinatal; sem história materna","SEM / SNC / disseminada","Aciclovir IV; cesárea se lesão"]},
+   {cor:"verde",  t:"Comum a todas",filhos:["RCIU, hepatoesplenomegalia","Petéquias (blueberry muffin)","Surdez, alterações do SNC"]},
+   {cor:"lilas",  t:"Outros (O)", filhos:["Parvovírus B19, varicela","Zika, HIV","Hepatites"]}
+ ]},
+
+ vespera:[
+  '<h2>⏰ Revisão de véspera — STORCH</h2>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>Toxo</b> = Sabin + calcificações <b>difusas</b>. <b>Rubéola</b> = Gregg (catarata/PCA/surdez). <b>CMV</b> = <b>periventriculares</b> + surdez (mais comum). <b>Herpes</b> = aciclovir.</div></div>',
+  '<ul><li><b>Toxo:</b> sulfadiazina + pirimetamina + ácido folínico (~1 ano); gestante = espiramicina.</li>',
+  '<li><b>Toxo + idade gestacional:</b> tardia = + transmissão / − gravidade.</li>',
+  '<li><b>Rubéola:</b> sem tratamento; vacina viva (contraindicada na gestação).</li>',
+  '<li><b>CMV:</b> PCR urina/saliva nas 1ªs 2–3 semanas; ganciclovir nos sintomáticos.</li>',
+  '<li><b>Herpes:</b> perinatal, muitas vezes sem história materna; aciclovir IV; cesárea se lesão ativa.</li>',
+  '<li>Achados comuns: RCIU, hepatoesplenomegalia, petéquias, surdez.</li></ul>'
+ ].join(''),
+
+ dicas:[
+  '<h2>💡 Dicas & Pegadinhas</h2>',
+  '<div class="callout mne"><span class="ci">🧠</span><div><b>"toxo = difusa"</b> (espalhada pelo cérebro) e <b>"CMV = peri"</b> (ao redor dos ventrículos).</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Sabin × Gregg:</b> Sabin é toxo (hidrocefalia/calcificações/coriorretinite); Gregg é rubéola (catarata/coração/surdez). Não troque!</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>CMV: confirmar <b>nas primeiras 2–3 semanas</b> — depois o PCR não distingue infecção congênita de adquirida.</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div>Herpes neonatal sem história materna é comum: na dúvida em RN grave/encefalite, <b>aciclovir empírico</b> salva vidas.</div></div>'
+ ].join(''),
+
+ dominio:[
+  "Sei o que é STORCH e os achados comuns às infecções congênitas",
+  "Diferencio calcificações difusas (toxo) de periventriculares (CMV)",
+  "Domino a tríade de Sabin (toxo) e a de Gregg (rubéola)",
+  "Sei o tratamento da toxoplasmose congênita e o papel da espiramicina",
+  "Sei diagnosticar CMV (PCR urina nas 1ªs 2–3 semanas) e tratar sintomáticos",
+  "Reconheço o herpes neonatal (formas, perinatal) e trato com aciclovir IV",
+  "Lembro que rubéola não tem tratamento específico e é prevenível por vacina"
+ ]
+});
+
+/* ================= MATÉRIA — ZIKA & HIV (TRANSMISSÃO VERTICAL) ================= */
+reg({ id:"zika-hiv", temaIc:"🍼", t:"Zika & HIV — transmissão vertical", sub:"Zika congênito e prevenção da TV do HIV",
+ teoria:[
+  '<h2>🍼 Zika congênito & HIV (transmissão vertical)</h2>',
+  '<p>Duas infecções com transmissão da mãe para o bebê e altíssimo rendimento de prova: a <b class="blue">síndrome congênita do Zika</b> (uma das principais causas de microcefalia por infecção) e o <b class="blue">HIV</b>, em que o foco é <b>prevenir</b> a transmissão vertical (PTV) — hoje quase totalmente evitável.</p>',
+
+  '<h3>1) Síndrome Congênita do Zika</h3>',
+  '<p>Arbovírus transmitido pelo <b>Aedes aegypti</b> (também vertical e sexual). Na gestação, infecta o SNC fetal. Marca registrada: <b>microcefalia</b> com <b>desproporção craniofacial</b> (couro cabeludo redundante), <b>calcificações</b> na <b>junção córtico-subcortical</b>, malformações cerebrais (lisencefalia, ventriculomegalia), <b>artrogripose</b> e alterações oculares (lesões maculares/retinianas).</p>',
+  '<div class="svg-box"><svg viewBox="0 0 720 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Microcefalia com desproporção craniofacial">'+
+   '<style>.s1{font:11px Nunito,sans-serif;fill:#cfe6ff}.t1{font:700 13px Nunito,sans-serif}</style>'+
+   '<text x="180" y="24" text-anchor="middle" class="t1" fill="#cfe6ff">Crânio típico</text>'+
+   '<path d="M150,60 q30,-26 60,0 q14,40 0,70 q-30,18 -60,0 q-14,-30 0,-70 z" fill="#3a2740" stroke="#7cc6f3" stroke-width="2"/>'+
+   '<text x="180" y="170" text-anchor="middle" class="s1">proporção normal</text>'+
+   '<text x="540" y="24" text-anchor="middle" class="t1" fill="#ffd6e8">Microcefalia (Zika)</text>'+
+   '<path d="M520,72 q20,-14 40,0 q10,30 0,58 q-20,16 -40,0 q-10,-26 0,-58 z" fill="#3a2740" stroke="#ff6fa5" stroke-width="2"/>'+
+   '<path d="M520,72 q20,-14 40,0 l-2,-12 q-18,-10 -36,0 z" fill="#7a3550"/>'+
+   '<text x="540" y="170" text-anchor="middle" class="s1">crânio pequeno + couro redundante</text>'+
+  '</svg><div class="cap">Desproporção craniofacial: o crânio é pequeno em relação à face.</div></div>',
+  '<p><b>Diagnóstico:</b> RT-PCR (sangue/urina, fase aguda) e sorologia (IgM) na mãe e/ou RN, <b>neuroimagem</b> (calcificações, malformações) e avaliação oftalmológica/auditiva. <b>Tratamento:</b> não há específico — <b>suporte e reabilitação</b> multidisciplinar. <b>Prevenção:</b> combate ao vetor e proteção da gestante.</p>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Diferencie das calcificações do STORCH: no <b>Zika</b> são tipicamente na <b>junção córtico-subcortical</b>, com microcefalia e desproporção craniofacial marcantes.</div></div>',
+
+  '<h3>2) HIV — transmissão vertical (TV)</h3>',
+  '<p>A TV pode ocorrer <b>intraútero</b>, <b>intraparto</b> (a maior parte) e pela <b>amamentação</b>. Com as medidas de prevenção, o risco cai de ~25–30% para <b>menos de 1–2%</b>.</p>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>Os 4 pilares da PTV:</b> ① <b>TARV na gestação</b> (meta: carga viral <b>indetectável</b>); ② <b>profilaxia intraparto</b> (AZT IV conforme carga viral/uso de TARV); ③ <b>profilaxia no RN</b> nas primeiras horas; ④ <b>NÃO amamentar</b> (fórmula + inibição da lactação).</div></div>',
+  '<p><b>Diagnóstico no bebê:</b> usar <b>carga viral (PCR — RNA/DNA do HIV)</b>, pois a <b>sorologia não serve antes dos 18 meses</b> (os anticorpos maternos atravessam a placenta). Confirma-se com <b>duas cargas virais detectáveis</b> em amostras distintas. <b>Profilaxia do RN:</b> iniciar idealmente nas <b>primeiras 4 horas</b> (até 48h) — <b>AZT</b> por algumas semanas, associando outras drogas (ex.: nevirapina/raltegravir) conforme o <b>risco</b>. Iniciar <b>profilaxia para <i>Pneumocystis</i></b> (sulfametoxazol-trimetoprima) a partir de 4–6 semanas até afastar a infecção.</p>'
+ ].join(''),
+
+ scores:[
+  '<h2>🎯 Critérios e condutas</h2>',
+  '<h3>Zika congênito</h3>',
+  '<table><tr><th>Item</th><th>Conteúdo</th></tr>',
+  '<tr><td>Achados</td><td><b>Microcefalia</b> + desproporção craniofacial, <b>calcificações córtico-subcorticais</b>, malformações cerebrais, <b>artrogripose</b>, lesões oculares</td></tr>',
+  '<tr><td>Microcefalia (rastreio)</td><td>Perímetro cefálico <b>abaixo do esperado</b> para idade gestacional e sexo (ponto de corte conforme curvas/normas do MS-OMS)</td></tr>',
+  '<tr><td>Diagnóstico</td><td>RT-PCR (sangue/urina) na fase aguda + sorologia (IgM); neuroimagem; avaliação oftalmo/auditiva</td></tr>',
+  '<tr><td>Tratamento</td><td><b>Suporte e reabilitação</b> multidisciplinar (sem antiviral específico)</td></tr></table>',
+
+  '<h3>HIV — prevenção da transmissão vertical (PTV)</h3>',
+  '<table><tr><th>Pilar</th><th>Conduta</th></tr>',
+  '<tr><td>① Gestação</td><td><b>TARV</b> para a gestante visando <b>carga viral indetectável</b></td></tr>',
+  '<tr><td>② Parto</td><td><b>AZT intravenoso</b> intraparto se carga viral desconhecida/elevada; via de parto conforme carga viral próxima ao termo</td></tr>',
+  '<tr><td>③ RN</td><td><b>Profilaxia antirretroviral</b> nas primeiras horas (idealmente ≤ 4h, até 48h): <b>AZT</b> ± outras drogas conforme risco</td></tr>',
+  '<tr><td>④ Amamentação</td><td><b>Contraindicada</b> — fórmula infantil + inibição da lactação; não doar leite</td></tr></table>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Diagnóstico no &lt; 18 meses:</b> use <b>carga viral</b> (PCR), nunca sorologia isolada (anticorpos maternos transplacentários dão falso-positivo). Confirmação: <b>duas cargas virais</b> detectáveis.</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div>Iniciar <b>profilaxia para <i>Pneumocystis</i></b> (SMX-TMP) por volta de 4–6 semanas de vida, até excluir a infecção pelo HIV. Acompanhar no serviço especializado.</div></div>'
+ ].join(''),
+
+ questoes:[
+  {id:"zh-q1",banca:"ENARE (estilo)",stem:"RN com microcefalia, desproporção craniofacial, couro cabeludo redundante e calcificações na junção córtico-subcortical. Etiologia mais provável?",
+   opts:["Toxoplasmose","Síndrome congênita do Zika","CMV","Rubéola"],
+   correct:1, expl:"Microcefalia com <b>desproporção craniofacial</b> e <b>calcificações córtico-subcorticais</b> é típica da <b>síndrome congênita do Zika</b>. Tratamento é de suporte/reabilitação."},
+  {id:"zh-q2",banca:"Revalida (estilo)",stem:"RN de mãe HIV positivo. Em relação à amamentação, a conduta correta é:",
+   opts:["Amamentar se carga viral indetectável","Aleitamento misto","Contraindicar a amamentação e usar fórmula + inibir a lactação","Ordenhar e pasteurizar em casa"],
+   correct:2, expl:"No Brasil, a amamentação é <b>contraindicada</b> no HIV — fórmula infantil + <b>inibição da lactação</b>; a mãe também não deve doar leite."},
+  {id:"zh-q3",banca:"UFRJ (estilo)",stem:"Como se faz o diagnóstico de infecção pelo HIV em um lactente de 2 meses, filho de mãe soropositiva?",
+   opts:["Sorologia (anti-HIV) — uma amostra","Carga viral (PCR), pois a sorologia não é confiável antes dos 18 meses","Apenas hemograma","Teste rápido no RN"],
+   correct:1, expl:"Antes dos <b>18 meses</b>, os anticorpos maternos atravessam a placenta e tornam a <b>sorologia não confiável</b>. Usa-se <b>carga viral (PCR)</b>; confirma-se com duas amostras detectáveis."},
+  {id:"zh-q4",banca:"SES-RJ (estilo)",stem:"Quanto à profilaxia antirretroviral do recém-nascido exposto ao HIV, o ideal é:",
+   opts:["Iniciar após o 7º dia","Iniciar nas primeiras horas de vida (idealmente ≤ 4h, até 48h)","Somente se a mãe não fez pré-natal","Não é necessária se a mãe usou TARV"],
+   correct:1, expl:"A profilaxia do RN deve começar <b>nas primeiras horas</b> (idealmente ≤ 4h, até 48h) — AZT ± outras drogas conforme o risco. É um dos pilares da PTV."},
+  {id:"zh-q5",banca:"UERJ (estilo)",stem:"Sobre o tratamento da síndrome congênita do Zika:",
+   opts:["Aciclovir por 21 dias","Não há antiviral específico; o manejo é de suporte e reabilitação","Ganciclovir nos sintomáticos","Sulfadiazina + pirimetamina"],
+   correct:1, expl:"Não há tratamento antiviral específico para o Zika congênito; o manejo é de <b>suporte e reabilitação</b> multidisciplinar, além da prevenção (vetor)."}
+ ],
+
+ flashcards:[
+  {id:"zh-f1",tipo:"qa",tag:"Zika",front:"Marca registrada do Zika congênito?",back:"<b>Microcefalia + desproporção craniofacial</b> + calcificações <b>córtico-subcorticais</b> + artrogripose/lesões oculares."},
+  {id:"zh-f2",tipo:"qa",tag:"Zika-tto",front:"Tratamento do Zika congênito?",back:"Sem antiviral específico — <b>suporte e reabilitação</b>; prevenção pelo combate ao vetor."},
+  {id:"zh-f3",tipo:"qa",tag:"HIV-PTV",front:"Os 4 pilares da prevenção da TV do HIV?",back:"TARV na gestação (CV indetectável) + AZT intraparto + profilaxia no RN + <b>não amamentar</b>."},
+  {id:"zh-f4",tipo:"vf",tag:"HIV-dx",front:"Sorologia anti-HIV confirma infecção em lactente de 3 meses.",back:"<b>FALSO.</b> Antes dos 18 meses usar <b>carga viral (PCR)</b> — anticorpos maternos atrapalham a sorologia."},
+  {id:"zh-f5",tipo:"cloze",tag:"HIV-RN",front:"Profilaxia do RN exposto ao HIV: iniciar idealmente em ≤ {{c1::4}} horas (até {{c2::48}}h).",back:"≤ 4h (até 48h) — AZT ± outras drogas conforme risco."},
+  {id:"zh-f6",tipo:"qa",tag:"HIV-PCP",front:"Quando iniciar profilaxia para Pneumocystis no RN exposto?",back:"Por volta de <b>4–6 semanas</b> de vida (SMX-TMP), até excluir a infecção."},
+  {id:"zh-f7",tipo:"vf",tag:"HIV",front:"Mãe HIV+ com carga viral indetectável pode amamentar no Brasil.",back:"<b>FALSO.</b> A amamentação é contraindicada → fórmula + inibir lactação."}
+ ],
+
+ casos:[
+  {titulo:"Caso 1 — Microcefalia ao nascer",
+   caso:"RN com perímetro cefálico muito abaixo do esperado, fronte com couro cabeludo redundante; neuroimagem com calcificações na junção córtico-subcortical e ventriculomegalia. Mãe teve exantema febril no 1º trimestre.",
+   perguntas:[
+     {q:"Hipótese principal?",a:"<b>Síndrome congênita do Zika</b> — microcefalia com desproporção craniofacial e calcificações córtico-subcorticais."},
+     {q:"Como investigar?",a:"<b>RT-PCR</b> (sangue/urina) e <b>sorologia (IgM)</b> mãe/RN, <b>neuroimagem</b> e avaliação <b>oftalmológica e auditiva</b>."},
+     {q:"Conduta?",a:"<b>Suporte e reabilitação</b> multidisciplinar (estimulação, fisioterapia, fono, acompanhamento neuro/oftalmo). Não há antiviral específico."}
+   ]},
+  {titulo:"Caso 2 — RN exposto ao HIV",
+   caso:"RN a termo, mãe HIV positivo em uso irregular de TARV, carga viral próxima ao parto desconhecida.",
+   perguntas:[
+     {q:"Quais medidas no parto e no RN?",a:"<b>AZT intravenoso intraparto</b>; no RN, iniciar <b>profilaxia antirretroviral nas primeiras horas</b> (≤4h, até 48h), com AZT ± outras drogas conforme o risco; <b>não amamentar</b> (fórmula + inibir lactação)."},
+     {q:"Como acompanhar/diagnosticar?",a:"Diagnóstico por <b>carga viral (PCR)</b> em momentos definidos (não sorologia &lt;18 meses); confirmar com 2 cargas virais detectáveis; iniciar <b>profilaxia para Pneumocystis</b> por volta de 4–6 semanas."},
+     {q:"Por que não amamentar?",a:"A amamentação é uma via de <b>transmissão vertical</b>; no Brasil é <b>contraindicada</b> em mães HIV+."}
+   ]}
+ ],
+
+ fluxoDx:[
+  {t:"start", x:"RN exposto/sinais sugestivos (microcefalia OU mãe HIV+)"},
+  {t:"decision", x:"Qual o cenário?", branches:[
+    {label:"Microcefalia + calcificações córtico-subcorticais", cor:"rosa", flow:[
+      {t:"step", x:"RT-PCR + sorologia (IgM); neuroimagem; avaliação oftalmo/auditiva", info:"Diferenciar do STORCH (toxo difusas; CMV periventriculares)."},
+      {t:"end", x:"Zika congênito → suporte e reabilitação"}
+    ]},
+    {label:"Mãe HIV positivo", cor:"azul", flow:[
+      {t:"step", x:"Profilaxia ARV no RN nas 1ªs horas + NÃO amamentar"},
+      {t:"step", x:"Diagnóstico por CARGA VIRAL (não sorologia <18m)"},
+      {t:"decision", x:"Duas cargas virais detectáveis?", branches:[
+        {label:"Sim", cor:"vermelho", flow:[{t:"end", x:"Infecção confirmada → encaminhar para TARV no serviço especializado"}]},
+        {label:"Não", cor:"verde", flow:[{t:"end", x:"Seguir acompanhamento + profilaxia para Pneumocystis até excluir"}]}
+      ]}
+    ]}
+  ]}
+ ],
+
+ fluxoConduta:[
+  {t:"start", x:"Conduta conforme a infecção"},
+  {t:"decision", x:"Zika ou HIV?", branches:[
+    {label:"Zika congênito", cor:"rosa", flow:[
+      {t:"end", x:"Suporte + reabilitação multidisciplinar; seguir neuro/oftalmo/audição"}
+    ]},
+    {label:"HIV (prevenção da TV)", cor:"azul", flow:[
+      {t:"step", x:"① TARV na gestação (CV indetectável)"},
+      {t:"step", x:"② AZT IV intraparto conforme CV"},
+      {t:"step", x:"③ Profilaxia ARV no RN ≤4h (até 48h)"},
+      {t:"end", x:"④ NÃO amamentar (fórmula + inibir lactação) + profilaxia p/ Pneumocystis 4–6 sem"}
+    ]}
+  ]}
+ ],
+
+ mapa:{ central:"ZIKA & HIV (vertical)", legenda:"Zika: suporte · HIV: prevenir", ramos:[
+   {cor:"rosa",   t:"Zika — quadro",filhos:["Microcefalia + desproporção","Calcificações córtico-subcorticais","Artrogripose, lesões oculares"]},
+   {cor:"dourado",t:"Zika — manejo",filhos:["RT-PCR + sorologia","Neuroimagem, oftalmo/audição","Suporte e reabilitação"]},
+   {cor:"azul",   t:"HIV — vias",  filhos:["Intraútero","Intraparto (maior parte)","Amamentação"]},
+   {cor:"verde",  t:"HIV — PTV",   filhos:["TARV na gestação","AZT intraparto","Profilaxia no RN ≤4h"]},
+   {cor:"vermelho",t:"HIV — regras",filhos:["NÃO amamentar","Diagnóstico por carga viral","Profilaxia p/ Pneumocystis"]},
+   {cor:"lilas",  t:"Pegadinhas", filhos:["Sorologia falha <18 meses","2 cargas virais confirmam","Zika sem antiviral específico"]}
+ ]},
+
+ vespera:[
+  '<h2>⏰ Revisão de véspera — Zika & HIV</h2>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>Zika:</b> microcefalia + calcificações <b>córtico-subcorticais</b> → suporte. <b>HIV:</b> 4 pilares da PTV e diagnóstico por <b>carga viral</b>.</div></div>',
+  '<ul><li><b>Zika</b> sem antiviral específico; prevenção = combate ao vetor.</li>',
+  '<li><b>HIV-PTV:</b> TARV na gestação + AZT intraparto + profilaxia no RN (≤4h) + <b>não amamentar</b>.</li>',
+  '<li><b>Diagnóstico do bebê:</b> carga viral (PCR); sorologia não vale &lt;18 meses; confirmar com 2 cargas.</li>',
+  '<li><b>Profilaxia p/ Pneumocystis</b> (SMX-TMP) por volta de 4–6 semanas até excluir.</li>',
+  '<li>Calcificações: Zika = córtico-subcortical · toxo = difusa · CMV = periventricular.</li></ul>'
+ ].join(''),
+
+ dicas:[
+  '<h2>💡 Dicas & Pegadinhas</h2>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>HIV no bebê: <b>nunca</b> diagnosticar por sorologia antes dos <b>18 meses</b> — anticorpos da mãe atrapalham. Use <b>carga viral</b>.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Mãe HIV+ <b>não amamenta</b> no Brasil (mesmo com carga viral indetectável) — pegadinha recorrente.</div></div>',
+  '<div class="callout mne"><span class="ci">🧠</span><div>PTV do HIV: <b>"Gestação–Parto–RN–Não amamentar"</b> (os 4 pilares).</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div>Microcefalia + desproporção craniofacial + calcificação <b>córtico-subcortical</b> = pense <b>Zika</b> (diferencie do toxo/CMV).</div></div>'
+ ].join(''),
+
+ dominio:[
+  "Reconheço a síndrome congênita do Zika (microcefalia, desproporção, calcificações córtico-subcorticais)",
+  "Sei que o Zika congênito não tem antiviral específico (suporte/reabilitação)",
+  "Domino os 4 pilares da prevenção da TV do HIV",
+  "Sei que o diagnóstico do bebê é por carga viral (não sorologia <18 meses)",
+  "Sei o momento da profilaxia ARV do RN (≤4h, até 48h)",
+  "Lembro que mãe HIV+ não amamenta no Brasil",
+  "Sei iniciar profilaxia para Pneumocystis por volta de 4–6 semanas"
+ ]
+});
+
+/* ================= MATÉRIA — ICTERÍCIA NEONATAL (alto rendimento) ================= */
+reg({ id:"ictericia", temaIc:"👶", t:"Icterícia Neonatal", sub:"Fisiológica x patológica, zonas de Kramer e fototerapia",
+ teoria:[
+  '<h2>💛 Icterícia neonatal</h2>',
+  '<p>A bilirrubina é o "resíduo" da quebra das hemácias. O recém-nascido tem <b class="blue">muita hemácia</b> (e de meia-vida curta), um <b class="blue">fígado imaturo</b> (conjuga pouco) e <b class="blue">circulação êntero-hepática aumentada</b> — por isso a bilirrubina <b>indireta</b> sobe e a pele fica amarela. Na maioria é benigno (fisiológico), mas precisamos separar o <b>fisiológico</b> do <b>patológico</b>, pois bilirrubina indireta muito alta é <b>neurotóxica</b>.</p>',
+  '<div class="callout info"><span class="ci">💡</span><div><b>Metabolismo:</b> hemácia → heme → bilirrubina <b>indireta (não conjugada, lipossolúvel)</b>, ligada à albumina → fígado <b>conjuga</b> (enzima UGT) → bilirrubina <b>direta (hidrossolúvel)</b> → bile → intestino.</div></div>',
+
+  '<h3>Fisiológica × patológica</h3>',
+  '<table><tr><th></th><th>Fisiológica</th><th>Sinais de PATOLÓGICA</th></tr>',
+  '<tr><td>Início</td><td><b>Após 24h</b> de vida</td><td><b>&lt; 24h</b> de vida</td></tr>',
+  '<tr><td>Pico</td><td>3º–5º dia (termo); até ~7 dias</td><td>Subida rápida (&gt; 5 mg/dL/dia)</td></tr>',
+  '<tr><td>Tipo</td><td><b>Indireta</b></td><td><b>Direta elevada</b> (colestase) ou níveis muito altos</td></tr>',
+  '<tr><td>Duração</td><td>≤ 1 semana (termo) / ≤ 2 sem (pré-termo)</td><td><b>&gt; 2 semanas</b> (prolongada) ou RN doente</td></tr></table>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Regras de ouro:</b> icterícia nas <b>primeiras 24h é SEMPRE patológica</b> (pense em <b>hemólise</b>); <b>bilirrubina DIRETA elevada é SEMPRE patológica</b> (colestase → pense em <b>atresia de vias biliares</b>).</div></div>',
+
+  '<h3>Progressão de Kramer (céfalo-caudal)</h3>',
+  '<div class="svg-box"><svg viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Zonas de Kramer da icterícia">'+
+   '<style>.z{font:700 12px Nunito,sans-serif;fill:#1b1230}.lb{font:11px Nunito,sans-serif;fill:#cfe6ff}</style>'+
+   '<rect x="320" y="20" width="80" height="180" rx="30" fill="#3a2740" stroke="#7a6aa0" stroke-width="2"/>'+
+   '<circle cx="360" cy="45" r="22" fill="#f2d24b"/>'+
+   '<rect x="330" y="70" width="60" height="40" rx="8" fill="#f2c84b"/>'+
+   '<rect x="330" y="112" width="60" height="40" rx="8" fill="#f0b83b"/>'+
+   '<rect x="332" y="154" width="56" height="36" rx="8" fill="#eaa72f"/>'+
+   '<text x="360" y="49" text-anchor="middle" class="z">1</text>'+
+   '<text x="410" y="50" class="lb">Zona 1 — face (~5–6 mg/dL)</text>'+
+   '<text x="410" y="95" class="lb">Zona 2 — tronco até umbigo (~9–12)</text>'+
+   '<text x="410" y="135" class="lb">Zona 3 — abdome inferior/coxas (~12–15)</text>'+
+   '<text x="410" y="175" class="lb">Zona 4 — braços/pernas (~15–18)</text>'+
+   '<text x="120" y="195" class="lb">Zona 5 — palmas e plantas (&gt; 15–20)</text>'+
+  '</svg><div class="cap">A icterícia "desce" do rosto para as extremidades conforme a bilirrubina sobe (estimativa clínica; confirmar com dosagem).</div></div>',
+
+  '<h3>Causas por tempo de aparecimento</h3>',
+  '<ul><li><b>&lt; 24h (sempre patológica):</b> <b>hemólise</b> — incompatibilidade <b>Rh</b> e <b>ABO</b>, deficiência de G6PD, esferocitose, sepse.</li>',
+  '<li><b>24h–2 semanas:</b> fisiológica; <b>icterícia do aleitamento</b> (baixa ingesta/desidratação, precoce); céfalo-hematoma; policitemia.</li>',
+  '<li><b>&gt; 2 semanas (prolongada):</b> <b>icterícia do leite materno</b> (tardia, bebê hígido); <b>hipotireoidismo</b>; <b>atresia de vias biliares</b> (direta!); infecções.</li></ul>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Pegadinha:</b> "<b>do aleitamento</b>" (precoce, por <b>pouca mamada</b>/desidratação → corrigir a amamentação) ≠ "<b>do leite materno</b>" (tardia, bebê <b>bem</b>, pico na 2ª semana, indireta, benigna).</div></div>',
+
+  '<h3>Encefalopatia bilirrubínica (kernicterus)</h3>',
+  '<p>A bilirrubina <b>indireta</b> muito elevada atravessa a barreira hematoencefálica e deposita-se nos <b>núcleos da base</b>. <b>Aguda:</b> letargia, hipotonia → hipertonia, opistótono, choro agudo. <b>Crônica (kernicterus):</b> paralisia cerebral coreoatetoide, <b>surdez</b> neurossensorial e paralisia do olhar. É <b>prevenível</b> — daí a importância da fototerapia oportuna.</p>'
+ ].join(''),
+
+ scores:[
+  '<h2>🎯 Zonas, critérios e tratamento</h2>',
+  '<h3>Zonas de Kramer (estimativa)</h3>',
+  '<table><tr><th>Zona</th><th>Local</th><th>Bilirrubina aproximada</th></tr>',
+  '<tr><td>1</td><td>Face/pescoço</td><td>~5–6 mg/dL</td></tr>',
+  '<tr><td>2</td><td>Tronco até o umbigo</td><td>~9–12 mg/dL</td></tr>',
+  '<tr><td>3</td><td>Abdome inferior e coxas</td><td>~12–15 mg/dL</td></tr>',
+  '<tr><td>4</td><td>Braços e pernas</td><td>~15–18 mg/dL</td></tr>',
+  '<tr><td>5</td><td>Palmas e plantas</td><td>&gt; 15–20 mg/dL</td></tr></table>',
+  '<div class="callout info"><span class="ci">💡</span><div>Kramer é <b>estimativa clínica</b> — sempre <b>confirmar com bilirrubina sérica/transcutânea</b> e interpretar pelo <b>nomograma por horas de vida</b> (ex.: Bhutani) e fatores de risco.</div></div>',
+
+  '<h3>Quando é patológica?</h3>',
+  '<div class="callout high"><span class="ci">⚡</span><div>① Início <b>&lt; 24h</b>; ② subida rápida (<b>&gt; 5 mg/dL/dia</b>); ③ <b>bilirrubina direta elevada</b>; ④ duração <b>&gt; 2 semanas</b>; ⑤ RN <b>doente</b> ou níveis acima do limiar para a idade em horas.</div></div>',
+
+  '<h3>Investigação</h3>',
+  '<ul><li>Bilirrubinas <b>total e frações</b> (direta/indireta).</li>',
+  '<li><b>Tipagem ABO/Rh</b> da mãe e do RN + <b>Coombs direto</b> (isoimunização).</li>',
+  '<li>Hematócrito/Hb, <b>reticulócitos</b>, esfregaço; <b>G6PD</b> quando indicado.</li>',
+  '<li>Se <b>direta elevada</b>: investigar colestase (USG, pensar <b>atresia de vias biliares</b> — fezes acólicas, colúria).</li></ul>',
+
+  '<h3>Tratamento</h3>',
+  '<table><tr><th>Medida</th><th>Como</th></tr>',
+  '<tr><td><b>Fototerapia</b></td><td>Converte a bilirrubina em <b>lumirrubina</b> (hidrossolúvel, eliminável). Indicada conforme bilirrubina × horas de vida × fatores de risco. Manter hidratação/amamentação.</td></tr>',
+  '<tr><td><b>Exsanguineotransfusão</b></td><td>Níveis muito altos / sinais de encefalopatia / falha da fototerapia (sobretudo na isoimunização)</td></tr>',
+  '<tr><td><b>Imunoglobulina (IVIG)</b></td><td>Na <b>hemólise isoimune</b> (Rh/ABO) para reduzir a necessidade de exsanguineo</td></tr>',
+  '<tr><td><b>Tratar a causa</b></td><td>Corrigir amamentação (do aleitamento); cirurgia precoce (Kasai) na atresia biliar; repor tiroxina no hipotireoidismo</td></tr></table>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Atresia de vias biliares</b> é emergência: cirurgia de <b>Kasai idealmente antes das 8 semanas</b>. Suspeite em icterícia prolongada com <b>colestase</b> (direta), fezes acólicas e colúria.</div></div>'
+ ].join(''),
+
+ questoes:[
+  {id:"ict-q1",banca:"ENARE (estilo)",stem:"RN com 18 horas de vida apresenta icterícia até o tronco. Mãe O positivo, RN A positivo. A causa mais provável e a classificação são:",
+   opts:["Fisiológica","Icterícia do leite materno","Hemólise por incompatibilidade ABO — patológica","Atresia de vias biliares"],
+   correct:2, expl:"Icterícia <b>&lt; 24h</b> é sempre <b>patológica</b>. Mãe O + RN A = <b>incompatibilidade ABO</b> com hemólise (Coombs pode ser positivo). Dosar bilirrubina, tipagem/Coombs, Ht/reticulócitos e iniciar fototerapia conforme nomograma."},
+  {id:"ict-q2",banca:"Revalida (estilo)",stem:"Lactente de 18 dias, em aleitamento exclusivo, <b>hígido</b>, ganhando peso, com icterícia leve persistente e bilirrubina <b>indireta</b>. Hipótese?",
+   opts:["Icterícia do leite materno","Atresia de vias biliares","Sepse neonatal","Incompatibilidade Rh"],
+   correct:0, expl:"Icterícia <b>prolongada</b>, bebê <b>bem</b>, à custa de bilirrubina <b>indireta</b> = <b>icterícia do leite materno</b> (benigna). Diferente da \"do aleitamento\" (precoce, por baixa ingesta)."},
+  {id:"ict-q3",banca:"UFRJ (estilo)",stem:"RN de 3 semanas com icterícia, <b>fezes acólicas</b> e colúria. Bilirrubina <b>direta</b> elevada. Conduta prioritária?",
+   opts:["Apenas observar — fisiológica","Investigar colestase e suspeitar de atresia de vias biliares (Kasai precoce)","Suspender o leite materno","Fototerapia domiciliar"],
+   correct:1, expl:"Bilirrubina <b>direta</b> + fezes acólicas + colúria = <b>colestase</b> → suspeitar de <b>atresia de vias biliares</b>; investigar e operar (<b>Kasai</b>) idealmente <b>antes das 8 semanas</b>. Bilirrubina direta nunca é fisiológica."},
+  {id:"ict-q4",banca:"SES-RJ (estilo)",stem:"Sobre as zonas de Kramer, a presença de icterícia em <b>palmas e plantas</b> sugere:",
+   opts:["Bilirrubina baixa (~5)","Bilirrubina intermediária (~9–12)","Bilirrubina alta (&gt; 15–20)","Não há relação"],
+   correct:2, expl:"Palmas e plantas = <b>zona 5</b> = bilirrubina mais <b>alta</b> (&gt; 15–20 mg/dL). A progressão é céfalo-caudal; confirmar sempre com dosagem."},
+  {id:"ict-q5",banca:"UERJ (estilo)",stem:"Qual o mecanismo da fototerapia no tratamento da icterícia neonatal?",
+   opts:["Aumenta a produção de bilirrubina","Converte a bilirrubina em formas hidrossolúveis (lumirrubina) elimináveis","Destrói as hemácias mais rápido","Bloqueia a enzima hepática"],
+   correct:1, expl:"A fototerapia provoca <b>fotoisomerização</b> da bilirrubina em <b>lumirrubina</b> (hidrossolúvel), eliminada na bile e na urina sem precisar de conjugação hepática."}
+ ],
+
+ flashcards:[
+  {id:"ict-f1",tipo:"vf",tag:"Regra",front:"Icterícia nas primeiras 24h pode ser fisiológica.",back:"<b>FALSO.</b> Icterícia &lt; 24h é <b>sempre patológica</b> — pense em hemólise."},
+  {id:"ict-f2",tipo:"qa",tag:"Direta",front:"O que significa bilirrubina direta elevada no RN?",back:"<b>Colestase</b> — sempre patológica; pensar em <b>atresia de vias biliares</b> (Kasai precoce)."},
+  {id:"ict-f3",tipo:"qa",tag:"Aleitamento x leite",front:"Diferencie icterícia do aleitamento e do leite materno.",back:"Do aleitamento: <b>precoce</b>, baixa ingesta/desidratação. Do leite materno: <b>tardia</b>, bebê hígido, pico na 2ª semana, indireta."},
+  {id:"ict-f4",tipo:"qa",tag:"Kramer",front:"Palmas e plantas ictéricas (Kramer 5) indicam o quê?",back:"Bilirrubina <b>alta</b> (&gt; 15–20 mg/dL). Confirmar com dosagem."},
+  {id:"ict-f5",tipo:"qa",tag:"Tratamento",front:"Mecanismo e indicação da fototerapia?",back:"Converte bilirrubina em <b>lumirrubina</b> hidrossolúvel; indicada por bilirrubina × horas de vida × fatores de risco."},
+  {id:"ict-f6",tipo:"qa",tag:"Hemólise<24h",front:"Causas de icterícia hemolítica nas primeiras 24h?",back:"Incompatibilidade <b>Rh</b> e <b>ABO</b>, <b>G6PD</b>, esferocitose, sepse."},
+  {id:"ict-f7",tipo:"qa",tag:"Kernicterus",front:"O que é kernicterus e como prevenir?",back:"Encefalopatia pela <b>bilirrubina indireta</b> (núcleos da base) → PC coreoatetoide/surdez. Prevenção: fototerapia/exsanguineo oportunos."}
+ ],
+
+ casos:[
+  {titulo:"Caso 1 — Icterícia nas primeiras horas",
+   caso:"RN com 16 horas de vida, ictérico até abdome. Mãe Rh negativo, RN Rh positivo, Coombs direto positivo. Bilirrubina indireta em ascensão.",
+   perguntas:[
+     {q:"Classificação e causa?",a:"<b>Patológica</b> (&lt; 24h) por <b>hemólise — incompatibilidade Rh</b> (isoimunização), Coombs direto positivo."},
+     {q:"Investigação?",a:"Bilirrubinas total/frações, tipagem ABO/Rh mãe-RN, <b>Coombs</b>, Ht/Hb, <b>reticulócitos</b>, esfregaço."},
+     {q:"Tratamento?",a:"<b>Fototerapia</b> conforme nomograma; <b>IVIG</b> na hemólise isoimune; <b>exsanguineotransfusão</b> se níveis muito altos/sinais de encefalopatia."}
+   ]},
+  {titulo:"Caso 2 — Icterícia que não some",
+   caso:"Lactente de 4 semanas, icterícia persistente, fezes esbranquiçadas (acólicas) e urina escura. Bilirrubina direta elevada.",
+   perguntas:[
+     {q:"Qual o achado-chave e a suspeita?",a:"<b>Colestase</b> (bilirrubina <b>direta</b>) + fezes acólicas + colúria → suspeitar de <b>atresia de vias biliares</b>."},
+     {q:"Por que é urgente?",a:"O sucesso da cirurgia de <b>Kasai</b> depende do tempo — idealmente <b>antes das 8 semanas</b>."},
+     {q:"Conduta?",a:"Investigar colestase (USG e demais exames) e <b>encaminhar com urgência</b>; nunca rotular como fisiológica."}
+   ]}
+ ],
+
+ fluxoDx:[
+  {t:"start", x:"RN com icterícia — dosar bilirrubina (total e frações)"},
+  {t:"decision", x:"Bilirrubina DIRETA elevada?", branches:[
+    {label:"Sim (colestase)", cor:"vermelho", flow:[
+      {t:"end", x:"SEMPRE patológica → investigar colestase / atresia de vias biliares (Kasai precoce)"}
+    ]},
+    {label:"Não (indireta)", cor:"azul", flow:[
+      {t:"decision", x:"Quando começou?", branches:[
+        {label:"< 24h", cor:"vermelho", flow:[
+          {t:"step", x:"Patológica → hemólise: tipagem ABO/Rh + Coombs, Ht, reticulócitos, G6PD"},
+          {t:"end", x:"Fototerapia ± IVIG/exsanguineo conforme nível"}
+        ]},
+        {label:"24h–2 semanas", cor:"verde", flow:[
+          {t:"end", x:"Provável fisiológica / do aleitamento → tratar pelo nomograma e corrigir amamentação"}
+        ]},
+        {label:"> 2 semanas (prolongada)", cor:"dourado", flow:[
+          {t:"end", x:"Bebê hígido → leite materno; investigar hipotireoidismo; excluir colestase"}
+        ]}
+      ]}
+    ]}
+  ]}
+ ],
+
+ fluxoConduta:[
+  {t:"start", x:"Definir gravidade pela bilirrubina × horas × fatores de risco"},
+  {t:"decision", x:"Qual o nível/risco?", branches:[
+    {label:"Acima do limiar de fototerapia", cor:"dourado", flow:[
+      {t:"step", x:"Iniciar fototerapia; manter hidratação/amamentação"},
+      {t:"end", x:"Reavaliar bilirrubina; tratar a causa de base"}
+    ]},
+    {label:"Hemólise isoimune (Rh/ABO)", cor:"azul", flow:[
+      {t:"step", x:"Fototerapia + considerar IVIG"},
+      {t:"end", x:"Exsanguineotransfusão se níveis muito altos/refratário"}
+    ]},
+    {label:"Níveis críticos / sinais de encefalopatia", cor:"vermelho", flow:[
+      {t:"end", x:"Exsanguineotransfusão de urgência (prevenir kernicterus)"}
+    ]},
+    {label:"Colestase (direta)", cor:"vermelho", flow:[
+      {t:"end", x:"Investigar/encaminhar — atresia de vias biliares (Kasai precoce)"}
+    ]}
+  ]}
+ ],
+
+ mapa:{ central:"ICTERÍCIA NEONATAL", legenda:"indireta x direta · tempo · nível", ramos:[
+   {cor:"verde",  t:"Fisiológica", filhos:["Após 24h, indireta","Pico 3º–5º dia","Some em ~1 semana"]},
+   {cor:"vermelho",t:"Patológica", filhos:["< 24h = hemólise","Direta elevada = colestase","> 2 semanas / RN doente"]},
+   {cor:"azul",   t:"Hemólise",   filhos:["Rh e ABO + Coombs","G6PD, esferocitose","Reticulócitos, esfregaço"]},
+   {cor:"dourado",t:"Aleitamento x leite",filhos:["Do aleitamento: precoce, pouca mamada","Do leite materno: tardia, bebê bem","Ambas indiretas"]},
+   {cor:"lilas",  t:"Kramer",     filhos:["Céfalo-caudal","Zona 5 (palmas/plantas) = alta","Confirmar com dosagem"]},
+   {cor:"rosa",   t:"Tratamento", filhos:["Fototerapia (lumirrubina)","IVIG na isoimune","Exsanguineo; Kasai na atresia"]}
+ ]},
+
+ vespera:[
+  '<h2>⏰ Revisão de véspera — Icterícia neonatal</h2>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>&lt; 24h = sempre patológica</b> (hemólise). <b>Direta elevada = sempre patológica</b> (colestase → atresia de vias biliares).</div></div>',
+  '<ul><li>Fisiológica: após 24h, indireta, pico 3º–5º dia, some em ~1 semana.</li>',
+  '<li>Hemólise: <b>Rh/ABO + Coombs</b>, G6PD, reticulócitos.</li>',
+  '<li>Do aleitamento (precoce, pouca mamada) ≠ do leite materno (tardia, bebê bem).</li>',
+  '<li>Kramer: <b>palmas/plantas (zona 5) = bilirrubina alta</b>; confirmar com dosagem.</li>',
+  '<li>Fototerapia → <b>lumirrubina</b>; IVIG na isoimune; exsanguineo se crítico.</li>',
+  '<li><b>Kernicterus</b> (indireta nos núcleos da base) é prevenível com tratamento oportuno.</li></ul>'
+ ].join(''),
+
+ dicas:[
+  '<h2>💡 Dicas & Pegadinhas</h2>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Duas frases que salvam questão: <b>"antes de 24h, pense em hemólise"</b> e <b>"direta elevada nunca é fisiológica"</b> (colestase → atresia biliar).</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>Não confunda <b>icterícia do aleitamento</b> (precoce, por baixa ingesta — corrigir mamadas) com <b>do leite materno</b> (tardia, bebê hígido — benigna).</div></div>',
+  '<div class="callout mne"><span class="ci">🧠</span><div>Kramer é "de cima para baixo": rosto baixo (~5) → palmas/plantas alto (&gt;15–20).</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div>Atresia de vias biliares: <b>Kasai antes das 8 semanas</b> — tempo é tudo. Procure fezes acólicas e colúria.</div></div>'
+ ].join(''),
+
+ dominio:[
+  "Explico o metabolismo da bilirrubina no RN",
+  "Diferencio icterícia fisiológica de patológica (24h, direta, >2 sem)",
+  "Sei que <24h = hemólise e direta elevada = colestase",
+  "Uso as zonas de Kramer como estimativa (confirmando com dosagem)",
+  "Diferencio icterícia do aleitamento da do leite materno",
+  "Conheço a investigação (bilirrubinas, ABO/Rh, Coombs, reticulócitos, G6PD)",
+  "Sei indicar fototerapia, IVIG e exsanguineotransfusão",
+  "Reconheço a atresia de vias biliares e a urgência do Kasai"
+ ]
+});
+
+/* ================= MATÉRIA — REANIMAÇÃO NEONATAL (alto rendimento) ================= */
+reg({ id:"reanimacao", temaIc:"🫀", t:"Reanimação Neonatal", sub:"Passos iniciais, VPP e compressões (SBP)",
+ teoria:[
+  '<h2>🫀 Reanimação neonatal</h2>',
+  '<p>Ao nascer, o bebê faz a <b class="blue">transição</b> da vida intrauterina para a respiração de ar. A grande maioria só precisa de <b>calor, secagem e estímulo</b>; cerca de <b>10%</b> precisam de alguma ajuda e <b>~1%</b> de manobras avançadas. A intervenção que <b>mais salva</b> é a <b>ventilação</b> (VPP) — não a compressão, nem a adrenalina.</p>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>3 perguntas ao nascer:</b> ① Gestação a termo? ② Respirando/chorando? ③ Bom tônus? <b>Tudo SIM</b> → clampeamento oportuno do cordão + cuidados de rotina junto à mãe. <b>Algum NÃO</b> → passos iniciais na mesa de reanimação.</div></div>',
+
+  '<h3>O "minuto de ouro"</h3>',
+  '<p>Os <b>passos iniciais</b> (aquecer, posicionar a via aérea, aspirar SE necessário, secar, estimular) devem ocorrer em ~30 segundos. Em seguida, avaliar <b>respiração</b> e <b>frequência cardíaca (FC)</b> — a FC é o <b>principal</b> guia da reanimação.</p>',
+  '<ul><li><b>Apneia/gasping</b> ou <b>FC &lt; 100</b> → iniciar <b>VPP</b> (ventilação com pressão positiva) — passo mais importante.</li>',
+  '<li>Após 30s de VPP <b>efetiva</b>, reavaliar a FC.</li>',
+  '<li><b>FC &lt; 60</b> apesar de VPP efetiva → corrigir a ventilação, considerar via aérea avançada e iniciar <b>compressões torácicas</b> (3:1) com <b>O₂ a 100%</b>.</li>',
+  '<li><b>FC &lt; 60</b> persistente → <b>adrenalina</b> (preferência IV/veia umbilical) e considerar volume se hipovolemia.</li></ul>',
+
+  '<h3>Oxigênio e SpO₂</h3>',
+  '<p>Iniciar a VPP com a concentração de O₂ conforme a idade gestacional: <b>≥ 34 semanas (termo): ar ambiente (21%)</b>; <b>&lt; 34 semanas: ~30%</b>, titulando pela <b>oximetria pré-ductal</b> (mão direita). A saturação sobe gradualmente nos primeiros minutos — não se assuste com SpO₂ "baixa" logo ao nascer.</p>',
+  '<div class="svg-box"><svg viewBox="0 0 720 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Alvo de SpO2 pré-ductal por minuto">'+
+   '<style>.ax{stroke:#7a6aa0;stroke-width:2}.lb{font:11px Nunito,sans-serif;fill:#cfe6ff}.pt{fill:#4cc38a}</style>'+
+   '<line x1="60" y1="130" x2="690" y2="130" class="ax"/><line x1="60" y1="20" x2="60" y2="130" class="ax"/>'+
+   [['1 min','60–65%',110],['2 min','65–70%',98],['3 min','70–75%',86],['5 min','80–85%',62],['10 min','85–95%',40]]
+     .map(function(d,i){var x=110+i*120;return "<circle cx=\""+x+"\" cy=\""+d[2]+"\" r=\"6\" class=\"pt\"/>"+"<text x=\""+x+"\" y=\""+(d[2]-12)+"\" text-anchor=\"middle\" class=\"lb\">"+d[1]+"</text>"+"<text x=\""+x+"\" y=\"148\" text-anchor=\"middle\" class=\"lb\">"+d[0]+"</text>";}).join("")+
+   '<text x="375" y="16" text-anchor="middle" fill="#ffd6e8" style="font:700 12px Nunito,sans-serif">Alvo de SpO₂ pré-ductal por minuto de vida</text>'+
+  '</svg><div class="cap">A saturação alvo sobe progressivamente: ~60–65% no 1º min até ~85–95% aos 10 min.</div></div>',
+
+  '<h3>Pontos que mais caem</h3>',
+  '<ul><li><b>Compressões 3:1</b> com a ventilação (90 compressões + 30 ventilações = 120 eventos/min), profundidade de <b>1/3</b> do diâmetro torácico, técnica dos <b>2 polegares</b>.</li>',
+  '<li><b>Adrenalina</b> 0,01–0,03 mg/kg <b>IV</b> (veia umbilical, preferida); se sem acesso, dose endotraqueal maior (0,05–0,1 mg/kg).</li>',
+  '<li><b>Mecônio:</b> RN <b>não vigoroso</b> com líquido meconial — a conduta atual <b>não é mais</b> a aspiração traqueal de rotina; <b>iniciar VPP</b> (aspirar apenas se houver obstrução de via aérea).</li>',
+  '<li><b>Clampeamento oportuno</b> do cordão (1–3 min) se o RN está <b>vigoroso</b> e não precisa de reanimação.</li></ul>'
+ ].join(''),
+
+ scores:[
+  '<h2>🎯 Apgar, alvos e doses</h2>',
+  '<h3>Boletim de Apgar (1º e 5º minutos)</h3>',
+  '<table><tr><th>Sinal</th><th>0</th><th>1</th><th>2</th></tr>',
+  '<tr><td>FC</td><td>Ausente</td><td>&lt; 100</td><td>≥ 100</td></tr>',
+  '<tr><td>Respiração</td><td>Ausente</td><td>Irregular/fraca</td><td>Choro forte</td></tr>',
+  '<tr><td>Tônus</td><td>Flácido</td><td>Alguma flexão</td><td>Movimento ativo</td></tr>',
+  '<tr><td>Irritabilidade reflexa</td><td>Ausente</td><td>Careta</td><td>Choro/tosse/espirro</td></tr>',
+  '<tr><td>Cor</td><td>Cianótico/pálido</td><td>Acrocianose</td><td>Rosado</td></tr></table>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>O <b>Apgar NÃO guia a reanimação</b> (que é guiada por <b>respiração e FC</b>) e <b>não prediz</b> isoladamente o prognóstico. Serve para avaliar a resposta e a evolução.</div></div>',
+
+  '<h3>Alvos de SpO₂ pré-ductal por minuto</h3>',
+  '<table><tr><th>Minuto</th><th>SpO₂ alvo</th></tr>',
+  '<tr><td>1 min</td><td>60–65%</td></tr><tr><td>2 min</td><td>65–70%</td></tr><tr><td>3 min</td><td>70–75%</td></tr><tr><td>5 min</td><td>80–85%</td></tr><tr><td>10 min</td><td>85–95%</td></tr></table>',
+
+  '<h3>Concentração inicial de O₂</h3>',
+  '<table><tr><th>Idade gestacional</th><th>O₂ inicial</th></tr>',
+  '<tr><td><b>≥ 34 semanas (termo)</b></td><td><b>Ar ambiente (21%)</b></td></tr>',
+  '<tr><td><b>&lt; 34 semanas</b></td><td><b>~30%</b>, titular pela oximetria</td></tr></table>',
+
+  '<h3>Compressões e adrenalina</h3>',
+  '<div class="callout high"><span class="ci">⚡</span><div><b>Compressões:</b> só se <b>FC &lt; 60</b> após 30s de <b>VPP efetiva</b> (com via aérea avançada e O₂ 100%) — <b>3:1</b> (90+30 = 120/min), 1/3 do tórax, 2 polegares. <b>Adrenalina:</b> se FC &lt; 60 persistente → <b>0,01–0,03 mg/kg IV</b> (veia umbilical).</div></div>',
+
+  '<h3>Ventilação não está efetiva? Corrija (passos VENTILA/MR SOPA)</h3>',
+  '<ul><li><b>M</b>áscara reajustada · <b>R</b>eposicionar a cabeça (leve extensão) · <b>S</b>ucção (aspirar boca/nariz) · <b>O</b>pen (boca aberta) · <b>P</b>ressão aumentada · <b>A</b>lternativa de via aérea (intubação/máscara laríngea).</li>',
+  '<li>Sinal de VPP efetiva: <b>elevação do tórax</b> e, sobretudo, <b>aumento da FC</b>.</li></ul>'
+ ].join(''),
+
+ questoes:[
+  {id:"rea-q1",banca:"ENARE (estilo)",stem:"RN em apneia, FC 80 bpm após os passos iniciais. Qual a conduta MAIS importante neste momento?",
+   opts:["Iniciar compressões torácicas","Iniciar ventilação com pressão positiva (VPP)","Administrar adrenalina","Aumentar o oxigênio para 100%"],
+   correct:1, expl:"Apneia ou FC &lt; 100 → o passo <b>mais importante</b> é a <b>VPP</b>. Compressões e adrenalina só entram se FC &lt; 60 apesar de ventilação efetiva."},
+  {id:"rea-q2",banca:"Revalida (estilo)",stem:"Após 30 segundos de VPP efetiva, o RN mantém FC de 50 bpm. Qual a conduta?",
+   opts:["Manter apenas a VPP","Iniciar compressões torácicas 3:1 com O₂ a 100% (e via aérea avançada)","Administrar volume","Suspender a reanimação"],
+   correct:1, expl:"FC &lt; 60 após VPP efetiva → <b>compressões torácicas 3:1</b> com O₂ 100%, garantindo via aérea avançada; reavaliar a cada ~60s."},
+  {id:"rea-q3",banca:"UFRJ (estilo)",stem:"Com qual concentração de oxigênio se deve iniciar a VPP em um RN a termo?",
+   opts:["100%","60%","Ar ambiente (21%)","40%"],
+   correct:2, expl:"Termo (≥ 34 semanas): iniciar com <b>ar ambiente (21%)</b>, titulando pela oximetria pré-ductal. Pré-termo &lt; 34 semanas: ~30%."},
+  {id:"rea-q4",banca:"SES-RJ (estilo)",stem:"RN não vigoroso, banhado em líquido meconial. A conduta atual recomendada é:",
+   opts:["Aspiração traqueal de rotina antes de qualquer ventilação","Iniciar os passos iniciais e a VPP (aspirar só se houver obstrução)","Não ventilar até clarear o mecônio","Comprimir o tórax imediatamente"],
+   correct:1, expl:"A aspiração traqueal <b>de rotina</b> no RN não vigoroso com mecônio <b>não é mais recomendada</b>: iniciar passos iniciais e <b>VPP</b>; aspirar apenas se houver obstrução de via aérea."},
+  {id:"rea-q5",banca:"UERJ (estilo)",stem:"Sobre o boletim de Apgar, é correto afirmar que:",
+   opts:["Guia o início e a sequência da reanimação","É calculado no 1º e 5º minutos e NÃO guia a reanimação","Substitui a avaliação da FC","Prediz isoladamente o prognóstico neurológico"],
+   correct:1, expl:"O Apgar é aferido no <b>1º e 5º minutos</b> (e depois se necessário), avalia a resposta, mas <b>não guia</b> a reanimação (guiada por respiração e FC) nem prediz isoladamente o prognóstico."}
+ ],
+
+ flashcards:[
+  {id:"rea-f1",tipo:"qa",tag:"3 perguntas",front:"As 3 perguntas ao nascer?",back:"Termo? Respirando/chorando? Bom tônus? Tudo sim → rotina com a mãe."},
+  {id:"rea-f2",tipo:"qa",tag:"Mais importante",front:"Qual a intervenção que mais salva na reanimação neonatal?",back:"A <b>VPP (ventilação)</b> — não compressão nem adrenalina."},
+  {id:"rea-f3",tipo:"cloze",tag:"Compressões",front:"Compressões só se FC < {{c1::60}} após VPP efetiva; relação {{c2::3:1}}.",back:"FC < 60 → compressões 3:1 (90+30=120/min) com O₂ 100%."},
+  {id:"rea-f4",tipo:"qa",tag:"O2 inicial",front:"O₂ inicial na VPP por idade gestacional?",back:"≥34 sem: <b>ar ambiente (21%)</b>; &lt;34 sem: <b>~30%</b>, titular pela oximetria."},
+  {id:"rea-f5",tipo:"qa",tag:"Adrenalina",front:"Dose e via preferida da adrenalina?",back:"<b>0,01–0,03 mg/kg IV</b> (veia umbilical); endotraqueal 0,05–0,1 mg/kg se sem acesso."},
+  {id:"rea-f6",tipo:"vf",tag:"Mecônio",front:"RN não vigoroso com mecônio deve ser aspirado na traqueia de rotina.",back:"<b>FALSO.</b> Conduta atual: passos iniciais e <b>VPP</b>; aspirar só se obstrução."},
+  {id:"rea-f7",tipo:"qa",tag:"Apgar",front:"O Apgar guia a reanimação?",back:"<b>Não.</b> A reanimação é guiada por <b>respiração e FC</b>; o Apgar avalia a resposta (1º/5º min)."}
+ ],
+
+ casos:[
+  {titulo:"Caso 1 — Recém-nascido hipotônico",
+   caso:"RN a termo, nasce hipotônico, sem chorar. Após aquecer, posicionar, secar e estimular, mantém apneia e FC de 70 bpm.",
+   perguntas:[
+     {q:"Conduta imediata?",a:"Apneia + FC &lt; 100 → iniciar <b>VPP</b> em ar ambiente (termo), com técnica adequada; monitorizar SpO₂ pré-ductal e FC."},
+     {q:"E se a FC não subir?",a:"Verificar se a ventilação é <b>efetiva</b> (corrigir pela sequência VENTILA/MR SOPA). Se FC &lt; 60 apesar de VPP efetiva → <b>compressões 3:1</b> com O₂ 100% e via aérea avançada."},
+     {q:"Quando entra a adrenalina?",a:"Se a <b>FC permanecer &lt; 60</b> após compressões + VPP efetivas → <b>adrenalina IV</b> (veia umbilical) e considerar volume se hipovolemia."}
+   ]},
+  {titulo:"Caso 2 — Prematuro na sala de parto",
+   caso:"RN de 30 semanas, nasce com esforço respiratório fraco. Necessita de VPP.",
+   perguntas:[
+     {q:"Com qual O₂ iniciar?",a:"Pré-termo &lt; 34 semanas → iniciar com <b>~30%</b> de O₂, titulando pela oximetria pré-ductal para o alvo por minuto."},
+     {q:"Que cuidados específicos do prematuro?",a:"Atenção redobrada à <b>termorregulação</b> (saco plástico/touca), CPAP precoce se respiração espontânea, e manuseio gentil; considerar surfactante conforme evolução."},
+     {q:"Como saber se a VPP é efetiva?",a:"Principalmente pelo <b>aumento da FC</b> (e elevação do tórax). Se não melhora, corrigir a ventilação antes de escalar."}
+   ]}
+ ],
+
+ fluxoDx:[
+  {t:"start", x:"Nascimento — 3 perguntas: termo? respira/chora? bom tônus?"},
+  {t:"decision", x:"Tudo SIM?", branches:[
+    {label:"Sim", cor:"verde", flow:[
+      {t:"end", x:"Clampeamento oportuno + cuidados de rotina junto à mãe"}
+    ]},
+    {label:"Não", cor:"dourado", flow:[
+      {t:"step", x:"Passos iniciais (~30s): aquecer, posicionar, aspirar se preciso, secar, estimular"},
+      {t:"decision", x:"Apneia/gasping ou FC < 100?", branches:[
+        {label:"Não (respira e FC ≥ 100)", cor:"verde", flow:[{t:"end", x:"Observar / cuidados de rotina e monitorar"}]},
+        {label:"Sim", cor:"vermelho", flow:[{t:"end", x:"Iniciar VPP (ver aba de conduta) + oximetria pré-ductal"}]}
+      ]}
+    ]}
+  ]}
+ ],
+
+ fluxoConduta:[
+  {t:"start", x:"Indicada a VPP (apneia/gasping ou FC < 100)"},
+  {t:"step", x:"VPP com O₂ por IG (termo 21%; <34 sem ~30%); monitorar SpO₂ e FC", info:"Sinal de eficácia: aumento da FC e elevação do tórax."},
+  {t:"decision", x:"Após 30s de VPP, qual a FC?", branches:[
+    {label:"≥ 100 e respira", cor:"verde", flow:[
+      {t:"end", x:"Suspender VPP gradualmente; cuidados pós-reanimação"}
+    ]},
+    {label:"60–99", cor:"dourado", flow:[
+      {t:"step", x:"Corrigir ventilação (VENTILA/MR SOPA); manter VPP efetiva"},
+      {t:"end", x:"Reavaliar FC"}
+    ]},
+    {label:"< 60 apesar de VPP efetiva", cor:"vermelho", flow:[
+      {t:"step", x:"Via aérea avançada + O₂ 100% + compressões 3:1"},
+      {t:"decision", x:"FC < 60 persiste?", branches:[
+        {label:"Sim", cor:"vermelho", flow:[{t:"end", x:"Adrenalina IV (veia umbilical) 0,01–0,03 mg/kg; volume se hipovolemia"}]},
+        {label:"Não", cor:"verde", flow:[{t:"end", x:"Reduzir suporte conforme melhora; cuidados pós-reanimação"}]}
+      ]}
+    ]}
+  ]}
+ ],
+
+ mapa:{ central:"REANIMAÇÃO NEONATAL", legenda:"a FC guia; a VPP salva", ramos:[
+   {cor:"verde",  t:"3 perguntas", filhos:["Termo?","Respira/chora?","Bom tônus?"]},
+   {cor:"azul",   t:"Minuto de ouro",filhos:["Aquecer, posicionar, secar","Aspirar só se preciso","Avaliar respiração e FC"]},
+   {cor:"rosa",   t:"VPP",         filhos:["Apneia ou FC < 100 → VPP","Termo 21% · <34 sem 30%","Eficácia: FC sobe"]},
+   {cor:"vermelho",t:"Compressões",filhos:["FC < 60 após VPP efetiva","3:1 (120/min), 2 polegares","O₂ 100% + via aérea avançada"]},
+   {cor:"dourado",t:"Adrenalina",  filhos:["FC < 60 persistente","0,01–0,03 mg/kg IV","Veia umbilical; volume se hipovolemia"]},
+   {cor:"lilas",  t:"Detalhes",    filhos:["Apgar não guia","Mecônio não vigoroso → VPP","Clampeamento oportuno se vigoroso"]}
+ ]},
+
+ vespera:[
+  '<h2>⏰ Revisão de véspera — Reanimação neonatal</h2>',
+  '<div class="callout high"><span class="ci">⚡</span><div>A <b>FC guia</b> e a <b>VPP salva</b>. Apneia/FC &lt; 100 → <b>VPP</b>. FC &lt; 60 após VPP efetiva → <b>compressões 3:1</b>. FC &lt; 60 persistente → <b>adrenalina IV</b>.</div></div>',
+  '<ul><li>3 perguntas: termo? respira/chora? bom tônus?</li>',
+  '<li>O₂ inicial: termo <b>21%</b>; &lt;34 sem <b>~30%</b> (titular pela oximetria pré-ductal).</li>',
+  '<li>Compressões 3:1 (90+30 = 120/min), 1/3 do tórax, 2 polegares, O₂ 100%.</li>',
+  '<li>Adrenalina 0,01–0,03 mg/kg IV (veia umbilical).</li>',
+  '<li><b>Apgar não guia</b> a reanimação. <b>Mecônio não vigoroso → VPP</b> (não aspirar de rotina).</li>',
+  '<li>SpO₂ alvo: ~60–65% (1 min) → 85–95% (10 min).</li></ul>'
+ ].join(''),
+
+ dicas:[
+  '<h2>💡 Dicas & Pegadinhas</h2>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div>A banca adora cobrar a <b>sequência</b>: VPP <b>antes</b> de compressão; compressão <b>antes</b> de adrenalina. Nunca pule a ventilação efetiva.</div></div>',
+  '<div class="callout peg"><span class="ci">⚠️</span><div><b>Mecônio + não vigoroso</b>: a resposta atual é <b>VPP</b>, e não aspiração traqueal de rotina (mudança importante das diretrizes).</div></div>',
+  '<div class="callout mne"><span class="ci">🧠</span><div>Números: compressão se FC &lt; <b>60</b>; relação <b>3:1</b>; adrenalina <b>0,01–0,03 mg/kg IV</b>.</div></div>',
+  '<div class="callout tip"><span class="ci">✅</span><div>VPP não está funcionando? <b>Corrija a ventilação</b> (VENTILA/MR SOPA) antes de escalar — o sinal de sucesso é a <b>FC subindo</b>.</div></div>'
+ ].join(''),
+
+ dominio:[
+  "Sei as 3 perguntas ao nascer e quando levar à mesa de reanimação",
+  "Domino os passos iniciais e o conceito do minuto de ouro",
+  "Sei que a FC guia e que a VPP é a intervenção mais importante",
+  "Conheço o O₂ inicial por idade gestacional e os alvos de SpO₂",
+  "Sei quando iniciar compressões (FC < 60 após VPP efetiva) e a relação 3:1",
+  "Sei a dose e a via da adrenalina",
+  "Lembro que o Apgar não guia a reanimação e da conduta no mecônio"
  ]
 });
 
